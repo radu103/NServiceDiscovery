@@ -1,57 +1,67 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace NServiceDiscovery.Entity
 {
     public class ServiceInstance
     {
-        // equal to hostname ?
+        [JsonIgnore]
+        [JsonProperty("tenantId")]
+        public string TenantId { get; set; } = string.Empty;
+
+        [JsonProperty("appId")]
+        public string AppName { get; set; }
+
+        // equal to Hostname
+        [JsonProperty("instanceId")]
         public string InstanceId { get; set; }
 
-        public string AppId { get; set; }
+        [JsonProperty("status")]
+        public string Status { get; set; }
 
-        // "hostName"
+        [JsonProperty("hostName")]
         public String HostName { get; set; } = string.Empty;
 
-        // "vipAddress"
+        [JsonProperty("vipAddress")]
         public string VipAddress { get; set; } = string.Empty;
 
-        // "secureVipAddress"
+        [JsonProperty("secureVipAddress")]
         public string SecureVipAddress { get; set; } = string.Empty;
 
-        // "port"
+        [JsonProperty("port")]
         public ServicePort Port { get; set; }
 
-        // "securePort"
+        [JsonProperty("securePort")]
         public ServicePort SecurePort { get; set; }
 
-        // "countryId"
+        [JsonProperty("countryId")]
         public string CountryId { get; set; } = "1";
 
-        // "homePageUrl": "http://APPHOST11:8080"
+        [JsonProperty("homePageUrl")]
         public string HomePageUrl { get; set; } = string.Empty;
 
-        // "healthCheckUrl": "http://APPHOST11:8080/healthcheck"
+        [JsonProperty("healthCheckUrl")]
         public string HealthCheckUrl { get; set; } = string.Empty;
 
-        // "isCoordinatingDiscoveryServer": "false"
+        [JsonProperty("isCoordinatingDiscoveryServer")]
         public bool isCoordinatingDiscoveryServer { get; set; } = false;
 
-        // "lastUpdatedTimestamp": "1568638944892"
+        [JsonProperty("lastUpdatedTimestamp")]
         public DateTime LastUpdatedTimestamp { get; set; }
 
-        // "lastDirtyTimestamp": "1568638937357"
+        [JsonProperty("lastDirtyTimestamp")]
         public DateTime LastDirtyTimestamp { get; set; }
 
-        // "actionType": "MODIFIED"
+        [JsonProperty("actionType")]
         public string ActionType { get; set; } = "MODIFIED";
 
-        // "metadata": {}
+        [JsonProperty("metadata")]
         public ServiceInstanceMetadata Metadata { get; set; } = new ServiceInstanceMetadata();
 
-        // "leaseInfo" : {}
+        [JsonProperty("leaseInfo")]
         public ServiceInstanceLeaseInfo LeaseInfo { get; set; } = new ServiceInstanceLeaseInfo();
 
-        // "dataCenterInfo" : {}
+        [JsonProperty("dataCenterInfo")]
         public ServiceInstanceDataCenterInfo DataCenterInfo { get; set; } = new ServiceInstanceDataCenterInfo();
     }
 }

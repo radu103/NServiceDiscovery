@@ -1,25 +1,27 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using NServiceDiscovery.Configuration;
+using System;
 
 namespace NServiceDiscovery.Entity
 {
     public class ServiceInstanceLeaseInfo
     {
-        // "renewalIntervalInSecs" :  30
-        public int RenewalIntervalInSecs { get; set; } = 30;
+        [JsonProperty("renewalIntervalInSecs")]
+        public int RenewalIntervalInSecs { get; set; } = DefaultConfigurationData.DefaultRenewalIntervalInSecs;
 
-        // "durationInSecs": 90,
-        public int DurationInSecs { get; set; } = 90;
+        [JsonProperty("durationInSecs")]
+        public int DurationInSecs { get; set; } = DefaultConfigurationData.DefaultRenewalIntervalInSecs;
 
-        // "registrationTimestamp": 1568638937382,
+        [JsonProperty("registrationTimestamp")]
         public DateTime RegistrationTimestamp { get; set; }
 
-        // "lastRenewalTimestamp": 1568639034890,
+        [JsonProperty("lastRenewalTimestamp")]
         public DateTime LastRenewalTimestamp { get; set; }
 
-        // "evictionTimestamp": 0,
-        public DateTime EvictionTimestamp { get; set; }
+        [JsonProperty("evictionTimestamp")]
+        public DateTime EvictionTimestamp { get; set; } = DefaultConfigurationData.DefaultEvictionTimestamp;
 
-        // "serviceUpTimestamp": 1568638944890
+        [JsonProperty("serviceUpTimestamp")]
         public DateTime ServiceUpTimestamp { get; set; }
     }
 }

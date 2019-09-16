@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NServiceDiscovery.Configuration;
+using System;
 
 namespace NServiceDiscovery
 {
@@ -9,8 +10,8 @@ namespace NServiceDiscovery
         public static ConfigurationData Load()
         {
             var conf = new ConfigurationData(){
-                TenantID = "public",
-                OwnBaseHref = "https://localhost:44334"
+                TenantID = DefaultConfigurationData.DefaultTenantID,
+                OwnBaseHref = DefaultConfigurationData.DefaultOwnBaseHref
             };
 
             return conf;

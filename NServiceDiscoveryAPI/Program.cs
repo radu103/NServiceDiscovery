@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
+﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using NServiceDiscovery;
 
 namespace NServiceDiscoveryAPI
 {
     public class Program
     {
+        public static ConfigurationData config;
+
         public static void Main(string[] args)
         {
-            ConfigurationHelper.Load();
+            Program.config = ConfigurationHelper.Load();
 
             CreateWebHostBuilder(args).Build().Run();
         }

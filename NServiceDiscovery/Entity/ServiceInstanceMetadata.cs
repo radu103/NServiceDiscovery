@@ -1,8 +1,10 @@
-﻿namespace NServiceDiscovery.Entity
+﻿using Newtonsoft.Json;
+
+namespace NServiceDiscovery.Entity
 {
     public class ServiceInstanceMetadata
     {
-        //"@class": "java.util.Collections$EmptyMap"
+        [JsonProperty("@class")]
         public string Class { get; set; } = "java.util.Collections$EmptyMap";
     }
 }
