@@ -1,0 +1,5 @@
+.vs/
+NServiceDiscovery/bin/
+NServiceDiscovery/obj/
+NServiceDiscoveryAPI/bin/
+NServiceDiscoveryAPI/obj/
