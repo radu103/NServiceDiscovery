@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
-using NServiceDiscovery;
+﻿using Microsoft.AspNetCore.Mvc;
 using NServiceDiscovery.Entity;
 using NServiceDiscovery.Messages;
 using NServiceDiscovery.Repository;
@@ -9,14 +6,13 @@ using NServiceDiscovery.Repository;
 namespace NServiceDiscoveryAPI.Controllers
 {
     [ApiController]
-    public class ServicesController : ControllerBase
+    public class ServicesController : TenantController
     {
-        private MemoryServicesRepository repo = new MemoryServicesRepository(Program.config.TenantID);
-
         [HttpGet]
-        [Route("/eureka/apps")]
+        [Route("/eureka/apps")]        
         public ActionResult<ServicesRuntime> GetAllInstances()
         {
+            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
             return repo.GetAll();
         }
 
@@ -27,6 +23,7 @@ namespace NServiceDiscoveryAPI.Controllers
             request.instance.AppName = appName;
             request.instance.InstanceId = request.instance.HostName;
 
+            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
             return repo.Add(request.instance);
         }
 
@@ -34,14 +31,17 @@ namespace NServiceDiscoveryAPI.Controllers
         [Route("/eureka/v2/apps/{appName}/{instanceID}")]
         public ActionResult<bool> DeleteInstance([FromQuery] string appName, [FromQuery] string instanceID)
         {
+            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
+
             return repo.Delete(appName, instanceID);
         }
 
-        [HttpPut]
-        [Route("/eureka/v2/apps/{appName}/{instanceID}/status?value={status}")]
-        public ActionResult<bool> ChangeStatus([FromQuery] string appName, [FromQuery] string instanceID, [FromQuery] string status)
-        {
-            return repo.ChangeStatus(appName, instanceID, status);
-        }
+        //[HttpPut]
+        //[Route("/eureka/v2/apps/{appName}/{instanceID}/status?value={status}")]
+        //[ServiceFilter(typeof(GetTenantIdFromBearerTokenFilter))]
+        //public ActionResult<bool> ChangeStatus([FromQuery] string appName, [FromQuery] string instanceID, [FromQuery] string status)
+        //{
+        //    return repo.ChangeStatus(appName, instanceID, status);
+        //}
     }
 }
