@@ -1,11 +1,9 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace NServiceDiscovery.Entity
 {
-    public class ServiceApplication
+    public class Application
     {
         [JsonIgnore]
         [JsonProperty("tenantId")]
@@ -18,6 +16,6 @@ namespace NServiceDiscovery.Entity
         public ApplicationProtocol Protocol { get; set; } = ApplicationProtocol.HTTP;
 
         [JsonProperty("instance")]
-        public List<ServiceInstance> Instances = new List<ServiceInstance>();
+        public List<Instance> Instances = new List<Instance>();
     }
 }

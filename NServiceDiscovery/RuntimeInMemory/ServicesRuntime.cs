@@ -1,7 +1,8 @@
 ﻿using Newtonsoft.Json;
+using NServiceDiscovery.Entity;
 using System.Collections.Generic;
 
-namespace NServiceDiscovery.Entity
+namespace NServiceDiscovery.RuntimeInMemory
 {
     public class ServicesRuntime
     {
@@ -16,6 +17,6 @@ namespace NServiceDiscovery.Entity
         public string AppsHashCode { get; set; } = "";
 
         [JsonProperty("application")]
-        public static List<ServiceApplication> Applications = new List<ServiceApplication>();
+        public static List<Application> Applications = new List<Application>();
     }
 }

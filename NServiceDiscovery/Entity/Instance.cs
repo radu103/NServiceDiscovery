@@ -3,7 +3,7 @@ using System;
 
 namespace NServiceDiscovery.Entity
 {
-    public class ServiceInstance
+    public class Instance
     {
         [JsonIgnore]
         [JsonProperty("tenantId")]
@@ -29,10 +29,10 @@ namespace NServiceDiscovery.Entity
         public string SecureVipAddress { get; set; } = string.Empty;
 
         [JsonProperty("port")]
-        public ServicePort Port { get; set; }
+        public ApplicationPort Port { get; set; }
 
         [JsonProperty("securePort")]
-        public ServicePort SecurePort { get; set; }
+        public ApplicationPort SecurePort { get; set; }
 
         [JsonProperty("countryId")]
         public string CountryId { get; set; } = "1";
@@ -56,12 +56,12 @@ namespace NServiceDiscovery.Entity
         public string ActionType { get; set; } = "MODIFIED";
 
         [JsonProperty("metadata")]
-        public ServiceInstanceMetadata Metadata { get; set; } = new ServiceInstanceMetadata();
+        public InstanceMetadata Metadata { get; set; } = new InstanceMetadata();
 
         [JsonProperty("leaseInfo")]
-        public ServiceInstanceLeaseInfo LeaseInfo { get; set; } = new ServiceInstanceLeaseInfo();
+        public InstanceLeaseInfo LeaseInfo { get; set; } = new InstanceLeaseInfo();
 
         [JsonProperty("dataCenterInfo")]
-        public ServiceInstanceDataCenterInfo DataCenterInfo { get; set; } = new ServiceInstanceDataCenterInfo();
+        public InstanceDataCenterInfo DataCenterInfo { get; set; } = new InstanceDataCenterInfo();
     }
 }

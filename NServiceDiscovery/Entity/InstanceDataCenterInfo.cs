@@ -2,7 +2,7 @@
 
 namespace NServiceDiscovery.Entity
 {
-    public class ServiceInstanceDataCenterInfo
+    public class InstanceDataCenterInfo
     {
         //"@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo"
         [JsonProperty("@class")]

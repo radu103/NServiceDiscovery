@@ -19,7 +19,7 @@ namespace NServiceDiscoveryAPI.GlobalFilters
             }
             else
             {
-                context.RouteData.Values.Add("TenantId", DefaultConfigurationData.DefaultTenantID);
+                context.RouteData.Values.Add("TenantId", DefaultConfigurationData.DefaultTenantID + "-" + DefaultConfigurationData.DefaultTenantType);
 
                 //context.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
                 //context.Result = new JsonResult("Forbidden");

@@ -2,7 +2,7 @@
 
 namespace NServiceDiscovery.Entity
 {
-    public class ServicePort
+    public class ApplicationPort
     {
         [JsonProperty("@enabled")]
         public bool Enabled { get; set; } = true;

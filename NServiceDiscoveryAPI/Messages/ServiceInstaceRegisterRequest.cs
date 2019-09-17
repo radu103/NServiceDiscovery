@@ -1,9 +1,9 @@
 ﻿using NServiceDiscovery.Entity;
 
-namespace NServiceDiscovery.Messages
+namespace NServiceDiscoveryAPI.Messages
 {
     public class ServiceInstaceRegisterRequest
     {
-        public ServiceInstance instance = null;
+        public Instance instance = null;
     }
 }

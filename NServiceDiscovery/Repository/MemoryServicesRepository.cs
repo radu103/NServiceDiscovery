@@ -9,7 +9,7 @@ namespace NServiceDiscovery.Repository
 {
     public class MemoryServicesRepository
     {
-        private string repoTenantId = DefaultConfigurationData.DefaultTenantID;
+        private string repoTenantId = DefaultConfigurationData.DefaultTenantID + "-" + DefaultConfigurationData.DefaultTenantType;
 
         public MemoryServicesRepository(string tenantId)
         {
@@ -24,9 +24,9 @@ namespace NServiceDiscovery.Repository
             return Memory.Runtime;
         }
 
-        public ServiceInstance GetByInstanceId(string instanceId)
+        public Instance GetByInstanceId(string instanceId)
         {
-            ServiceInstance instance = null;
+            Instance instance = null;
 
             foreach (var app in ServicesRuntime.Applications)
             {
@@ -37,18 +37,13 @@ namespace NServiceDiscovery.Repository
             return instance;
         }
 
-        public List<ServiceInstance> GetByAppName(string appName)
+        public Application GetByAppName(string appName)
         {
-            var list = new List<ServiceInstance>();
+            var list = new List<Instance>();
 
             var app = ServicesRuntime.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
 
-            if (app != null)
-            {
-                list = app.Instances.FindAll(i => i.TenantId.CompareTo(repoTenantId) == 0).ToList();
-            }
-
-            return list;
+            return app;
         }
 
         public bool ChangeStatus(string appName, string instanceId, string status)
@@ -62,6 +57,13 @@ namespace NServiceDiscovery.Repository
                     if(app.Instances[i].TenantId.CompareTo(repoTenantId) == 0 && app.Instances[i].InstanceId.CompareTo(instanceId) == 0)
                     {
                         app.Instances[i].Status = status;
+                        app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTime.Now;
+
+                        if (status.CompareTo("UP") == 0)
+                        {
+                            app.Instances[i].LeaseInfo.ServiceUpTimestamp = DateTime.Now;
+                        }
+
                         break;
                     }
                 }
@@ -74,7 +76,7 @@ namespace NServiceDiscovery.Repository
 
         public bool Delete(string appName, string instanceId)
         {
-            ServiceInstance instance = null;
+            Instance instance = null;
 
             var app = ServicesRuntime.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
 
@@ -91,26 +93,55 @@ namespace NServiceDiscovery.Repository
             return false;
         }
 
-        public ServiceInstance Add(ServiceInstance instance)
+        public Instance Add(Instance instance)
         {
             var appId = instance.AppName;
 
             var appFound = ServicesRuntime.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appId) == 0);
             if(appFound == null)
             {
-                appFound = new ServiceApplication()
+                appFound = new Application()
                 {
                     Name = appId,
                     Protocol = ApplicationProtocol.HTTP,
-                    Instances = new List<ServiceInstance>()
+                    Instances = new List<Instance>(),
+                    TenantId = repoTenantId
                 };
 
                 ServicesRuntime.Applications.Add(appFound);
             }
 
+            instance.TenantId = repoTenantId;
+
+            instance.LeaseInfo.RegistrationTimestamp = DateTime.Now;
+            instance.LeaseInfo.LastRenewalTimestamp = instance.LeaseInfo.RegistrationTimestamp;
+            instance.LeaseInfo.EvictionTimestamp = instance.LeaseInfo.LastRenewalTimestamp.AddSeconds(DefaultConfigurationData.DefaultEvictionInSecs);
+            
             appFound.Instances.Add(instance);
 
             return instance;
+        }
+
+        public bool SaveInstanceHearbeat(string appName, string instanceId)
+        {
+            var app = ServicesRuntime.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
+
+            if (app != null)
+            {
+                for (var i = 0; i < app.Instances.Count; i++)
+                {
+                    if (app.Instances[i].TenantId.CompareTo(repoTenantId) == 0 && app.Instances[i].InstanceId.CompareTo(instanceId) == 0)
+                    {
+                        app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTime.Now;
+                        app.Instances[i].LeaseInfo.EvictionTimestamp = app.Instances[i].LeaseInfo.LastRenewalTimestamp.AddSeconds(DefaultConfigurationData.DefaultEvictionInSecs);
+                        break;
+                    }
+                }
+
+                return true;
+            }
+
+            return false;
         }
     }
 }
