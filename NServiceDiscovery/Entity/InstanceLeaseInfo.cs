@@ -13,15 +13,15 @@ namespace NServiceDiscovery.Entity
         public int DurationInSecs { get; set; } = DefaultConfigurationData.DefaultRenewalIntervalInSecs;
 
         [JsonProperty("registrationTimestamp")]
-        public DateTime RegistrationTimestamp { get; set; }
+        public long RegistrationTimestamp { get; set; }
 
         [JsonProperty("lastRenewalTimestamp")]
-        public DateTime LastRenewalTimestamp { get; set; }
+        public long LastRenewalTimestamp { get; set; }
 
         [JsonProperty("evictionTimestamp")]
-        public DateTime EvictionTimestamp { get; set; }
+        public long EvictionTimestamp { get; set; }
 
         [JsonProperty("serviceUpTimestamp")]
-        public DateTime ServiceUpTimestamp { get; set; }
+        public long ServiceUpTimestamp { get; set; }
     }
 }

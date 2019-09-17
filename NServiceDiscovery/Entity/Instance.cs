@@ -19,6 +19,9 @@ namespace NServiceDiscovery.Entity
         [JsonProperty("status")]
         public string Status { get; set; }
 
+        [JsonProperty("statusPageUrl")]
+        public string StatusPageUrl { get; set; }
+
         [JsonProperty("hostName")]
         public String HostName { get; set; } = string.Empty;
 
@@ -47,10 +50,10 @@ namespace NServiceDiscovery.Entity
         public bool isCoordinatingDiscoveryServer { get; set; } = false;
 
         [JsonProperty("lastUpdatedTimestamp")]
-        public DateTime LastUpdatedTimestamp { get; set; }
+        public long LastUpdatedTimestamp { get; set; }
 
         [JsonProperty("lastDirtyTimestamp")]
-        public DateTime LastDirtyTimestamp { get; set; }
+        public long LastDirtyTimestamp { get; set; }
 
         [JsonProperty("actionType")]
         public string ActionType { get; set; } = "MODIFIED";

@@ -30,7 +30,7 @@ namespace NServiceDiscoveryAPI.Controllers
         public ActionResult<string> AddAppInstance([FromRoute] string appName, [FromBody] ServiceInstaceRegisterRequest request)
         {
             request.instance.AppName = appName;
-            request.instance.InstanceId = request.instance.HostName;
+            request.instance.InstanceId = request.instance.InstanceId.Replace(":", "-");
 
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
             Instance instance = repo.Add(request.instance);
@@ -62,12 +62,12 @@ namespace NServiceDiscoveryAPI.Controllers
 
         [HttpPut]
         [Route("/eureka/apps/{appName}/{instanceID}/status")]
-        // "/eureka/apps/{appName}/{instanceID}/status?value={status}"
-        public ActionResult<string> ChangeInstanceStatus([FromRoute] string appName, [FromRoute] string instanceID, [FromQuery] string value)
+        // "/eureka/apps/{appName}/{instanceID}/status?value={status}&lastDirtyTimestamp=1568746948343"
+        public ActionResult<string> ChangeInstanceStatus([FromRoute] string appName, [FromRoute] string instanceID, [FromQuery] string value, [FromQuery] long lastDirtyTimestamp)
         {
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
 
-            var result = repo.ChangeStatus(appName, instanceID, value);
+            var result = repo.ChangeStatus(appName, instanceID, value, lastDirtyTimestamp);
 
             if (result)
             {

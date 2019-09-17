@@ -10,6 +10,7 @@ namespace NServiceDiscovery.Configuration
         public static string DefaultTenantType = "dev";
 
         // instance validity
+        public static int TicksPerSecond = 10000000;
         public static int DefaultRenewalIntervalInSecs = 30;
         public static int DefaultDurationInSecs = 90;
         public static int DefaultEvictionInSecs = 300;

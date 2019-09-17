@@ -3,3 +3,5 @@ NServiceDiscovery/bin/
 NServiceDiscovery/obj/
 NServiceDiscoveryAPI/bin/
 NServiceDiscoveryAPI/obj/
+/TestAPI1/bin/Debug/netcoreapp2.2
+/TestAPI1/obj

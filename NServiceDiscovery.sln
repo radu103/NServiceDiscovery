@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29230.47
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceDiscovery", "NServiceDiscovery\NServiceDiscovery.csproj", "{67221D9C-F233-4273-8629-50BEF871C752}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NServiceDiscovery", "NServiceDiscovery\NServiceDiscovery.csproj", "{67221D9C-F233-4273-8629-50BEF871C752}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceDiscoveryAPI", "NServiceDiscoveryAPI\NServiceDiscoveryAPI.csproj", "{375D7C44-E69D-4989-AA81-1696C09FA346}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NServiceDiscoveryAPI", "NServiceDiscoveryAPI\NServiceDiscoveryAPI.csproj", "{375D7C44-E69D-4989-AA81-1696C09FA346}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAPI1", "TestAPI1\TestAPI1.csproj", "{AC7C1454-037B-4785-9802-EB9729F8FA5B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{375D7C44-E69D-4989-AA81-1696C09FA346}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{375D7C44-E69D-4989-AA81-1696C09FA346}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{375D7C44-E69D-4989-AA81-1696C09FA346}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC7C1454-037B-4785-9802-EB9729F8FA5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC7C1454-037B-4785-9802-EB9729F8FA5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC7C1454-037B-4785-9802-EB9729F8FA5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC7C1454-037B-4785-9802-EB9729F8FA5B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

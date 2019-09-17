@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,10 +39,19 @@ namespace NServiceDiscoveryAPI
                 app.UseHsts();
             }
 
+            app.Use(next => http =>
+            {
+                if (http.Request.Path.Value.Contains(':'))
+                {
+                    var newPath = new PathString(http.Request.Path.Value.Replace(":", "-"));
+                    http.Request.Path = newPath;
+                }
+
+                return next(http);
+            });
+
             app.UseHttpsRedirection();
             app.UseMvc();
-
-
         }
     }
 }
