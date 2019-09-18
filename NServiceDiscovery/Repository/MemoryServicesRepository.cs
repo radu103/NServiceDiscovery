@@ -100,7 +100,8 @@ namespace NServiceDiscovery.Repository
             var appId = instance.AppName;
 
             var appFound = ServicesRuntime.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appId) == 0);
-            if(appFound == null)
+
+            if (appFound == null)
             {
                 appFound = new Application()
                 {
@@ -148,6 +149,36 @@ namespace NServiceDiscovery.Repository
             }
 
             return false;
+        }
+
+        public List<Instance> GetInstancesForVipAddress(string vipAddress)
+        {
+            var list = new List<Instance>();
+
+            var apps = ServicesRuntime.Applications.FindAll(a => a.TenantId.CompareTo(repoTenantId) == 0).ToList();
+
+            foreach(var app in apps)
+            {
+                var instances = app.Instances.FindAll(i => i.TenantId.CompareTo(repoTenantId) == 0 && i.VipAddress.CompareTo(vipAddress) == 0).ToList();
+                list.AddRange(instances);                
+            }
+
+            return list;
+        }
+
+        public List<Instance> GetInstancesForSVipAddress(string svipAddress)
+        {
+            var list = new List<Instance>();
+
+            var apps = ServicesRuntime.Applications.FindAll(a => a.TenantId.CompareTo(repoTenantId) == 0).ToList();
+
+            foreach (var app in apps)
+            {
+                var instances = app.Instances.FindAll(i => i.TenantId.CompareTo(repoTenantId) == 0 && i.SecureVipAddress.CompareTo(svipAddress) == 0).ToList();
+                list.AddRange(instances);
+            }
+
+            return list;
         }
     }
 }

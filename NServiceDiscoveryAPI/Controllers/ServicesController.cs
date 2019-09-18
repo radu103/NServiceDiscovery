@@ -40,7 +40,18 @@ namespace NServiceDiscoveryAPI.Controllers
         public ActionResult<string> AddAppInstance([FromRoute] string appName, [FromBody] ServiceInstaceRegisterRequest request)
         {
             request.instance.AppName = appName;
-            request.instance.InstanceId = request.instance.InstanceId.Replace(":", "-");
+
+            if (!string.IsNullOrEmpty(request.instance.InstanceId))
+            {
+                request.instance.InstanceId = request.instance.InstanceId.Replace(":", "-");
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(request.instance.HostName))
+                {
+                    request.instance.InstanceId = request.instance.HostName.Replace(":", "-");
+                }
+            }
 
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
             Instance instance = repo.Add(request.instance);
@@ -132,6 +143,46 @@ namespace NServiceDiscoveryAPI.Controllers
             }
 
             return string.Empty;
+        }
+
+        [HttpGet]
+        [Route("/eureka/vips/{vipAddress}")]
+        public ActionResult<List<Instance>> GetInstancesForVipAddress([FromRoute] string vipAddress)
+        {
+            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
+
+            List<Instance> list = repo.GetInstancesForVipAddress(vipAddress);
+
+            if (list.Count > 0)
+            {
+                this.HttpContext.Response.StatusCode = 200;
+            }
+            else
+            {
+                this.HttpContext.Response.StatusCode = 404;
+            }
+
+            return list;
+        }
+
+        [HttpGet]
+        [Route("/eureka/svips/{svipAddress}")]
+        public ActionResult<List<Instance>> GetInstancesForSVipAddress([FromRoute] string svipAddress)
+        {
+            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
+
+            List<Instance> list = repo.GetInstancesForSVipAddress(svipAddress);
+
+            if (list.Count > 0)
+            {
+                this.HttpContext.Response.StatusCode = 200;
+            }
+            else
+            {
+                this.HttpContext.Response.StatusCode = 404;
+            }
+
+            return list;
         }
     }
 }
