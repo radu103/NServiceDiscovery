@@ -6,6 +6,13 @@ namespace TestAPI1.Controllers
     public class ValuesController : ControllerBase
     {
         [HttpGet]
+        [Route("/favicon.ico")]
+        public ActionResult<string> GetFavIcon()
+        {
+            return string.Empty;
+        }
+
+        [HttpGet]
         [Route("/health")]
         public ActionResult<string> GetHealth()
         {
