@@ -8,6 +8,7 @@ namespace NServiceDiscovery.Configuration
         public static string DefaultOwnBaseHref = "https://localhost:44334";
         public static string DefaultTenantID = "public";
         public static string DefaultTenantType = "dev";
+        public static string DefaultTenantToken = "public-dev:real_token_to_be_checked";
 
         // instance validity
         public static int TicksPerSecond = 10000000;

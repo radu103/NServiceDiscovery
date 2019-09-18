@@ -157,11 +157,17 @@ namespace NServiceDiscovery.Repository
                 {
                     if (app.Instances[i].TenantId.CompareTo(repoTenantId) == 0 && app.Instances[i].InstanceId.CompareTo(instanceId) == 0)
                     {
-                        app.Instances[i].ActionType = "HEARTBEAT";
+                        app.Instances[i].ActionType = "MODIFIED";
                         app.Instances[i].Status = status;
                         app.Instances[i].LastDirtyTimestamp = app.Instances[i].LastUpdatedTimestamp = lastDirtyTimestamp;
                         app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTime.Now.Ticks;
                         app.Instances[i].LeaseInfo.EvictionTimestamp = app.Instances[i].LeaseInfo.LastRenewalTimestamp + DefaultConfigurationData.DefaultEvictionInSecs * DefaultConfigurationData.TicksPerSecond;
+
+                        if (status.CompareTo("UP") == 0)
+                        {
+                            app.Instances[i].LeaseInfo.ServiceUpTimestamp = DateTime.Now.Ticks;
+                        }
+
                         break;
                     }
                 }
