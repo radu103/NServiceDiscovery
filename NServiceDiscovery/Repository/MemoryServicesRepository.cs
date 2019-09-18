@@ -141,7 +141,14 @@ namespace NServiceDiscovery.Repository
             instance.LeaseInfo.RegistrationTimestamp = DateTime.Now.Ticks;
             instance.LeaseInfo.LastRenewalTimestamp = instance.LeaseInfo.RegistrationTimestamp;
             instance.LeaseInfo.EvictionTimestamp = instance.LeaseInfo.LastRenewalTimestamp + DefaultConfigurationData.DefaultEvictionInSecs * DefaultConfigurationData.TicksPerSecond;
-            
+
+            var existingInstance = appFound.Instances.SingleOrDefault(i => i.TenantId.CompareTo(repoTenantId) == 0 && i.InstanceId.CompareTo(instance.InstanceId) == 0);
+
+            if(existingInstance != null)
+            {
+                Delete(existingInstance.AppName, existingInstance.InstanceId);
+            }
+
             appFound.Instances.Add(instance);
 
             IncreaseVersion();
