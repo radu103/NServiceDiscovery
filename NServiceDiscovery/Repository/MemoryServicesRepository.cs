@@ -19,6 +19,17 @@ namespace NServiceDiscovery.Repository
             }
         }
 
+        private void UpdateAppsHashCode()
+        {
+            // TO DO : update string for "apps__hashcode"
+        }
+
+        private void IncreaseVersion()
+        {
+            Memory.Runtime._VersionsDelta += 1;
+            UpdateAppsHashCode();
+        }
+
         public ServicesRuntime GetAll()
         {
             return Memory.Runtime;
@@ -56,6 +67,7 @@ namespace NServiceDiscovery.Repository
                 {
                     if(app.Instances[i].TenantId.CompareTo(repoTenantId) == 0 && app.Instances[i].InstanceId.CompareTo(instanceId) == 0)
                     {
+                        app.Instances[i].ActionType = "MODIFIED";
                         app.Instances[i].Status = status;
                         app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTime.Now.Ticks;
                         app.Instances[i].LastDirtyTimestamp = lastDirtyTimestamp;
@@ -69,6 +81,8 @@ namespace NServiceDiscovery.Repository
                         break;
                     }
                 }
+
+                IncreaseVersion();
 
                 return true;
             }
@@ -87,7 +101,11 @@ namespace NServiceDiscovery.Repository
                 instance = app.Instances.SingleOrDefault(i => i.TenantId.CompareTo(repoTenantId) == 0 && i.InstanceId.CompareTo(instanceId) == 0);
 
                 if (instance != null) {
+
                     app.Instances.Remove(instance);
+
+                    IncreaseVersion();
+
                     return true;
                 }
             }
@@ -124,6 +142,8 @@ namespace NServiceDiscovery.Repository
             
             appFound.Instances.Add(instance);
 
+            IncreaseVersion();
+
             return instance;
         }
 
@@ -137,6 +157,7 @@ namespace NServiceDiscovery.Repository
                 {
                     if (app.Instances[i].TenantId.CompareTo(repoTenantId) == 0 && app.Instances[i].InstanceId.CompareTo(instanceId) == 0)
                     {
+                        app.Instances[i].ActionType = "HEARTBEAT";
                         app.Instances[i].Status = status;
                         app.Instances[i].LastDirtyTimestamp = app.Instances[i].LastUpdatedTimestamp = lastDirtyTimestamp;
                         app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTime.Now.Ticks;
@@ -144,6 +165,8 @@ namespace NServiceDiscovery.Repository
                         break;
                     }
                 }
+
+                IncreaseVersion();
 
                 return true;
             }

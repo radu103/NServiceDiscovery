@@ -12,12 +12,18 @@ namespace NServiceDiscovery.Entity
         [JsonProperty("appId")]
         public string AppName { get; set; }
 
-        // equal to Hostname
+        // equal to Hostname when missing
         [JsonProperty("instanceId")]
         public string InstanceId { get; set; }
 
+        [JsonProperty("sid")]
+        public string Sid { get; set; }
+
         [JsonProperty("status")]
         public string Status { get; set; }
+
+        [JsonProperty("overriddenstatus")]
+        public string OverriddenStatus { get; set; } = "UNKNOWN";
 
         [JsonProperty("statusPageUrl")]
         public string StatusPageUrl { get; set; }
@@ -45,6 +51,9 @@ namespace NServiceDiscovery.Entity
 
         [JsonProperty("healthCheckUrl")]
         public string HealthCheckUrl { get; set; } = string.Empty;
+
+        [JsonProperty("secureHealthCheckUrl")]
+        public string SecureHealthCheckUrl { get; set; } = string.Empty;
 
         [JsonProperty("isCoordinatingDiscoveryServer")]
         public bool isCoordinatingDiscoveryServer { get; set; } = false;
