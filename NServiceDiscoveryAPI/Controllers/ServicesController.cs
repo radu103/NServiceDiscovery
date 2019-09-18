@@ -86,6 +86,7 @@ namespace NServiceDiscoveryAPI.Controllers
 
         [HttpPut]
         [Route("/eureka/apps/{appName}/{instanceID}")]
+        // "/eureka/apps/{appName}/{instanceID}?status=UP&lastDirtyTimestamp=1568804226113"
         public ActionResult<string> ReceiveInstanceHeartbeat([FromRoute] string appName, [FromRoute] string instanceID)
         {
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
