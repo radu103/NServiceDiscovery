@@ -3,6 +3,9 @@ using NServiceDiscovery.Entity;
 using NServiceDiscoveryAPI.Messages;
 using NServiceDiscovery.Repository;
 using NServiceDiscovery.RuntimeInMemory;
+using System.Linq;
+using System;
+using System.Collections.Generic;
 
 namespace NServiceDiscoveryAPI.Controllers
 {
@@ -87,7 +90,29 @@ namespace NServiceDiscoveryAPI.Controllers
         {
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
 
-            var result = repo.SaveInstanceHearbeat(appName, instanceID);
+            var status = string.Empty;
+            long lastDirtyTimestamp = DateTime.Now.Ticks;
+
+            if (Request.QueryString.Value.ToString().IndexOf("status") >= 0)
+            {
+                // status change request
+                var queryDictionary = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(Request.QueryString.Value.ToString());
+                var items = queryDictionary.SelectMany(x => x.Value, (col, value) => new KeyValuePair<string, string>(col.Key, value)).ToList();
+
+                var statusItem = items.SingleOrDefault(q => q.Key.CompareTo("status") == 0);
+                if(statusItem.Key != null)
+                {
+                    status = statusItem.Value;
+                }
+
+                var dirtyItem = items.SingleOrDefault(q => q.Key.CompareTo("lastDirtyTimestamp") == 0);
+                if (dirtyItem.Key != null)
+                {
+                    lastDirtyTimestamp = Convert.ToInt64(dirtyItem.Value);
+                }
+            }
+            
+            var result = repo.SaveInstanceHearbeat(appName, instanceID, status, lastDirtyTimestamp);
 
             if (result)
             {

@@ -126,7 +126,7 @@ namespace NServiceDiscovery.Repository
             return instance;
         }
 
-        public bool SaveInstanceHearbeat(string appName, string instanceId)
+        public bool SaveInstanceHearbeat(string appName, string instanceId, string status, long lastDirtyTimestamp)
         {
             var app = ServicesRuntime.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
 
@@ -136,7 +136,8 @@ namespace NServiceDiscovery.Repository
                 {
                     if (app.Instances[i].TenantId.CompareTo(repoTenantId) == 0 && app.Instances[i].InstanceId.CompareTo(instanceId) == 0)
                     {
-                        app.Instances[i].LastDirtyTimestamp = app.Instances[i].LastUpdatedTimestamp = DateTime.Now.Ticks;
+                        app.Instances[i].Status = status;
+                        app.Instances[i].LastDirtyTimestamp = app.Instances[i].LastUpdatedTimestamp = lastDirtyTimestamp;
                         app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTime.Now.Ticks;
                         app.Instances[i].LeaseInfo.EvictionTimestamp = app.Instances[i].LeaseInfo.LastRenewalTimestamp + DefaultConfigurationData.DefaultEvictionInSecs * DefaultConfigurationData.TicksPerSecond;
                         break;
