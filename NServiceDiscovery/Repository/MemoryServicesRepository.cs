@@ -67,7 +67,7 @@ namespace NServiceDiscovery.Repository
                 {
                     if(app.Instances[i].TenantId.CompareTo(repoTenantId) == 0 && app.Instances[i].InstanceId.CompareTo(instanceId) == 0)
                     {
-                        app.Instances[i].ActionType = "MODIFIED";
+                        app.Instances[i].ActionType = "STATUS";
                         app.Instances[i].Status = status;
                         app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTime.Now.Ticks;
                         app.Instances[i].LastDirtyTimestamp = lastDirtyTimestamp;
@@ -134,6 +134,8 @@ namespace NServiceDiscovery.Repository
 
             instance.TenantId = repoTenantId;
 
+            instance.ActionType = "ADDED";
+
             instance.LastDirtyTimestamp = instance.LastUpdatedTimestamp = DateTime.Now.Ticks;
 
             instance.LeaseInfo.RegistrationTimestamp = DateTime.Now.Ticks;
@@ -157,7 +159,7 @@ namespace NServiceDiscovery.Repository
                 {
                     if (app.Instances[i].TenantId.CompareTo(repoTenantId) == 0 && app.Instances[i].InstanceId.CompareTo(instanceId) == 0)
                     {
-                        app.Instances[i].ActionType = "MODIFIED";
+                        app.Instances[i].ActionType = "HEARTBEAT";
                         app.Instances[i].Status = status;
                         app.Instances[i].LastDirtyTimestamp = app.Instances[i].LastUpdatedTimestamp = lastDirtyTimestamp;
                         app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTime.Now.Ticks;
