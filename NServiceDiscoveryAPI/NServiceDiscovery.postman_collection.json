@@ -32,6 +32,32 @@
 			"response": []
 		},
 		{
+			"name": "GetDataCenters",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer public2",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:62771/eureka/apps",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62771",
+					"path": [
+						"eureka",
+						"apps"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "AddDependencyForApp",
 			"request": {
 				"method": "POST",

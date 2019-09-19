@@ -10,7 +10,7 @@ using System.Collections.Generic;
 namespace NServiceDiscoveryAPI.Controllers
 {
     [ApiController]
-    public class ServicesController : TenantController
+    public class EurekaServicesController : TenantController
     {
         [HttpGet]
         [Route("/favicon.ico")]
@@ -181,6 +181,17 @@ namespace NServiceDiscoveryAPI.Controllers
             {
                 this.HttpContext.Response.StatusCode = 404;
             }
+
+            return list;
+        }
+
+        [HttpGet]
+        [Route("/eureka/datacenters")]
+        public ActionResult<List<string>> GetDataCenters()
+        {
+            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
+
+            List<string> list = repo.GetDataCenters();
 
             return list;
         }

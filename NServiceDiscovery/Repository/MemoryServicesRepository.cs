@@ -204,6 +204,27 @@ namespace NServiceDiscovery.Repository
             return list;
         }
 
+        public List<string> GetDataCenters()
+        {
+            List<string> list = new List<string>();
+
+            var apps = ServicesRuntime.Applications.FindAll(a => a.TenantId.CompareTo(repoTenantId) == 0).ToList();
+
+            foreach(var app in apps)
+            {
+                var instances = app.Instances.FindAll(i => i.TenantId.CompareTo(repoTenantId) == 0).ToList();
+
+                foreach(var instance in instances)
+                {
+                    list.Add(instance.DataCenterInfo.Name);
+                }
+            }
+
+            var distinctDataCenters = list.Distinct().ToList();
+
+            return distinctDataCenters;
+        }
+
         public List<Instance> GetInstancesForSVipAddress(string svipAddress)
         {
             var list = new List<Instance>();
