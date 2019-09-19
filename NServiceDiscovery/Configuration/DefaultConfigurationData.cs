@@ -18,11 +18,11 @@ namespace NServiceDiscovery.Configuration
 
         // persistency
         public static string TenantsConnectionString = "";
-        public static string ApplicationsConnectionStringTemplate = "";
+        public static string ApplicationsConnectionString = "";
 
         // mqtt messaging
         public static string MQTTHost = "broker.hivemq.com";
         public static int MQTTPort = 1883;
-        public static string MQTTTopicName = "NServiceDiscovery";
+        public static string MQTTTopicName = "NServiceDiscovery-" + DefaultConfigurationData.DefaultTenantID + "-" + DefaultConfigurationData.DefaultTenantType;
     }
 }
