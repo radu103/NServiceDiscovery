@@ -7,7 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NServiceDiscovery", "NServi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NServiceDiscoveryAPI", "NServiceDiscoveryAPI\NServiceDiscoveryAPI.csproj", "{375D7C44-E69D-4989-AA81-1696C09FA346}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAPI1", "TestAPI1\TestAPI1.csproj", "{AC7C1454-037B-4785-9802-EB9729F8FA5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestAPI1", "TestAPI1\TestAPI1.csproj", "{AC7C1454-037B-4785-9802-EB9729F8FA5B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8DE4FDA1-FCBB-41E5-ADB6-31B8D1B3C131}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
