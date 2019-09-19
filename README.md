@@ -10,17 +10,26 @@ Features :
 	* instances
 	* key value store for general & app configuration
 	* app dependency requirements (appNames)
-* [TO DO] Deployable in Cloud Foundry (SAP Cloud Platform)
+* [READY] Deployable in Cloud Foundry (SAP Cloud Platform)
 * [TO DO] Sync multiple instances via MQTT broker messages
 * [TO DO] Persistence with SAP HANA/Mongo/Redis
 
-## Not in scope yet :
+## Not in scope yet
 
 AMI metadata processing support for AWS
 
 # Endpoints exposed
 
 [Import Postman Collection file](NServiceDiscovery.postman_collection.json) from repository
+
+# Deploy to Cloud Foundry
+
+1. git clone & build
+2. dotnetcore publish to folder 
+3. Edit the manifest.yml in the publish folder
+4. Open Command Prompt and `cd` to publish folder
+5. `cf api https://api.cf.eu10.hana.ondemand.com` + `cf login` + org / space selection
+6. cf push <name_of_app>
 
 # Data structures
 
