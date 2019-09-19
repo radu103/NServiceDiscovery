@@ -92,7 +92,8 @@ AMI metadata processing support for AWS
     ],
     "versions__deltam": "2",
     "apps__hashcode": ""
-}```
+}
+```
 
 ## Key Value Store
 
