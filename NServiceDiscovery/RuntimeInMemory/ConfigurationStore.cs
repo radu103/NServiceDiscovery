@@ -7,6 +7,6 @@ namespace NServiceDiscovery.RuntimeInMemory
     public class ConfigurationStore
     {
         [JsonProperty("generalKeyValues")]
-        public List<GeneralKeyValue> GeneralKeyValues = new List<GeneralKeyValue>();
+        public List<StoreKeyValue> AllKeyValues = new List<StoreKeyValue>();
     }
 }

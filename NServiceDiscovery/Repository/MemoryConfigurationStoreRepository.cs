@@ -18,9 +18,14 @@ namespace NServiceDiscovery.Repository
             }
         }
 
-        public bool Add(GeneralKeyValue keyValue)
+        private Application GetAppIndex(string appName)
         {
-            var existingKey = Memory.ConfigurationStore.GeneralKeyValues.SingleOrDefault(g => g.TenantId.CompareTo(repoTenantId) == 0 && g.Key.CompareTo(keyValue.Key) == 0);
+            // TO DO : get app and CRUD the conf value there also
+        }
+
+        public bool Add(StoreKeyValue keyValue)
+        {
+            var existingKey = Memory.ConfigurationStore.AllKeyValues.SingleOrDefault(g => g.TenantId.CompareTo(repoTenantId) == 0 && g.AppName.CompareTo(string.Empty) == 0 && g.Key.CompareTo(keyValue.Key) == 0);
 
             if (existingKey != null)
             {
@@ -29,20 +34,51 @@ namespace NServiceDiscovery.Repository
             else
             {
                 keyValue.TenantId = repoTenantId;
-                Memory.ConfigurationStore.GeneralKeyValues.Add(keyValue);
+                Memory.ConfigurationStore.AllKeyValues.Add(keyValue);
             }
 
             return true;
         }
 
-        public bool Update(GeneralKeyValue keyValue)
+        public bool AddForApplication(string appName, StoreKeyValue keyValue)
         {
-            var existingKey = Memory.ConfigurationStore.GeneralKeyValues.SingleOrDefault(g => g.TenantId.CompareTo(repoTenantId) == 0 && g.Key.CompareTo(keyValue.Key) == 0);
+            var existingKey = Memory.ConfigurationStore.AllKeyValues.SingleOrDefault(g => g.TenantId.CompareTo(repoTenantId) == 0 && g.AppName.CompareTo(appName) == 0 && g.Key.CompareTo(keyValue.Key) == 0);
 
             if (existingKey != null)
             {
-                var idx = Memory.ConfigurationStore.GeneralKeyValues.IndexOf(existingKey);
-                Memory.ConfigurationStore.GeneralKeyValues[idx].Value = keyValue.Value;
+                Update(keyValue);
+            }
+            else
+            {
+                keyValue.TenantId = repoTenantId;
+                keyValue.AppName = appName;
+                Memory.ConfigurationStore.AllKeyValues.Add(keyValue);
+            }
+
+            return true;
+        }
+
+        public bool Update(StoreKeyValue keyValue)
+        {
+            var existingKey = Memory.ConfigurationStore.AllKeyValues.SingleOrDefault(g => g.TenantId.CompareTo(repoTenantId) == 0 && g.AppName.CompareTo(string.Empty) == 0 && g.Key.CompareTo(keyValue.Key) == 0);
+
+            if (existingKey != null)
+            {
+                var idx = Memory.ConfigurationStore.AllKeyValues.IndexOf(existingKey);
+                Memory.ConfigurationStore.AllKeyValues[idx].Value = keyValue.Value;
+            }
+
+            return true;
+        }
+
+        public bool UpdateForApplication(string appName, StoreKeyValue keyValue)
+        {
+            var existingKey = Memory.ConfigurationStore.AllKeyValues.SingleOrDefault(g => g.TenantId.CompareTo(repoTenantId) == 0 && g.AppName.CompareTo(appName) == 0 && g.Key.CompareTo(keyValue.Key) == 0);
+
+            if (existingKey != null)
+            {
+                var idx = Memory.ConfigurationStore.AllKeyValues.IndexOf(existingKey);
+                Memory.ConfigurationStore.AllKeyValues[idx].Value = keyValue.Value;
             }
 
             return true;
@@ -50,11 +86,11 @@ namespace NServiceDiscovery.Repository
 
         public bool Delete(string key)
         {
-            var existingKey = Memory.ConfigurationStore.GeneralKeyValues.SingleOrDefault(g => g.TenantId.CompareTo(repoTenantId) == 0 && g.Key.CompareTo(key) == 0);
+            var existingKey = Memory.ConfigurationStore.AllKeyValues.SingleOrDefault(g => g.TenantId.CompareTo(repoTenantId) == 0 && g.AppName.CompareTo(string.Empty) == 0 && g.Key.CompareTo(key) == 0);
 
             if (existingKey != null)
             {
-                var idx = Memory.ConfigurationStore.GeneralKeyValues.Remove(existingKey);
+                var idx = Memory.ConfigurationStore.AllKeyValues.Remove(existingKey);
             }
             else
             {
@@ -64,15 +100,43 @@ namespace NServiceDiscovery.Repository
             return true;
         }
 
-        public GeneralKeyValue Get(string key)
+        public bool DeleteForApplication(string appName, string key)
         {
-            var existingKey = Memory.ConfigurationStore.GeneralKeyValues.SingleOrDefault(g => g.TenantId.CompareTo(repoTenantId) == 0 && g.Key.CompareTo(key) == 0);
+            var existingKey = Memory.ConfigurationStore.AllKeyValues.SingleOrDefault(g => g.TenantId.CompareTo(repoTenantId) == 0 && g.AppName.CompareTo(appName) == 0 && g.Key.CompareTo(key) == 0);
+
+            if (existingKey != null)
+            {
+                var idx = Memory.ConfigurationStore.AllKeyValues.Remove(existingKey);
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public StoreKeyValue Get(string key)
+        {
+            var existingKey = Memory.ConfigurationStore.AllKeyValues.SingleOrDefault(g => g.TenantId.CompareTo(repoTenantId) == 0 && g.AppName.CompareTo(string.Empty) == 0 && g.Key.CompareTo(key) == 0);
             return existingKey;
         }
 
-        public List<GeneralKeyValue> GetAll()
+        public StoreKeyValue GetForApplication(string appName, string key)
         {
-            var existingKeys = Memory.ConfigurationStore.GeneralKeyValues.FindAll(g => g.TenantId.CompareTo(repoTenantId) == 0).ToList();
+            var existingKey = Memory.ConfigurationStore.AllKeyValues.SingleOrDefault(g => g.TenantId.CompareTo(repoTenantId) == 0 && g.AppName.CompareTo(appName) == 0 && g.Key.CompareTo(key) == 0);
+            return existingKey;
+        }
+
+        public List<StoreKeyValue> GetAll()
+        {
+            var existingKeys = Memory.ConfigurationStore.AllKeyValues.FindAll(g => g.TenantId.CompareTo(repoTenantId) == 0 && g.AppName.CompareTo(string.Empty) == 0).ToList();
+            return existingKeys;
+        }
+
+        public List<StoreKeyValue> GetAllForApplication(string appName)
+        {
+            var existingKeys = Memory.ConfigurationStore.AllKeyValues.FindAll(g => g.TenantId.CompareTo(repoTenantId) == 0 && g.AppName.CompareTo(appName) == 0).ToList();
             return existingKeys;
         }
     }

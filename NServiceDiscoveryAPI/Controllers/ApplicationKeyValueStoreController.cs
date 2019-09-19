@@ -1,16 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NServiceDiscovery.Entity;
+using NServiceDiscoveryAPI.Messages;
 using NServiceDiscovery.Repository;
 using System.Collections.Generic;
 
 namespace NServiceDiscoveryAPI.Controllers
 {
     [ApiController]
-    public class GeneralKeyValueStoreController : TenantController
+    public class ApplicationKeyValueStoreController : TenantController
     {
         [HttpPost]
-        [Route("/configuration/store/{key}/{value}")]
-        public ActionResult<string> AddGeneralKeyValue([FromRoute] string key, [FromRoute] string value)
+        [Route("/configuration/store/apps/{appName}/{key}/{value}")]
+        public ActionResult<string> AddApplicationKeyValue([FromRoute] string appName, [FromRoute] string key, [FromRoute] string value)
         {
             string tenantId = this.GetTenantIdFromRouteData();
             MemoryConfigurationStoreRepository repo = new MemoryConfigurationStoreRepository(tenantId);
@@ -18,11 +19,12 @@ namespace NServiceDiscoveryAPI.Controllers
             var keyValue = new StoreKeyValue()
             {
                 TenantId = tenantId,
+                AppName = appName,
                 Key = key,
                 Value = value
             };
 
-            var res = repo.Add(keyValue);
+            var res = repo.AddForApplication(appName, keyValue);
 
             if (res)
             {
@@ -37,20 +39,22 @@ namespace NServiceDiscoveryAPI.Controllers
         }
 
         [HttpPut]
-        [Route("/configuration/store/{key}/{value}")]
-        public ActionResult<string> UpdateGeneralKeyValue([FromRoute] string key, [FromRoute] string value)
+        [Route("/configuration/store/apps/{appName}/{key}/{value}")]
+        public ActionResult<string> UpdateApplicationKeyValue([FromRoute] string appName, [FromRoute] string key, [FromRoute] string value)
         {
             string tenantId = this.GetTenantIdFromRouteData();
+
             MemoryConfigurationStoreRepository repo = new MemoryConfigurationStoreRepository(tenantId);
 
             var keyValue = new StoreKeyValue()
             {
                 TenantId = tenantId,
+                AppName = appName,
                 Key = key,
                 Value = value
             };
 
-            var res = repo.Update(keyValue);
+            var res = repo.UpdateForApplication(appName, keyValue);
 
             if (res)
             {
@@ -65,11 +69,12 @@ namespace NServiceDiscoveryAPI.Controllers
         }
 
         [HttpDelete]
-        [Route("/configuration/store/{key}")]
-        public ActionResult<string> DeleteGeneralKeyValue([FromRoute] string key)
+        [Route("/configuration/store/apps/{appName}/{key}")]
+        public ActionResult<string> DeleteApplicationKeyValue([FromRoute] string appName, [FromRoute] string key)
         {
             MemoryConfigurationStoreRepository repo = new MemoryConfigurationStoreRepository(this.GetTenantIdFromRouteData());
-            var res = repo.Delete(key);
+
+            var res = repo.DeleteForApplication(appName, key);
 
             if (res)
             {
@@ -84,11 +89,12 @@ namespace NServiceDiscoveryAPI.Controllers
         }
 
         [HttpGet]
-        [Route("/configuration/store/{key}")]
-        public ActionResult<StoreKeyValue> GetGeneralKeyValue([FromRoute] string key)
+        [Route("/configuration/store/apps/{appName}/{key}")]
+        public ActionResult<StoreKeyValue> GetApplicationKeyValue([FromRoute] string appName, [FromRoute] string key)
         {
             MemoryConfigurationStoreRepository repo = new MemoryConfigurationStoreRepository(this.GetTenantIdFromRouteData());
-            var res = repo.Get(key);
+
+            var res = repo.GetForApplication(appName, key);
 
             if (res == null)
             {
@@ -99,11 +105,11 @@ namespace NServiceDiscoveryAPI.Controllers
         }
 
         [HttpGet]
-        [Route("/configuration/store")]
-        public ActionResult<List<StoreKeyValue>> GetGeneralKeys()
+        [Route("/configuration/store/apps/{appName}")]
+        public ActionResult<List<StoreKeyValue>> GetApplicationKeys([FromRoute] string appName)
         {
             MemoryConfigurationStoreRepository repo = new MemoryConfigurationStoreRepository(this.GetTenantIdFromRouteData());
-            return repo.GetAll();
+            return repo.GetAllForApplication(appName);
         }
     }
 }

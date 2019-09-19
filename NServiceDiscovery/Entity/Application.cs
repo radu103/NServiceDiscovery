@@ -20,5 +20,11 @@ namespace NServiceDiscovery.Entity
 
         [JsonProperty("instance")]
         public List<Instance> Instances = new List<Instance>();
+
+        [JsonProperty("configuration")]
+        public List<StoreKeyValue> Configuration = new List<StoreKeyValue>();
+
+        [JsonProperty("requiresApps")]
+        public List<string> RequiresApps = new List<string>();
     }
 }

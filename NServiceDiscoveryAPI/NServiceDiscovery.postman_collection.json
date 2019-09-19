@@ -1,0 +1,462 @@
+{
+	"info": {
+		"_postman_id": "e0e18a2c-5be3-4caf-8abe-6d13e4f4a46f",
+		"name": "NServiceDiscovery",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetApps",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer public2",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:62771/eureka/apps",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62771",
+					"path": [
+						"eureka",
+						"apps"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetInstancesByVipAddress",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer public2",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:62771/eureka/vips/APPHOST11",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62771",
+					"path": [
+						"eureka",
+						"vips",
+						"APPHOST11"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetInstancesBySVipAddress",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer public2"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:62771/eureka/svips/APPHOST11",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62771",
+					"path": [
+						"eureka",
+						"svips",
+						"APPHOST11"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RegisterApp_1_1",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer public2",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"instance\": {\r\n        \"hostName\": \"APPHOST11\",\r\n        \"app\": \"APPID_1\",\r\n        \"vipAddress\": \"APPHOST11\",\r\n        \"secureVipAddress\": \"APPHOST11\",\r\n        \"ipAddr\": \"10.0.0.10\",\r\n        \"status\": \"STARTING\",\r\n        \"port\": {\"$\": \"8080\", \"@enabled\": \"true\"},\r\n        \"securePort\": {\"$\": \"8443\", \"@enabled\": \"true\"},\r\n        \"healthCheckUrl\": \"http://APPHOST11:8080/healthcheck\",\r\n        \"statusPageUrl\": \"http://APPHOST11:8080/status\",\r\n        \"homePageUrl\": \"http://APPHOST11:8080\",\r\n        \"dataCenterInfo\": {\r\n            \"@class\": \"com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo\", \r\n            \"name\": \"MyOwn\"\r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:62771/eureka/apps/APPID_1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62771",
+					"path": [
+						"eureka",
+						"apps",
+						"APPID_1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RegisterApp_1_2",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer public2"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"instance\": {\r\n        \"hostName\": \"APPHOST12\",\r\n        \"app\": \"APPID_1\",\r\n        \"vipAddress\": \"APPHOST12\",\r\n        \"secureVipAddress\": \"APPHOST12\",\r\n        \"ipAddr\": \"10.0.0.10\",\r\n        \"status\": \"STARTING\",\r\n        \"port\": {\"$\": \"8080\", \"@enabled\": \"true\"},\r\n        \"securePort\": {\"$\": \"8443\", \"@enabled\": \"true\"},\r\n        \"healthCheckUrl\": \"http://APPHOST12:8080/healthcheck\",\r\n        \"statusPageUrl\": \"http://APPHOST12:8080/status\",\r\n        \"homePageUrl\": \"http://APPHOST12:8080\",\r\n        \"dataCenterInfo\": {\r\n            \"@class\": \"com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo\", \r\n            \"name\": \"MyOwn\"\r\n        }\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:62771/eureka/apps/APPID_1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62771",
+					"path": [
+						"eureka",
+						"apps",
+						"APPID_1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RegisterApp_TestAPI",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer public2"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"instance\": {\n        \"instanceId\": \"DESKTOP-636NFB7:test-api-1:54880\",\n        \"app\": \"TEST-API-1\",\n        \"appGroupName\": null,\n        \"ipAddr\": \"192.168.56.1\",\n        \"sid\": \"na\",\n        \"port\": {\n            \"@enabled\": true,\n            \"$\": 54880\n        },\n        \"securePort\": {\n            \"@enabled\": false,\n            \"$\": 443\n        },\n        \"homePageUrl\": \"http://DESKTOP-636NFB7:54880/\",\n        \"statusPageUrl\": \"http://DESKTOP-636NFB7:54880/info\",\n        \"healthCheckUrl\": \"http://DESKTOP-636NFB7:54880/health\",\n        \"secureHealthCheckUrl\": null,\n        \"vipAddress\": \"test-api-1\",\n        \"secureVipAddress\": \"test-api-1\",\n        \"countryId\": 1,\n        \"dataCenterInfo\": {\n            \"@class\": \"com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo\",\n            \"name\": \"MyOwn\"\n        },\n        \"hostName\": \"DESKTOP-636NFB7\",\n        \"status\": \"UP\",\n        \"overriddenstatus\": \"UNKNOWN\",\n        \"leaseInfo\": {\n            \"renewalIntervalInSecs\": 30,\n            \"durationInSecs\": 90,\n            \"registrationTimestamp\": 0,\n            \"lastRenewalTimestamp\": 0,\n            \"renewalTimestamp\": 0,\n            \"evictionTimestamp\": 0,\n            \"serviceUpTimestamp\": 0\n        },\n        \"isCoordinatingDiscoveryServer\": false,\n        \"metadata\": {\n            \"@class\": \"java.util.Collections$EmptyMap\"\n        },\n        \"lastUpdatedTimestamp\": 1568745978501,\n        \"lastDirtyTimestamp\": 1568745978501,\n        \"actionType\": \"ADDED\"\n    }\n}"
+				},
+				"url": {
+					"raw": "http://localhost:62771/eureka/apps/TEST-API-1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62771",
+					"path": [
+						"eureka",
+						"apps",
+						"TEST-API-1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "InstanceChangeStatus_1_1",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer public2",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:62771/eureka/apps/APPID_1/APPHOST11/status?value=UP",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62771",
+					"path": [
+						"eureka",
+						"apps",
+						"APPID_1",
+						"APPHOST11",
+						"status"
+					],
+					"query": [
+						{
+							"key": "value",
+							"value": "UP"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetKeyFromStore",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:62771/configuration/store/testkey",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62771",
+					"path": [
+						"configuration",
+						"store",
+						"testkey"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetKeyFromStoreForApp",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:62771/configuration/store/apps/testApp/testkey",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62771",
+					"path": [
+						"configuration",
+						"store",
+						"apps",
+						"testApp",
+						"testkey"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllKeysFromStore",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:62771/configuration/store",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62771",
+					"path": [
+						"configuration",
+						"store"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllKeysFromStoreForApp",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:62771/configuration/store/apps/testApp",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62771",
+					"path": [
+						"configuration",
+						"store",
+						"apps",
+						"testApp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteKeyFromStore",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:62771/configuration/store/testkey",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62771",
+					"path": [
+						"configuration",
+						"store",
+						"testkey"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteKeyFromStoreForApp",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:62771/configuration/store/apps/testApp/testkey",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62771",
+					"path": [
+						"configuration",
+						"store",
+						"apps",
+						"testApp",
+						"testkey"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddKeyToStore",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:62771/configuration/store/testkey/testvalue",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62771",
+					"path": [
+						"configuration",
+						"store",
+						"testkey",
+						"testvalue"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddKeyToStoreForApp",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:62771/configuration/store/apps/testApp/testkey/testvalue",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62771",
+					"path": [
+						"configuration",
+						"store",
+						"apps",
+						"testApp",
+						"testkey",
+						"testvalue"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateKeyInStore",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:62771/configuration/store/testkey/testvalue",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62771",
+					"path": [
+						"configuration",
+						"store",
+						"testkey",
+						"testvalue"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateKeyInStoreForApp",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:62771/configuration/store/apps/testApp/testkey/testvalue",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62771",
+					"path": [
+						"configuration",
+						"store",
+						"apps",
+						"testApp",
+						"testkey",
+						"testvalue"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
