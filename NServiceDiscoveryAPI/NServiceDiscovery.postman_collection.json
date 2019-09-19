@@ -38,12 +38,12 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer public2",
-						"type": "text"
+						"type": "text",
+						"value": "Bearer public2"
 					}
 				],
 				"url": {
-					"raw": "http://localhost:62771/eureka/apps",
+					"raw": "http://localhost:62771/eureka/datacenters",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -51,7 +51,33 @@
 					"port": "62771",
 					"path": [
 						"eureka",
-						"apps"
+						"datacenters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCountries",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer public2"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:62771/eureka/countries",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62771",
+					"path": [
+						"eureka",
+						"countries"
 					]
 				}
 			},

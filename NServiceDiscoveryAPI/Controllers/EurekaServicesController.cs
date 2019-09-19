@@ -195,5 +195,16 @@ namespace NServiceDiscoveryAPI.Controllers
 
             return list;
         }
+
+        [HttpGet]
+        [Route("/eureka/countries")]
+        public ActionResult<List<string>> GeCountries()
+        {
+            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
+
+            List<string> list = repo.GetCountries();
+
+            return list;
+        }
     }
 }

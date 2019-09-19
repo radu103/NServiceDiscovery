@@ -225,6 +225,27 @@ namespace NServiceDiscovery.Repository
             return distinctDataCenters;
         }
 
+        public List<string> GetCountries()
+        {
+            List<string> list = new List<string>();
+
+            var apps = ServicesRuntime.Applications.FindAll(a => a.TenantId.CompareTo(repoTenantId) == 0).ToList();
+
+            foreach (var app in apps)
+            {
+                var instances = app.Instances.FindAll(i => i.TenantId.CompareTo(repoTenantId) == 0).ToList();
+
+                foreach (var instance in instances)
+                {
+                    list.Add(instance.CountryId);
+                }
+            }
+
+            var distinctCountries = list.Distinct().ToList();
+
+            return distinctCountries;
+        }
+
         public List<Instance> GetInstancesForSVipAddress(string svipAddress)
         {
             var list = new List<Instance>();
