@@ -448,9 +448,15 @@
 			"name": "AddKeyToStoreForApp",
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer public2",
+						"type": "text"
+					}
+				],
 				"url": {
-					"raw": "http://localhost:62771/configuration/store/apps/testApp/testkey/testvalue",
+					"raw": "http://localhost:62771/configuration/store/apps/APPID_1/testkey/testvalue",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -460,7 +466,7 @@
 						"configuration",
 						"store",
 						"apps",
-						"testApp",
+						"APPID_1",
 						"testkey",
 						"testvalue"
 					]
@@ -494,9 +500,15 @@
 			"name": "UpdateKeyInStoreForApp",
 			"request": {
 				"method": "PUT",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer public2",
+						"type": "text"
+					}
+				],
 				"url": {
-					"raw": "http://localhost:62771/configuration/store/apps/testApp/testkey/testvalue",
+					"raw": "http://localhost:62771/configuration/store/apps/APPID_1/testkey/testvalue2",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -506,9 +518,9 @@
 						"configuration",
 						"store",
 						"apps",
-						"testApp",
+						"APPID_1",
 						"testkey",
-						"testvalue"
+						"testvalue2"
 					]
 				}
 			},
