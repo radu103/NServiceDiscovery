@@ -7,8 +7,8 @@ namespace NServiceDiscovery.Entity
     {
         [JsonIgnore]
         public string TenantId { get; set; } = DefaultConfigurationData.DefaultTenantID + "-" + DefaultConfigurationData.DefaultTenantType;
-        
-        [JsonProperty("appName")]
+
+        [JsonIgnore]
         public string AppName { get; set; } = string.Empty;
 
         [JsonProperty("key")]

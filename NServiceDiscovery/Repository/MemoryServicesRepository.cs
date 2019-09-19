@@ -218,5 +218,40 @@ namespace NServiceDiscovery.Repository
 
             return list;
         }
+
+        public bool AddDependencyForApplication(string appName, string dependency)
+        {
+            var app = ServicesRuntime.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
+
+            if (app != null)
+            {
+                var dep = app.RequiresApps.SingleOrDefault(r => r.CompareTo(dependency) == 0);
+
+                if (dep == null)
+                {
+                    app.RequiresApps.Add(dependency);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool DeleteDependencyForApplication(string appName, string dependency)
+        {
+            var app = ServicesRuntime.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
+
+            if (app != null)
+            {
+                var dep = app.RequiresApps.SingleOrDefault(r => r.CompareTo(dependency) == 0);
+                if (dep != null)
+                {
+                    app.RequiresApps.Remove(dep);
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

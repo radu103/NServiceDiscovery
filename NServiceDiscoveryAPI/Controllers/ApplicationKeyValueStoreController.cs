@@ -32,7 +32,7 @@ namespace NServiceDiscoveryAPI.Controllers
             }
             else
             {
-                this.HttpContext.Response.StatusCode = 500;
+                this.HttpContext.Response.StatusCode = 404;
             }
 
             return string.Empty;
@@ -62,7 +62,7 @@ namespace NServiceDiscoveryAPI.Controllers
             }
             else
             {
-                this.HttpContext.Response.StatusCode = 500;
+                this.HttpContext.Response.StatusCode = 404;
             }
 
             return string.Empty;

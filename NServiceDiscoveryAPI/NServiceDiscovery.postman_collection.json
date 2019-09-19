@@ -32,6 +32,62 @@
 			"response": []
 		},
 		{
+			"name": "AddDependencyForApp",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer public2"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:62771/dependencies/apps/APPID_1/dep1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62771",
+					"path": [
+						"dependencies",
+						"apps",
+						"APPID_1",
+						"dep1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteDependencyForApp",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer public2"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:62771/dependencies/apps/APPID_1/dep1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62771",
+					"path": [
+						"dependencies",
+						"apps",
+						"APPID_1",
+						"dep1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "GetInstancesByVipAddress",
 			"request": {
 				"method": "GET",
