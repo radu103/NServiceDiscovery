@@ -4,7 +4,7 @@ Features :
 
 * [READY] .NET Core 2.2 
 * [READY] Compatible with Eureka Clients (v1 message format) : Java Spring & .NET NuGets : Steeltoe, Pivotal
-* [READY] Multitenant capable (tenant send as header `Authorization :  Bearer {tenantId}-{landscape}` by default tenat `public-dev` considered if header is missing
+* [READY] Multitenant capable (tenant send as header `Authorization :  Bearer {tenantId}-{landscape}`. By default tenant name and type used is : `public-dev` when Authorization header is missing
 * [READY] Each instance in-memory store for 
 	* apps
 	* instances
