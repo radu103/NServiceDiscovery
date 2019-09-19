@@ -140,3 +140,9 @@ Topic template name : `NServiceDiscovery-{tenantId}-{landscape}`
 	}
 }
 ```
+
+# Cool tools used
+
+* Free Public Online MQTT broker : [HiveMQ](http://www.mqtt-dashboard.com/)
+* For MQTT publish and monitor : [mqqt-spy](https://github.com/eclipse/paho.mqtt-spy/wiki/Downloads)
+* Eureka Client for .NET Framework : [Steeltoe Discovery](https://steeltoe.io/docs/steeltoe-discovery/) 
