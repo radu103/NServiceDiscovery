@@ -28,6 +28,15 @@ namespace NServiceDiscoveryAPI.Controllers
         }
 
         [HttpGet]
+        [Route("/eureka/apps/delta")]
+        public ActionResult<ServicesRuntime> GetAllAppsDelta()
+        {
+            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
+            return repo.GetAll();
+        }
+
+
+        [HttpGet]
         [Route("/eureka/apps/{appName}")]
         public ActionResult<Application> GetApp([FromRoute] string appName)
         {
@@ -40,18 +49,6 @@ namespace NServiceDiscoveryAPI.Controllers
         public ActionResult<string> AddAppInstance([FromRoute] string appName, [FromBody] ServiceInstaceRegisterRequest request)
         {
             request.instance.AppName = appName;
-
-            if (!string.IsNullOrEmpty(request.instance.InstanceId))
-            {
-                request.instance.InstanceId = request.instance.InstanceId.Replace(":", "-");
-            }
-            else
-            {
-                if (!string.IsNullOrEmpty(request.instance.HostName))
-                {
-                    request.instance.InstanceId = request.instance.HostName.Replace(":", "-");
-                }
-            }
 
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
             Instance instance = repo.Add(request.instance);
@@ -198,11 +195,11 @@ namespace NServiceDiscoveryAPI.Controllers
 
         [HttpGet]
         [Route("/eureka/countries")]
-        public ActionResult<List<string>> GeCountries()
+        public ActionResult<List<int>> GeCountries()
         {
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
 
-            List<string> list = repo.GetCountries();
+            List<int> list = repo.GetCountries();
 
             return list;
         }

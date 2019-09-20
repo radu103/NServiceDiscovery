@@ -37,7 +37,7 @@ namespace NServiceDiscovery.Repository
 
         public bool AddForApplication(string appName, StoreKeyValue keyValue)
         {
-            var existingApp = ServicesRuntime.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
+            var existingApp = ServicesRuntime.AllApplications.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
 
             if(existingApp == null)
             {
@@ -77,7 +77,7 @@ namespace NServiceDiscovery.Repository
 
         public bool UpdateForApplication(string appName, StoreKeyValue keyValue)
         {
-            var existingApp = ServicesRuntime.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
+            var existingApp = ServicesRuntime.AllApplications.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
 
             if (existingApp == null)
             {
@@ -117,7 +117,7 @@ namespace NServiceDiscovery.Repository
 
         public bool DeleteForApplication(string appName, string key)
         {
-            var existingApp = ServicesRuntime.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
+            var existingApp = ServicesRuntime.AllApplications.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
 
             if (existingApp == null)
             {

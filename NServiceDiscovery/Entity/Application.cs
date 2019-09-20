@@ -12,9 +12,6 @@ namespace NServiceDiscovery.Entity
         [JsonProperty("name")]
         public string Name { get; set; } = string.Empty;
 
-        [JsonProperty("appGroupName")]
-        public string AppGroupName { get; set; } = string.Empty;
-
         [JsonProperty("protocol")]
         public ApplicationProtocol Protocol { get; set; } = ApplicationProtocol.HTTP;
 

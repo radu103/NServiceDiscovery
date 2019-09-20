@@ -3,7 +3,7 @@
 namespace TestAPI1.Controllers
 {
     [ApiController]
-    public class ValuesController : ControllerBase
+    public class ServiceBaseController : ControllerBase
     {
         [HttpGet]
         [Route("/favicon.ico")]
@@ -26,5 +26,11 @@ namespace TestAPI1.Controllers
             return "INFO";
         }
 
+        [HttpGet]
+        [Route("/status")]
+        public ActionResult<string> GetStatus()
+        {
+            return "STATUS";
+        }
     }
 }

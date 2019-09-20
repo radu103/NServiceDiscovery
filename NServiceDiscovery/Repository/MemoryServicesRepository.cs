@@ -21,12 +21,28 @@ namespace NServiceDiscovery.Repository
 
         private void UpdateAppsHashCode()
         {
-            // TO DO : update string for "apps__hashcode"
+            var hash = string.Empty;
+
+            var apps = ServicesRuntime.AllApplications.Applications.FindAll(a => a.TenantId.CompareTo(repoTenantId) == 0).ToList();
+
+            var up_instances_count = 0;
+
+            foreach(var app in apps)
+            {
+                var up_instances = app.Instances.FindAll(i => i.TenantId.CompareTo(repoTenantId) == 0 && i.Status.CompareTo("UP") == 0).ToList();
+                up_instances_count += up_instances.Count;
+
+                // TO DO : update string for "apps__hashcode" for STARTING, DOWN, ERROR
+            }
+
+            hash += "UP_" + up_instances_count.ToString() + "_";
+
+            ServicesRuntime.AllApplications.AppsHashCode = hash;
         }
 
         private void IncreaseVersion()
         {
-            Memory.Runtime._VersionsDelta += 1;
+            ServicesRuntime.AllApplications._VersionsDelta += 1;
             UpdateAppsHashCode();
         }
 
@@ -39,7 +55,7 @@ namespace NServiceDiscovery.Repository
         {
             Instance instance = null;
 
-            foreach (var app in ServicesRuntime.Applications)
+            foreach (var app in ServicesRuntime.AllApplications.Applications)
             {
                 instance = app.Instances.SingleOrDefault(i => i.TenantId.CompareTo(repoTenantId) == 0 && i.InstanceId.CompareTo(instanceId) == 0);
                 if(instance != null) { break; }
@@ -52,14 +68,14 @@ namespace NServiceDiscovery.Repository
         {
             var list = new List<Instance>();
 
-            var app = ServicesRuntime.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
+            var app = ServicesRuntime.AllApplications.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
 
             return app;
         }
 
         public bool ChangeStatus(string appName, string instanceId, string status, long lastDirtyTimestamp)
         {
-            var app = ServicesRuntime.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
+            var app = ServicesRuntime.AllApplications.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
 
             if (app != null)
             {
@@ -69,13 +85,15 @@ namespace NServiceDiscovery.Repository
                     {
                         app.Instances[i].ActionType = "STATUS";
                         app.Instances[i].Status = status;
-                        app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTime.Now.Ticks;
-                        app.Instances[i].LastDirtyTimestamp = lastDirtyTimestamp;
-                        app.Instances[i].LastUpdatedTimestamp = DateTime.Now.Ticks;
+                        
+                        app.Instances[i].LastDirtyTimestamp = lastDirtyTimestamp.ToString();
+                        app.Instances[i].LastUpdatedTimestamp = (DateTime.Now.Ticks - Memory.TICKS_AT_EPOCH).ToString();
+
+                        app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTime.Now.Ticks - Memory.TICKS_AT_EPOCH;
 
                         if (status.CompareTo("UP") == 0)
                         {
-                            app.Instances[i].LeaseInfo.ServiceUpTimestamp = DateTime.Now.Ticks;
+                            app.Instances[i].LeaseInfo.ServiceUpTimestamp = DateTime.Now.Ticks - Memory.TICKS_AT_EPOCH;
                         }
 
                         break;
@@ -94,7 +112,7 @@ namespace NServiceDiscovery.Repository
         {
             Instance instance = null;
 
-            var app = ServicesRuntime.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
+            var app = ServicesRuntime.AllApplications.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
 
             if(app != null)
             {
@@ -117,7 +135,7 @@ namespace NServiceDiscovery.Repository
         {
             var appId = instance.AppName;
 
-            var appFound = ServicesRuntime.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appId) == 0);
+            var appFound = ServicesRuntime.AllApplications.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appId) == 0);
 
             if (appFound == null)
             {
@@ -129,17 +147,17 @@ namespace NServiceDiscovery.Repository
                     TenantId = repoTenantId
                 };
 
-                ServicesRuntime.Applications.Add(appFound);
+                ServicesRuntime.AllApplications.Applications.Add(appFound);
             }
 
             instance.TenantId = repoTenantId;
 
             instance.ActionType = "ADDED";
 
-            instance.LastDirtyTimestamp = instance.LastUpdatedTimestamp = DateTime.Now.Ticks;
+            instance.LastDirtyTimestamp = instance.LastUpdatedTimestamp = (DateTime.Now.Ticks - Memory.TICKS_AT_EPOCH).ToString();
 
-            instance.LeaseInfo.RegistrationTimestamp = DateTime.Now.Ticks;
-            instance.LeaseInfo.LastRenewalTimestamp = instance.LeaseInfo.RegistrationTimestamp;
+            instance.LeaseInfo.RegistrationTimestamp = DateTime.Now.Ticks - Memory.TICKS_AT_EPOCH;
+            instance.LeaseInfo.LastRenewalTimestamp = instance.LeaseInfo.RegistrationTimestamp - Memory.TICKS_AT_EPOCH;
             instance.LeaseInfo.EvictionTimestamp = instance.LeaseInfo.LastRenewalTimestamp + DefaultConfigurationData.DefaultEvictionInSecs * DefaultConfigurationData.TicksPerSecond;
 
             var existingInstance = appFound.Instances.SingleOrDefault(i => i.TenantId.CompareTo(repoTenantId) == 0 && i.InstanceId.CompareTo(instance.InstanceId) == 0);
@@ -158,7 +176,7 @@ namespace NServiceDiscovery.Repository
 
         public bool SaveInstanceHearbeat(string appName, string instanceId, string status, long lastDirtyTimestamp)
         {
-            var app = ServicesRuntime.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
+            var app = ServicesRuntime.AllApplications.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
 
             if (app != null)
             {
@@ -168,13 +186,15 @@ namespace NServiceDiscovery.Repository
                     {
                         app.Instances[i].ActionType = "HEARTBEAT";
                         app.Instances[i].Status = status;
-                        app.Instances[i].LastDirtyTimestamp = app.Instances[i].LastUpdatedTimestamp = lastDirtyTimestamp;
-                        app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTime.Now.Ticks;
+
+                        app.Instances[i].LastDirtyTimestamp = app.Instances[i].LastUpdatedTimestamp = lastDirtyTimestamp.ToString();
+
+                        app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTime.Now.Ticks - Memory.TICKS_AT_EPOCH;
                         app.Instances[i].LeaseInfo.EvictionTimestamp = app.Instances[i].LeaseInfo.LastRenewalTimestamp + DefaultConfigurationData.DefaultEvictionInSecs * DefaultConfigurationData.TicksPerSecond;
 
                         if (status.CompareTo("UP") == 0)
                         {
-                            app.Instances[i].LeaseInfo.ServiceUpTimestamp = DateTime.Now.Ticks;
+                            app.Instances[i].LeaseInfo.ServiceUpTimestamp = DateTime.Now.Ticks - Memory.TICKS_AT_EPOCH;
                         }
 
                         break;
@@ -193,7 +213,7 @@ namespace NServiceDiscovery.Repository
         {
             var list = new List<Instance>();
 
-            var apps = ServicesRuntime.Applications.FindAll(a => a.TenantId.CompareTo(repoTenantId) == 0).ToList();
+            var apps = ServicesRuntime.AllApplications.Applications.FindAll(a => a.TenantId.CompareTo(repoTenantId) == 0).ToList();
 
             foreach(var app in apps)
             {
@@ -208,7 +228,7 @@ namespace NServiceDiscovery.Repository
         {
             List<string> list = new List<string>();
 
-            var apps = ServicesRuntime.Applications.FindAll(a => a.TenantId.CompareTo(repoTenantId) == 0).ToList();
+            var apps = ServicesRuntime.AllApplications.Applications.FindAll(a => a.TenantId.CompareTo(repoTenantId) == 0).ToList();
 
             foreach(var app in apps)
             {
@@ -225,11 +245,11 @@ namespace NServiceDiscovery.Repository
             return distinctDataCenters;
         }
 
-        public List<string> GetCountries()
+        public List<int> GetCountries()
         {
-            List<string> list = new List<string>();
+            List<int> list = new List<int>();
 
-            var apps = ServicesRuntime.Applications.FindAll(a => a.TenantId.CompareTo(repoTenantId) == 0).ToList();
+            var apps = ServicesRuntime.AllApplications.Applications.FindAll(a => a.TenantId.CompareTo(repoTenantId) == 0).ToList();
 
             foreach (var app in apps)
             {
@@ -250,7 +270,7 @@ namespace NServiceDiscovery.Repository
         {
             var list = new List<Instance>();
 
-            var apps = ServicesRuntime.Applications.FindAll(a => a.TenantId.CompareTo(repoTenantId) == 0).ToList();
+            var apps = ServicesRuntime.AllApplications.Applications.FindAll(a => a.TenantId.CompareTo(repoTenantId) == 0).ToList();
 
             foreach (var app in apps)
             {
@@ -263,7 +283,7 @@ namespace NServiceDiscovery.Repository
 
         public bool AddDependencyForApplication(string appName, string dependency)
         {
-            var app = ServicesRuntime.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
+            var app = ServicesRuntime.AllApplications.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
 
             if (app != null)
             {
@@ -281,7 +301,7 @@ namespace NServiceDiscovery.Repository
 
         public bool DeleteDependencyForApplication(string appName, string dependency)
         {
-            var app = ServicesRuntime.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
+            var app = ServicesRuntime.AllApplications.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
 
             if (app != null)
             {

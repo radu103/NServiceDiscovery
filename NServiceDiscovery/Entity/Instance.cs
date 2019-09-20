@@ -9,20 +9,17 @@ namespace NServiceDiscovery.Entity
         [JsonProperty("tenantId")]
         public string TenantId { get; set; } = string.Empty;
 
-        [JsonProperty("appId")]
+        [JsonProperty("app")]
         public string AppName { get; set; }
 
-        // equal to Hostname when missing
+        // equal to Hostname:Port when missing
         [JsonProperty("instanceId")]
         public string InstanceId { get; set; }
-
-        [JsonProperty("sid")]
-        public string Sid { get; set; }
 
         [JsonProperty("status")]
         public string Status { get; set; }
 
-        [JsonProperty("overriddenstatus")]
+        [JsonProperty("overriddenStatus")]
         public string OverriddenStatus { get; set; } = "UNKNOWN";
 
         [JsonProperty("statusPageUrl")]
@@ -30,6 +27,9 @@ namespace NServiceDiscovery.Entity
 
         [JsonProperty("hostName")]
         public String HostName { get; set; } = string.Empty;
+
+        [JsonProperty("ipAddr")]
+        public String IpAddress { get; set; } = string.Empty;
 
         [JsonProperty("vipAddress")]
         public string VipAddress { get; set; } = string.Empty;
@@ -44,7 +44,7 @@ namespace NServiceDiscovery.Entity
         public ApplicationPort SecurePort { get; set; }
 
         [JsonProperty("countryId")]
-        public string CountryId { get; set; } = "1";
+        public int CountryId { get; set; } = 1;
 
         [JsonProperty("homePageUrl")]
         public string HomePageUrl { get; set; } = string.Empty;
@@ -56,13 +56,13 @@ namespace NServiceDiscovery.Entity
         public string SecureHealthCheckUrl { get; set; } = string.Empty;
 
         [JsonProperty("isCoordinatingDiscoveryServer")]
-        public bool isCoordinatingDiscoveryServer { get; set; } = false;
+        public string isCoordinatingDiscoveryServer { get; set; } = "false";
 
         [JsonProperty("lastUpdatedTimestamp")]
-        public long LastUpdatedTimestamp { get; set; }
+        public string LastUpdatedTimestamp { get; set; }
 
         [JsonProperty("lastDirtyTimestamp")]
-        public long LastDirtyTimestamp { get; set; }
+        public string LastDirtyTimestamp { get; set; }
 
         [JsonProperty("actionType")]
         public string ActionType { get; set; } = "MODIFIED";
