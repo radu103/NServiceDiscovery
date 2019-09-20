@@ -22,6 +22,15 @@ AMI metadata processing support for AWS
 
 [Import Postman Collection file](NServiceDiscovery.postman_collection.json) from repository
 
+# Local test & use
+
+1. git clone & build
+2. Open 2 instances of Visual Studio Community 2019
+3. Open the projects
+4. Start the `NServiceDiscoveryAPI` project in one instance
+5. Start the `TestAPI1` project in the second instance
+6. Check configurations for `TestAPI1` in the file `appSettings.json` if the ports are not `62771` for API and `54880` for TestAPI1 and replace them
+
 # Deploy to Cloud Foundry
 
 1. git clone & build
