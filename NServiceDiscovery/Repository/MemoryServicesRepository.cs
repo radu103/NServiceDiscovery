@@ -4,6 +4,7 @@ using System.Linq;
 using NServiceDiscovery.RuntimeInMemory;
 using NServiceDiscovery.Configuration;
 using System;
+using NServiceDiscovery.Util;
 
 namespace NServiceDiscovery.Repository
 {
@@ -83,17 +84,17 @@ namespace NServiceDiscovery.Repository
                 {
                     if(app.Instances[i].TenantId.CompareTo(repoTenantId) == 0 && app.Instances[i].InstanceId.CompareTo(instanceId) == 0)
                     {
-                        app.Instances[i].ActionType = "STATUS";
+                        app.Instances[i].ActionType = "MODIFIED";
                         app.Instances[i].Status = status;
                         
                         app.Instances[i].LastDirtyTimestamp = lastDirtyTimestamp.ToString();
-                        app.Instances[i].LastUpdatedTimestamp = (DateTime.UtcNow.Ticks - Memory.TICKS_AT_EPOCH).ToString();
+                        app.Instances[i].LastUpdatedTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow).ToString();
 
-                        app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTime.UtcNow.Ticks - Memory.TICKS_AT_EPOCH;
+                        app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
 
                         if (status.CompareTo("UP") == 0)
                         {
-                            app.Instances[i].LeaseInfo.ServiceUpTimestamp = DateTime.UtcNow.Ticks - Memory.TICKS_AT_EPOCH;
+                            app.Instances[i].LeaseInfo.ServiceUpTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
                         }
 
                         break;
@@ -155,11 +156,12 @@ namespace NServiceDiscovery.Repository
             instance.Status = "STARTING";
             instance.ActionType = "ADDED";
 
-            instance.LastDirtyTimestamp = instance.LastUpdatedTimestamp = (DateTime.UtcNow.Ticks - Memory.TICKS_AT_EPOCH).ToString();
+            instance.LastDirtyTimestamp = instance.LastUpdatedTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow).ToString();
 
-            instance.LeaseInfo.RegistrationTimestamp = DateTime.UtcNow.Ticks - Memory.TICKS_AT_EPOCH;
+            instance.LeaseInfo.RegistrationTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
             instance.LeaseInfo.LastRenewalTimestamp = instance.LeaseInfo.RegistrationTimestamp;
             instance.LeaseInfo.EvictionTimestamp = instance.LeaseInfo.LastRenewalTimestamp + DefaultConfigurationData.DefaultEvictionInSecs * DefaultConfigurationData.TicksPerSecond;
+            instance.LeaseInfo.ServiceUpTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
 
             var existingInstance = appFound.Instances.SingleOrDefault(i => i.TenantId.CompareTo(repoTenantId) == 0 && i.InstanceId.CompareTo(instance.InstanceId) == 0);
 
@@ -185,17 +187,17 @@ namespace NServiceDiscovery.Repository
                 {
                     if (app.Instances[i].TenantId.CompareTo(repoTenantId) == 0 && app.Instances[i].InstanceId.CompareTo(instanceId) == 0)
                     {
-                        app.Instances[i].ActionType = "HEARTBEAT";
+                        app.Instances[i].ActionType = "MODIFIED";
                         app.Instances[i].Status = status;
 
                         app.Instances[i].LastDirtyTimestamp = app.Instances[i].LastUpdatedTimestamp = lastDirtyTimestamp.ToString();
 
-                        app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTime.UtcNow.Ticks - Memory.TICKS_AT_EPOCH;
+                        app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
                         app.Instances[i].LeaseInfo.EvictionTimestamp = app.Instances[i].LeaseInfo.LastRenewalTimestamp + DefaultConfigurationData.DefaultEvictionInSecs * DefaultConfigurationData.TicksPerSecond;
 
                         if (status.CompareTo("UP") == 0)
                         {
-                            app.Instances[i].LeaseInfo.ServiceUpTimestamp = DateTime.UtcNow.Ticks - Memory.TICKS_AT_EPOCH;
+                            app.Instances[i].LeaseInfo.ServiceUpTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
                         }
 
                         break;
