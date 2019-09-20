@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 
 namespace NServiceDiscovery.Entity
 {
@@ -12,6 +13,9 @@ namespace NServiceDiscovery.Entity
         [JsonProperty("app")]
         public string AppName { get; set; }
 
+        [JsonProperty("appGroupName")]
+        public string AppGroupName { get; set; }
+
         // equal to Hostname:Port when missing
         [JsonProperty("instanceId")]
         public string InstanceId { get; set; }
@@ -22,14 +26,14 @@ namespace NServiceDiscovery.Entity
         [JsonProperty("overriddenStatus")]
         public string OverriddenStatus { get; set; } = "UNKNOWN";
 
-        [JsonProperty("statusPageUrl")]
-        public string StatusPageUrl { get; set; }
-
         [JsonProperty("hostName")]
         public String HostName { get; set; } = string.Empty;
 
         [JsonProperty("ipAddr")]
         public String IpAddress { get; set; } = string.Empty;
+
+        [JsonProperty("sid")]
+        public string Sid { get; set; }
 
         [JsonProperty("vipAddress")]
         public string VipAddress { get; set; } = string.Empty;
@@ -52,23 +56,29 @@ namespace NServiceDiscovery.Entity
         [JsonProperty("healthCheckUrl")]
         public string HealthCheckUrl { get; set; } = string.Empty;
 
+        [JsonProperty("statusPageUrl")]
+        public string StatusPageUrl { get; set; }
+
         [JsonProperty("secureHealthCheckUrl")]
         public string SecureHealthCheckUrl { get; set; } = string.Empty;
 
         [JsonProperty("isCoordinatingDiscoveryServer")]
-        public string isCoordinatingDiscoveryServer { get; set; } = "false";
+        public bool isCoordinatingDiscoveryServer { get; set; } = false;
 
         [JsonProperty("lastUpdatedTimestamp")]
-        public string LastUpdatedTimestamp { get; set; }
+        public long LastUpdatedTimestamp { get; set; }
 
         [JsonProperty("lastDirtyTimestamp")]
-        public string LastDirtyTimestamp { get; set; }
+        public long LastDirtyTimestamp { get; set; }
 
         [JsonProperty("actionType")]
         public string ActionType { get; set; } = "MODIFIED";
 
+        [JsonProperty("asgName", NullValueHandling = NullValueHandling.Ignore)]
+        public string AsgName { get; set; }
+
         [JsonProperty("metadata")]
-        public InstanceMetadata Metadata { get; set; } = new InstanceMetadata();
+        public Dictionary<string, string> Metadata { get; set; }
 
         [JsonProperty("leaseInfo")]
         public InstanceLeaseInfo LeaseInfo { get; set; } = new InstanceLeaseInfo();

@@ -43,7 +43,7 @@ namespace NServiceDiscovery.Repository
 
         private void IncreaseVersion()
         {
-            ServicesRuntime.AllApplications._VersionsDelta += 1;
+            ServicesRuntime.AllApplications.VersionsDelta += 1;
             UpdateAppsHashCode();
         }
 
@@ -87,8 +87,8 @@ namespace NServiceDiscovery.Repository
                         app.Instances[i].ActionType = "MODIFIED";
                         app.Instances[i].Status = status;
                         
-                        app.Instances[i].LastDirtyTimestamp = lastDirtyTimestamp.ToString();
-                        app.Instances[i].LastUpdatedTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow).ToString();
+                        app.Instances[i].LastDirtyTimestamp = lastDirtyTimestamp;
+                        app.Instances[i].LastUpdatedTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
 
                         app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
 
@@ -156,7 +156,7 @@ namespace NServiceDiscovery.Repository
             instance.Status = "STARTING";
             instance.ActionType = "ADDED";
 
-            instance.LastDirtyTimestamp = instance.LastUpdatedTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow).ToString();
+            instance.LastDirtyTimestamp = instance.LastUpdatedTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
 
             instance.LeaseInfo.RegistrationTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
             instance.LeaseInfo.LastRenewalTimestamp = instance.LeaseInfo.RegistrationTimestamp;
@@ -190,7 +190,7 @@ namespace NServiceDiscovery.Repository
                         app.Instances[i].ActionType = "MODIFIED";
                         app.Instances[i].Status = status;
 
-                        app.Instances[i].LastDirtyTimestamp = app.Instances[i].LastUpdatedTimestamp = lastDirtyTimestamp.ToString();
+                        app.Instances[i].LastDirtyTimestamp = app.Instances[i].LastUpdatedTimestamp = lastDirtyTimestamp;
 
                         app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
                         app.Instances[i].LeaseInfo.EvictionTimestamp = app.Instances[i].LeaseInfo.LastRenewalTimestamp + DefaultConfigurationData.DefaultEvictionInSecs * DefaultConfigurationData.TicksPerSecond;
