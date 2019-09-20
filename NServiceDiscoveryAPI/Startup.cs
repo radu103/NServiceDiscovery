@@ -39,17 +39,6 @@ namespace NServiceDiscoveryAPI
                 app.UseHsts();
             }
 
-            app.Use(next => http =>
-            {
-                if (http.Request.Path.Value.Contains(':'))
-                {
-                    var newPath = new PathString(http.Request.Path.Value.Replace(":", "-"));
-                    http.Request.Path = newPath;
-                }
-
-                return next(http);
-            });
-
             app.UseHttpsRedirection();
             app.UseMvc();
         }

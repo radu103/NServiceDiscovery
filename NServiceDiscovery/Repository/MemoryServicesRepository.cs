@@ -87,13 +87,13 @@ namespace NServiceDiscovery.Repository
                         app.Instances[i].Status = status;
                         
                         app.Instances[i].LastDirtyTimestamp = lastDirtyTimestamp.ToString();
-                        app.Instances[i].LastUpdatedTimestamp = (DateTime.Now.Ticks - Memory.TICKS_AT_EPOCH).ToString();
+                        app.Instances[i].LastUpdatedTimestamp = (DateTime.UtcNow.Ticks - Memory.TICKS_AT_EPOCH).ToString();
 
-                        app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTime.Now.Ticks - Memory.TICKS_AT_EPOCH;
+                        app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTime.UtcNow.Ticks - Memory.TICKS_AT_EPOCH;
 
                         if (status.CompareTo("UP") == 0)
                         {
-                            app.Instances[i].LeaseInfo.ServiceUpTimestamp = DateTime.Now.Ticks - Memory.TICKS_AT_EPOCH;
+                            app.Instances[i].LeaseInfo.ServiceUpTimestamp = DateTime.UtcNow.Ticks - Memory.TICKS_AT_EPOCH;
                         }
 
                         break;
@@ -152,11 +152,12 @@ namespace NServiceDiscovery.Repository
 
             instance.TenantId = repoTenantId;
 
+            instance.Status = "STARTING";
             instance.ActionType = "ADDED";
 
-            instance.LastDirtyTimestamp = instance.LastUpdatedTimestamp = (DateTime.Now.Ticks - Memory.TICKS_AT_EPOCH).ToString();
+            instance.LastDirtyTimestamp = instance.LastUpdatedTimestamp = (DateTime.UtcNow.Ticks - Memory.TICKS_AT_EPOCH).ToString();
 
-            instance.LeaseInfo.RegistrationTimestamp = DateTime.Now.Ticks - Memory.TICKS_AT_EPOCH;
+            instance.LeaseInfo.RegistrationTimestamp = DateTime.UtcNow.Ticks - Memory.TICKS_AT_EPOCH;
             instance.LeaseInfo.LastRenewalTimestamp = instance.LeaseInfo.RegistrationTimestamp;
             instance.LeaseInfo.EvictionTimestamp = instance.LeaseInfo.LastRenewalTimestamp + DefaultConfigurationData.DefaultEvictionInSecs * DefaultConfigurationData.TicksPerSecond;
 
@@ -189,12 +190,12 @@ namespace NServiceDiscovery.Repository
 
                         app.Instances[i].LastDirtyTimestamp = app.Instances[i].LastUpdatedTimestamp = lastDirtyTimestamp.ToString();
 
-                        app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTime.Now.Ticks - Memory.TICKS_AT_EPOCH;
+                        app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTime.UtcNow.Ticks - Memory.TICKS_AT_EPOCH;
                         app.Instances[i].LeaseInfo.EvictionTimestamp = app.Instances[i].LeaseInfo.LastRenewalTimestamp + DefaultConfigurationData.DefaultEvictionInSecs * DefaultConfigurationData.TicksPerSecond;
 
                         if (status.CompareTo("UP") == 0)
                         {
-                            app.Instances[i].LeaseInfo.ServiceUpTimestamp = DateTime.Now.Ticks - Memory.TICKS_AT_EPOCH;
+                            app.Instances[i].LeaseInfo.ServiceUpTimestamp = DateTime.UtcNow.Ticks - Memory.TICKS_AT_EPOCH;
                         }
 
                         break;
