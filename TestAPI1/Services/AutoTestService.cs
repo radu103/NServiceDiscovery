@@ -1,4 +1,6 @@
 ﻿using Steeltoe.Common.Discovery;
+using Steeltoe.Common.Http.LoadBalancer;
+using Steeltoe.Common.LoadBalancer;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -11,7 +13,10 @@ namespace TestAPI1.Services
         private const string APP_NAME_URL = "http://" + APP_NAME + "/info";
 
         private IDiscoveryClient _discoveryClient = null;
-        private DiscoveryHttpClientHandler _handler = null;
+        private ILoadBalancer _loadBalancer = null;
+
+        //private DiscoveryHttpClientHandler _handler = null;
+        private LoadBalancerHttpClientHandler _handler = null;
         private HttpClient _httpClient = null;
 
         private Random _random = new Random();
@@ -19,7 +24,11 @@ namespace TestAPI1.Services
         public AutoTestService(IDiscoveryClient discoveryClient)
         {
             _discoveryClient = discoveryClient;
-            _handler = new DiscoveryHttpClientHandler(_discoveryClient);
+
+            _loadBalancer = new RandomLoadBalancer(_discoveryClient);
+
+            //_handler = new DiscoveryHttpClientHandler(_discoveryClient);
+            _handler = new LoadBalancerHttpClientHandler(_loadBalancer);
         }
 
         private HttpClient GetHttpClient()
