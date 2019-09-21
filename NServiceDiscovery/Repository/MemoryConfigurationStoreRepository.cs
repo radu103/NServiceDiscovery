@@ -35,6 +35,23 @@ namespace NServiceDiscovery.Repository
             return true;
         }
 
+        public bool AddKeys(List<StoreKeyValue> keyValues)
+        {
+            var ok = true;
+
+            foreach(StoreKeyValue keyValue in keyValues)
+            {
+                var kOk = Add(keyValue);
+                if (!kOk)
+                {
+                    ok = false;
+                    break;
+                }
+            }
+          
+            return ok;
+        }
+
         public bool AddForApplication(string appName, StoreKeyValue keyValue)
         {
             var existingApp = ServicesRuntime.AllApplications.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
@@ -60,6 +77,23 @@ namespace NServiceDiscovery.Repository
             }
 
             return true;
+        }
+
+        public bool AddKeysForApplication(string appName, List<StoreKeyValue> keyValues)
+        {
+            var ok = true;
+
+            foreach (StoreKeyValue keyValue in keyValues)
+            {
+                var kOk = AddForApplication(appName, keyValue);
+                if (!kOk)
+                {
+                    ok = false;
+                    break;
+                }
+            }
+
+            return ok;
         }
 
         public bool Update(StoreKeyValue keyValue)

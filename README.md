@@ -1,4 +1,4 @@
-# NServiceDiscovery - #.NET Core 2.* service discovery server
+# NServiceDiscovery - Cloud Service Discovery & Configuration Server (.NET Core 2.*)
 
 Features :
 
@@ -11,12 +11,12 @@ Features :
 	* key value store for general & app configuration
 	* app dependency requirements (appNames)
 * [READY] Deployable in Cloud Foundry (SAP Cloud Platform)
-* [TO DO] Sync multiple instances via MQTT broker messages
-* [TO DO] Persistence with SAP HANA/Mongo/Redis
+* [TO DO] Persistence with SAP HANA / Mongo/Redis
+* [TO DO] Sync multiple instances via MQTT broker messages (save to persistency by the changer & load from persistency on mqqt message by the others)
 
 ## Not in scope yet
 
-AMI metadata processing support for AWS
+AMI metadata processing support for AWS, Azure, Pivotal CF
 
 # Endpoints exposed
 
@@ -46,72 +46,99 @@ AMI metadata processing support for AWS
 
 ```json
 {
-    "application": [
-        {
-            "instance": [
-                {
-                    "appId": "APPID_1",
-                    "instanceId": "APPHOST11",
-                    "sid": null,
-                    "status": "STARTING",
-                    "overriddenstatus": "UNKNOWN",
-                    "statusPageUrl": "http://APPHOST11:8080/status",
-                    "hostName": "APPHOST11",
-                    "vipAddress": "APPHOST11",
-                    "secureVipAddress": "APPHOST11",
-                    "port": {
-                        "@enabled": true,
-                        "$": 8080
-                    },
-                    "securePort": {
-                        "@enabled": true,
-                        "$": 8443
-                    },
-                    "countryId": "1",
-                    "homePageUrl": "http://APPHOST11:8080",
-                    "healthCheckUrl": "http://APPHOST11:8080/healthcheck",
-                    "secureHealthCheckUrl": "",
-                    "isCoordinatingDiscoveryServer": false,
-                    "lastUpdatedTimestamp": 637044870057618082,
-                    "lastDirtyTimestamp": 637044870057618082,
-                    "actionType": "ADDED",
-                    "metadata": {
-                        "@class": "java.util.Collections$EmptyMap"
-                    },
-                    "leaseInfo": {
-                        "renewalIntervalInSecs": 30,
-                        "durationInSecs": 30,
-                        "registrationTimestamp": 637044870057680720,
-                        "lastRenewalTimestamp": 637044870057680720,
-                        "evictionTimestamp": 637044868762713424,
-                        "serviceUpTimestamp": 0
-                    },
-                    "dataCenterInfo": {
-                        "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
-                        "name": "MyOwn"
+    "applications": {
+        "versions__delta": 1,
+        "apps__hashcode": "UP_0_",
+        "application": [
+            {
+                "instance": [
+                    {
+                        "app": "APPID_1",
+                        "appGroupName": null,
+                        "instanceId": null,
+                        "status": "STARTING",
+                        "overriddenStatus": "UNKNOWN",
+                        "hostName": "APPHOST11",
+                        "ipAddr": "10.0.0.10",
+                        "sid": null,
+                        "vipAddress": "APPHOST11",
+                        "secureVipAddress": "APPHOST11",
+                        "port": {
+                            "@enabled": true,
+                            "$": 8080
+                        },
+                        "securePort": {
+                            "@enabled": true,
+                            "$": 8443
+                        },
+                        "countryId": 1,
+                        "homePageUrl": "http://APPHOST11:8080",
+                        "healthCheckUrl": "http://APPHOST11:8080/healthcheck",
+                        "statusPageUrl": "http://APPHOST11:8080/status",
+                        "secureHealthCheckUrl": "",
+                        "isCoordinatingDiscoveryServer": false,
+                        "lastUpdatedTimestamp": 1569044028051,
+                        "lastDirtyTimestamp": 1569044028051,
+                        "actionType": "ADDED",
+                        "metadata": null,
+                        "leaseInfo": {
+                            "renewalIntervalInSecs": 30,
+                            "durationInSecs": 30,
+                            "lastHealthCheckDurationInMs": 0,
+                            "registrationTimestamp": 1569044028051,
+                            "lastRenewalTimestamp": 1569044028051,
+                            "evictionTimestamp": 1567749060755,
+                            "serviceUpTimestamp": 1569044028051
+                        },
+                        "dataCenterInfo": {
+                            "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
+                            "name": "MyOwn"
+                        }
                     }
-                }
-            ],
-            "configuration": [],
-            "requiresApps": [],
-            "name": "APPID_1",
-            "appGroupName": "",
-            "protocol": 0
-        }
-    ],
-    "versions__deltam": "2",
-    "apps__hashcode": ""
+                ],
+                "configuration": [
+                    {
+                        "key": "confkey1",
+                        "value": "value1"
+                    },
+                    {
+                        "key": "confkey2",
+                        "value": "value2"
+                    },
+                    {
+                        "key": "confkey3",
+                        "value": "value3"
+                    }
+                ],
+                "requiresApps": [
+                    "APPID_2",
+                    "APPID_3"
+                ],
+                "name": "APPID_1",
+                "protocol": 0
+            }
+        ]
+    }
+}
 }
 ```
 
-## Key Value Store
+## General Key Value Store
 
 ```json
 [
     {
-        "key": "testkey",
-        "value": "testvalue"
-    }
+        "key": "testkey1",
+        "value": "testvalue1"
+    },
+    {
+        "key": "testkey2",
+        "value": "testvalue2"
+    },    
+    {
+        "key": "testkey3",
+        "value": "testvalue3"
+    }    
 ]
 ```
 
@@ -127,7 +154,7 @@ Topic template name : `NServiceDiscovery-{tenantId}-{landscape}`
 {
     "from_instance_id" : "id1",
     "to_instance_id" : "ALL",
-	"type" : "UPDATE",
+	"type" : "UPDATE_BORADCAST",
 	"message" : {
             "new_version" : 123,
             "new_version_timestamp" : 1234567890
@@ -151,11 +178,10 @@ Topic template name : `NServiceDiscovery-{tenantId}-{landscape}`
 {
     "from_instance_id" : "id2",
     "to_instance_id" : "id1",
-	"type" : "START_REQUEST",
+	"type" : "START_RESPONSE",
 	"message" : {
             "new_version" : 123,
-            "new_version_timestamp" : 1234567890,
-            "persistency_connection_string" : "here"
+            "new_version_timestamp" : 1234567890
 	}
 }
 ```
@@ -164,4 +190,5 @@ Topic template name : `NServiceDiscovery-{tenantId}-{landscape}`
 
 * Free Public Online MQTT broker : [HiveMQ](http://www.mqtt-dashboard.com/)
 * For MQTT publish and monitor : [mqqt-spy](https://github.com/eclipse/paho.mqtt-spy/wiki/Downloads)
-* Eureka Client for .NET Framework : [Steeltoe Discovery](https://steeltoe.io/docs/steeltoe-discovery/) 
+* Eureka Client for .NET Framework : [Steeltoe Discovery](https://steeltoe.io/docs/steeltoe-discovery/)
+* Visual Studio Cmmunity 2019 : [VS 2019](https://visualstudio.microsoft.com/downloads/)

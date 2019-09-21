@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NServiceDiscovery.Repository;
+using System.Collections.Generic;
 
 namespace NServiceDiscoveryAPI.Controllers
 {
@@ -15,6 +16,28 @@ namespace NServiceDiscoveryAPI.Controllers
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
 
             var res = repo.AddDependencyForApplication(appName, dependency);
+
+            if (res)
+            {
+                this.HttpContext.Response.StatusCode = 204;
+            }
+            else
+            {
+                this.HttpContext.Response.StatusCode = 500;
+            }
+
+            return string.Empty;
+        }
+
+        [HttpPost]
+        [Route("/dependencies/apps/{appName}")]
+        public ActionResult<string> AddApplicationDepedencies([FromRoute] string appName, [FromBody] List<string> dependencies)
+        {
+            string tenantId = this.GetTenantIdFromRouteData();
+
+            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
+
+            var res = repo.AddDependenciesForApplication(appName, dependencies);
 
             if (res)
             {

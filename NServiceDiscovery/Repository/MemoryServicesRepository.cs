@@ -302,6 +302,24 @@ namespace NServiceDiscovery.Repository
             return false;
         }
 
+        public bool AddDependenciesForApplication(string appName, List<string> dependencies)
+        {
+            var ok = true;
+
+            foreach(var dependency in dependencies)
+            {
+                var dOk = AddDependencyForApplication(appName, dependency);
+                if (!dOk)
+                {
+                    ok = false;
+                    break;
+                }
+            }
+
+            return ok;
+        }
+
+
         public bool DeleteDependencyForApplication(string appName, string dependency)
         {
             var app = ServicesRuntime.AllApplications.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);

@@ -104,6 +104,27 @@ namespace NServiceDiscoveryAPI.Controllers
             return res;
         }
 
+        [HttpPost]
+        [Route("/configuration/store/apps/{appName}")]
+        public ActionResult<string> AddApplicationKeyValues([FromRoute] string appName, [FromBody] List<StoreKeyValue> keyValues)
+        {
+            string tenantId = this.GetTenantIdFromRouteData();
+            MemoryConfigurationStoreRepository repo = new MemoryConfigurationStoreRepository(tenantId);
+
+            var res = repo.AddKeysForApplication(appName, keyValues);
+
+            if (res)
+            {
+                this.HttpContext.Response.StatusCode = 204;
+            }
+            else
+            {
+                this.HttpContext.Response.StatusCode = 500;
+            }
+
+            return string.Empty;
+        }
+
         [HttpGet]
         [Route("/configuration/store/apps/{appName}")]
         public ActionResult<List<StoreKeyValue>> GetApplicationKeys([FromRoute] string appName)

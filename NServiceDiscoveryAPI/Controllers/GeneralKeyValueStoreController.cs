@@ -98,6 +98,27 @@ namespace NServiceDiscoveryAPI.Controllers
             return res;
         }
 
+        [HttpPost]
+        [Route("/configuration/store")]
+        public ActionResult<string> AddGeneralKeyValues([FromBody] List<StoreKeyValue> keyValues)
+        {
+            string tenantId = this.GetTenantIdFromRouteData();
+            MemoryConfigurationStoreRepository repo = new MemoryConfigurationStoreRepository(tenantId);
+
+            var res = repo.AddKeys(keyValues);
+
+            if (res)
+            {
+                this.HttpContext.Response.StatusCode = 204;
+            }
+            else
+            {
+                this.HttpContext.Response.StatusCode = 500;
+            }
+
+            return string.Empty;
+        }
+
         [HttpGet]
         [Route("/configuration/store")]
         public ActionResult<List<StoreKeyValue>> GetGeneralKeys()

@@ -112,6 +112,37 @@
 			"response": []
 		},
 		{
+			"name": "AddDependenciesForApp",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer public2"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n\t'APPID_2',\n\t'APPID_3'\n]"
+				},
+				"url": {
+					"raw": "http://localhost:62771/dependencies/apps/APPID_1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62771",
+					"path": [
+						"dependencies",
+						"apps",
+						"APPID_1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "DeleteDependencyForApp",
 			"request": {
 				"method": "DELETE",
@@ -254,7 +285,12 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"instance\": {\r\n        \"hostName\": \"APPHOST12\",\r\n        \"app\": \"APPID_1\",\r\n        \"vipAddress\": \"APPHOST12\",\r\n        \"secureVipAddress\": \"APPHOST12\",\r\n        \"ipAddr\": \"10.0.0.10\",\r\n        \"status\": \"STARTING\",\r\n        \"port\": {\"$\": \"8080\", \"@enabled\": \"true\"},\r\n        \"securePort\": {\"$\": \"8443\", \"@enabled\": \"true\"},\r\n        \"healthCheckUrl\": \"http://APPHOST12:8080/healthcheck\",\r\n        \"statusPageUrl\": \"http://APPHOST12:8080/status\",\r\n        \"homePageUrl\": \"http://APPHOST12:8080\",\r\n        \"dataCenterInfo\": {\r\n            \"@class\": \"com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo\", \r\n            \"name\": \"MyOwn\"\r\n        }\r\n    }\r\n}"
+					"raw": "{\r\n    \"instance\": {\r\n        \"hostName\": \"APPHOST12\",\r\n        \"app\": \"APPID_1\",\r\n        \"vipAddress\": \"APPHOST12\",\r\n        \"secureVipAddress\": \"APPHOST12\",\r\n        \"ipAddr\": \"10.0.0.10\",\r\n        \"status\": \"STARTING\",\r\n        \"port\": {\"$\": \"8080\", \"@enabled\": \"true\"},\r\n        \"securePort\": {\"$\": \"8443\", \"@enabled\": \"true\"},\r\n        \"healthCheckUrl\": \"http://APPHOST12:8080/healthcheck\",\r\n        \"statusPageUrl\": \"http://APPHOST12:8080/status\",\r\n        \"homePageUrl\": \"http://APPHOST12:8080\",\r\n        \"dataCenterInfo\": {\r\n            \"@class\": \"com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo\", \r\n            \"name\": \"MyOwn\"\r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
 				"url": {
 					"raw": "http://localhost:62771/eureka/apps/APPID_1",
@@ -291,7 +327,12 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"instance\": {\n        \"instanceId\": \"DESKTOP-636NFB7:test-api-1:54880\",\n        \"app\": \"TEST-API-1\",\n        \"appGroupName\": null,\n        \"ipAddr\": \"192.168.56.1\",\n        \"sid\": \"na\",\n        \"port\": {\n            \"@enabled\": true,\n            \"$\": 54880\n        },\n        \"securePort\": {\n            \"@enabled\": false,\n            \"$\": 443\n        },\n        \"homePageUrl\": \"http://DESKTOP-636NFB7:54880/\",\n        \"statusPageUrl\": \"http://DESKTOP-636NFB7:54880/info\",\n        \"healthCheckUrl\": \"http://DESKTOP-636NFB7:54880/health\",\n        \"secureHealthCheckUrl\": null,\n        \"vipAddress\": \"test-api-1\",\n        \"secureVipAddress\": \"test-api-1\",\n        \"countryId\": 1,\n        \"dataCenterInfo\": {\n            \"@class\": \"com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo\",\n            \"name\": \"MyOwn\"\n        },\n        \"hostName\": \"DESKTOP-636NFB7\",\n        \"status\": \"UP\",\n        \"overriddenstatus\": \"UNKNOWN\",\n        \"leaseInfo\": {\n            \"renewalIntervalInSecs\": 30,\n            \"durationInSecs\": 90,\n            \"registrationTimestamp\": 0,\n            \"lastRenewalTimestamp\": 0,\n            \"renewalTimestamp\": 0,\n            \"evictionTimestamp\": 0,\n            \"serviceUpTimestamp\": 0\n        },\n        \"isCoordinatingDiscoveryServer\": false,\n        \"metadata\": {\n            \"@class\": \"java.util.Collections$EmptyMap\"\n        },\n        \"lastUpdatedTimestamp\": 1568745978501,\n        \"lastDirtyTimestamp\": 1568745978501,\n        \"actionType\": \"ADDED\"\n    }\n}"
+					"raw": "{\n    \"instance\": {\n        \"instanceId\": \"DESKTOP-636NFB7:test-api-1:54880\",\n        \"app\": \"TEST-API-1\",\n        \"appGroupName\": null,\n        \"ipAddr\": \"192.168.56.1\",\n        \"sid\": \"na\",\n        \"port\": {\n            \"@enabled\": true,\n            \"$\": 54880\n        },\n        \"securePort\": {\n            \"@enabled\": false,\n            \"$\": 443\n        },\n        \"homePageUrl\": \"http://DESKTOP-636NFB7:54880/\",\n        \"statusPageUrl\": \"http://DESKTOP-636NFB7:54880/info\",\n        \"healthCheckUrl\": \"http://DESKTOP-636NFB7:54880/health\",\n        \"secureHealthCheckUrl\": null,\n        \"vipAddress\": \"test-api-1\",\n        \"secureVipAddress\": \"test-api-1\",\n        \"countryId\": 1,\n        \"dataCenterInfo\": {\n            \"@class\": \"com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo\",\n            \"name\": \"MyOwn\"\n        },\n        \"hostName\": \"DESKTOP-636NFB7\",\n        \"status\": \"UP\",\n        \"overriddenstatus\": \"UNKNOWN\",\n        \"leaseInfo\": {\n            \"renewalIntervalInSecs\": 30,\n            \"durationInSecs\": 90,\n            \"registrationTimestamp\": 0,\n            \"lastRenewalTimestamp\": 0,\n            \"renewalTimestamp\": 0,\n            \"evictionTimestamp\": 0,\n            \"serviceUpTimestamp\": 0\n        },\n        \"isCoordinatingDiscoveryServer\": false,\n        \"metadata\": {\n            \"@class\": \"java.util.Collections$EmptyMap\"\n        },\n        \"lastUpdatedTimestamp\": 1568745978501,\n        \"lastDirtyTimestamp\": 1568745978501,\n        \"actionType\": \"ADDED\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
 				"url": {
 					"raw": "http://localhost:62771/eureka/apps/TEST-API-1",
@@ -412,9 +453,15 @@
 			"name": "GetAllKeysFromStoreForApp",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer public2",
+						"type": "text"
+					}
+				],
 				"url": {
-					"raw": "http://localhost:62771/configuration/store/apps/testApp",
+					"raw": "http://localhost:62771/configuration/store/apps/APPID_1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -424,7 +471,7 @@
 						"configuration",
 						"store",
 						"apps",
-						"testApp"
+						"APPID_1"
 					]
 				}
 			},
@@ -497,6 +544,36 @@
 			"response": []
 		},
 		{
+			"name": "AddKeysToStore",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"key\": \"testkey1\",\r\n        \"value\": \"testvalue1\"\r\n    },\r\n    {\r\n        \"key\": \"testkey2\",\r\n        \"value\": \"testvalue2\"\r\n    },    \r\n    {\r\n        \"key\": \"testkey3\",\r\n        \"value\": \"testvalue3\"\r\n    }    \r\n]"
+				},
+				"url": {
+					"raw": "http://localhost:62771/configuration/store",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62771",
+					"path": [
+						"configuration",
+						"store"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "AddKeyToStoreForApp",
 			"request": {
 				"method": "POST",
@@ -521,6 +598,49 @@
 						"APPID_1",
 						"testkey",
 						"testvalue"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddKeysToStoreForApp",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer public2"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"key\": \"confkey1\",\n        \"value\": \"value1\"\n    },\n    {\n        \"key\": \"confkey2\",\n        \"value\": \"value2\"\n    },\n    {\n        \"key\": \"confkey3\",\n        \"value\": \"value3\"\n    }    \n]\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:62771/configuration/store/apps/APPID_1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62771",
+					"path": [
+						"configuration",
+						"store",
+						"apps",
+						"APPID_1"
 					]
 				}
 			},
@@ -578,5 +698,6 @@
 			},
 			"response": []
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }
