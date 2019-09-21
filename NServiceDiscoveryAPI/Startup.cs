@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NServiceDiscoveryAPI.GlobalFilters;
+using NServiceDiscoveryAPI.Services;
 
 namespace NServiceDiscoveryAPI
 {
@@ -24,6 +25,8 @@ namespace NServiceDiscoveryAPI
             {
                 config.Filters.Add(new CopyTenantIdFromBearerTokentoRouteDataFilter());
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddSingleton<IMQTTService, MQTTService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,6 +44,10 @@ namespace NServiceDiscoveryAPI
 
             app.UseHttpsRedirection();
             app.UseMvc();
+
+            // instantiate the MQTTService singleton instance
+            var serviceProvider = app.ApplicationServices;
+            var mqttService = (IMQTTService)serviceProvider.GetService(typeof(IMQTTService));
         }
     }
 }
