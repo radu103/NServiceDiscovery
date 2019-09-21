@@ -44,12 +44,14 @@ AMI metadata processing support for AWS, Azure, Pivotal CF
 
 ## Create your own NServiceDiscovery Docker Container Image
 
-1. git clone & build
-2. `cd` to the folder
-3. Build : `docker build -t nservicediscovery -f NServiceDiscoveryAPI/Dockerfile .`
-4. Run local : `docker run -d -p 8771:8771 --name NServiceDiscovery1 nservicediscovery`
+1. git clone & build (in below example I cloned to : `C:\Work\NServiceDiscovery`)
+2. Open `cmd` or powershell
+3. Build : `docker build -f "C:\Work\NServiceDiscovery\NServiceDiscoveryAPI\Dockerfile" -t nservicediscovery  "C:\Work\NServiceDiscovery"`
+4. Run local : 
+   * instance 1 : `docker run -d -p 18771:8771 --name NServiceDiscovery1 nservicediscovery`
+   * instance 2 : `docker run -d -p 28771:8771 --name NServiceDiscovery2 nservicediscovery`
 5. Check : `docker ps -a` and `docker logs -ft <container_id>`
-6. See container IP address : `docker inspect -f "{{ .NetworkSettings.Networks.nat.IPAddress }}" NServiceDiscovery1`
+6. See container IP address : `docker inspect -f "{{ .NetworkSettings.Networks.bridge.IPAddress }}" NServiceDiscovery1`
 7. Login Publish to Docker Hub with  `docker login` and ``
 
 # Data structures
