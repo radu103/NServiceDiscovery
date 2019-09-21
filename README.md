@@ -172,7 +172,7 @@ Topic template name : `NServiceDiscovery-{tenantId}-{landscape}`
 {
     "from_instance_id" : "id1",
     "to_instance_id" : "ALL",
-	"type" : "UPDATE_BORADCAST",
+	"type" : "UPDATE_BROADCAST",
 	"message" : {
             "new_version" : 123,
             "new_version_timestamp" : 1234567890
