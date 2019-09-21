@@ -52,7 +52,9 @@ AMI metadata processing support for AWS, Azure, Pivotal CF
    * instance 2 : `docker run -d -p 28771:8771 --name NServiceDiscovery2 nservicediscovery`
 5. Check : `docker ps -a` and `docker logs -ft <container_id>`
 6. See container IP address : `docker inspect -f "{{ .NetworkSettings.Networks.bridge.IPAddress }}" NServiceDiscovery1`
-7. Login Publish to Docker Hub with  `docker login` and ``
+7. Login Publish to Docker Hub with  `docker login` and 
+   * `docker tag <image_id> radu103/nservicediscovery:latest`
+   * `docker push radu103/nservicediscovery:latest`
 
 # Data structures
 
