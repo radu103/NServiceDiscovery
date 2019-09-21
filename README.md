@@ -42,7 +42,7 @@ AMI metadata processing support for AWS, Azure, Pivotal CF
 
 # Data structures
 
-## Aplications
+## Aplications structure
 
 ```json
 {
@@ -123,7 +123,7 @@ AMI metadata processing support for AWS, Azure, Pivotal CF
 }
 ```
 
-## General Key Value Store
+## General Key Value Store structure
 
 ```json
 [
@@ -141,6 +141,24 @@ AMI metadata processing support for AWS, Azure, Pivotal CF
     }    
 ]
 ```
+
+# Persistency structure
+
+Based only on 2 tables with INSERT & SELECT operations to have for perfect history tracing of landscape evolution at all moments in the past.
+
+## Table for Applications
+
+1. {TenantId}-{TenantType} = String
+2. Version = Long
+3. Timestamp = Timestamp
+4. JSON String with AllAplications object serialized
+
+## Table for General KeyValue Store
+
+1. {TenantId}-{TenantType} = String
+2. Version = Long
+3. Timestamp = Timestamp
+4. JSON String with the General Key Value Store object serialized
 
 # MQTT messages for sync
 
