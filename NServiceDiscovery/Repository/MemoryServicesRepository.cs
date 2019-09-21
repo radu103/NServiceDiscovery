@@ -142,10 +142,9 @@ namespace NServiceDiscovery.Repository
             {
                 appFound = new Application()
                 {
+                    TenantId = repoTenantId,
                     Name = appId,
-                    Protocol = ApplicationProtocol.HTTP,
-                    Instances = new List<Instance>(),
-                    TenantId = repoTenantId
+                    Instances = new List<Instance>()
                 };
 
                 ServicesRuntime.AllApplications.Applications.Add(appFound);
@@ -290,11 +289,11 @@ namespace NServiceDiscovery.Repository
 
             if (app != null)
             {
-                var dep = app.RequiresApps.SingleOrDefault(r => r.CompareTo(dependency) == 0);
+                var dep = app.Dependencies.SingleOrDefault(r => r.CompareTo(dependency) == 0);
 
                 if (dep == null)
                 {
-                    app.RequiresApps.Add(dependency);
+                    app.Dependencies.Add(dependency);
                     return true;
                 }
             }
@@ -326,10 +325,10 @@ namespace NServiceDiscovery.Repository
 
             if (app != null)
             {
-                var dep = app.RequiresApps.SingleOrDefault(r => r.CompareTo(dependency) == 0);
+                var dep = app.Dependencies.SingleOrDefault(r => r.CompareTo(dependency) == 0);
                 if (dep != null)
                 {
-                    app.RequiresApps.Remove(dep);
+                    app.Dependencies.Remove(dep);
                     return true;
                 }
             }

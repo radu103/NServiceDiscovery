@@ -20,9 +20,11 @@ AMI metadata processing support for AWS, Azure, Pivotal CF
 
 # Endpoints exposed
 
-[Import Postman Collection file](NServiceDiscovery.postman_collection.json) from repository
+[Import Postman Collection file](./NServiceDiscoveryAPI/NServiceDiscovery.postman_collection.json) from repository
 
-# Local test & use
+# HOW-TO-GUIDES
+
+## Local test & use
 
 1. git clone & build
 2. Open 2 instances of Visual Studio Community 2019
@@ -31,7 +33,7 @@ AMI metadata processing support for AWS, Azure, Pivotal CF
 5. Start the `TestAPI1` project in the second instance
 6. Check configurations for `TestAPI1` in the file `appSettings.json` if the ports are not `62771` for API and `54880` for TestAPI1 and replace them
 
-# Deploy to Cloud Foundry
+## Deploy to Cloud Foundry
 
 1. git clone & build
 2. dotnetcore publish to folder 
@@ -39,6 +41,16 @@ AMI metadata processing support for AWS, Azure, Pivotal CF
 4. Open Command Prompt and `cd` to publish folder
 5. `cf api https://api.cf.eu10.hana.ondemand.com` + `cf login` + org / space selection
 6. cf push <name_of_app>
+
+## Create your own NServiceDiscovery Docker Container Image
+
+1. git clone & build
+2. `cd` to the folder
+3. Build : `docker build -t nservicediscovery -f NServiceDiscoveryAPI/Dockerfile .`
+4. Run local : `docker run -d -p 8771:8771 --name NServiceDiscovery1 nservicediscovery`
+5. Check : `docker ps -a` and `docker logs -ft <container_id>`
+6. See container IP address : `docker inspect -f "{{ .NetworkSettings.Networks.nat.IPAddress }}" NServiceDiscovery1`
+7. Login Publish to Docker Hub with  `docker login` and ``
 
 # Data structures
 
@@ -110,12 +122,11 @@ AMI metadata processing support for AWS, Azure, Pivotal CF
                         "value": "value3"
                     }
                 ],
-                "requiresApps": [
+                "dependencies": [
                     "APPID_2",
                     "APPID_3"
                 ],
-                "name": "APPID_1",
-                "protocol": 0
+                "name": "APPID_1"
             }
         ]
     }
