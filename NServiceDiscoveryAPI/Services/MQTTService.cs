@@ -7,6 +7,8 @@ using NServiceDiscovery.RuntimeInMemory;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
+using NServiceDiscovery.Entity;
 
 namespace NServiceDiscoveryAPI.Services
 {
@@ -63,9 +65,20 @@ namespace NServiceDiscoveryAPI.Services
             {
                 Console.WriteLine("MQTT CLIENT - CONNECTED TO MQTT BROKER WITH CLIENT ID : '" + conn.AuthenticateResult.AssignedClientIdentifier + "'");
 
-                _mqttClient.SubscribeAsync(_mqttTopic);
+                // subscribe to tenant and landscape specific topic
+                await _mqttClient.SubscribeAsync(_mqttTopic);
 
-                _mqttClient.PublishAsync(_mqttTopic, "{\"from_instance_id\":\"id1\",\"to_instance_id\":\"ALL\",\"type\":\"INSTANCE_CONNECTED\",\"message\":\"" + _mqttClientID + "\"}");
+                // create my peer data object
+                var myPeerData = new MQTTPeerMessageContent()
+                {
+                    PeerId = _mqttClientID,
+                    DiscoveryUrl = Program.InstanceConfig.HttpEndpoint + "/eureka/apps"
+                };
+
+                var jsonPeer = JsonConvert.SerializeObject(myPeerData).Replace("\"", "'");
+
+                // send mqtt peer message
+                _mqttClient.PublishAsync(_mqttTopic, "{\"from_instance_id\":\"id1\",\"to_instance_id\":\"ALL\",\"type\":\"INSTANCE_CONNECTED\",\"message\":\"" + jsonPeer + "\"}");
             });
 
             _mqttClient.UseApplicationMessageReceivedHandler(async message =>
@@ -82,12 +95,24 @@ namespace NServiceDiscoveryAPI.Services
 
                     if(mqttMessage.Type.CompareTo("INSTANCE_CONNECTED") == 0)
                     {
-                        var receivedPeerId = mqttMessage.Message.ToString();
-                        if (receivedPeerId.CompareTo(_mqttClientID) != 0)
+                        var receivedMessage = mqttMessage.Message.ToString().Replace("'", "\"");
+
+                        var peerMessageContent = JsonConvert.DeserializeObject<MQTTPeerMessageContent>(receivedMessage);
+
+                        if (peerMessageContent != null && peerMessageContent.PeerId.CompareTo(_mqttClientID) != 0)
                         {
-                            if(Memory.Peers.IndexOf(receivedPeerId) < 0)
+                            var existingPeer = Memory.Peers.SingleOrDefault(p => p.ServerInstanceID.CompareTo(peerMessageContent.PeerId) == 0);
+
+                            if (existingPeer == null)
                             {
-                                Memory.Peers.Add(receivedPeerId);
+                                var newPeer = new DiscoveryPeer()
+                                {
+                                    LastConnectTimestamp = DateTime.UtcNow,
+                                    ServerInstanceID = peerMessageContent.PeerId,
+                                    DiscoveryUrl = peerMessageContent.DiscoveryUrl
+                                };
+
+                                Memory.Peers.Add(newPeer);
                             }
                         }
                     }

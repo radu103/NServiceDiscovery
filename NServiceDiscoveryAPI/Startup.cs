@@ -3,8 +3,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NServiceDiscovery.Util;
 using NServiceDiscoveryAPI.GlobalFilters;
 using NServiceDiscoveryAPI.Services;
+using System.Linq;
+using System.Net;
 
 namespace NServiceDiscoveryAPI
 {
@@ -44,9 +47,32 @@ namespace NServiceDiscoveryAPI
             app.UseHttpsRedirection();
             app.UseMvc();
 
+            StartupOps(app);
+        }
+
+        private void StartupOps(IApplicationBuilder app)
+        {
+            // set Instance endpoints
+            var ips = NetworkUtil.GetIPAddresses();
+            FindInstanceUrl(ips);
+
             // instantiate the MQTTService singleton instance
             var serviceProvider = app.ApplicationServices;
             Program.mqttService = serviceProvider.GetService<IMQTTService>();
+        }
+
+        private void FindInstanceUrl(IPAddress[] ips)
+        {
+            var ipv4IPs = ips.Where(ip => ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork && ip.Address.ToString().CompareTo("127.0.0.1") != 0).ToList();
+
+            foreach (var ip in ipv4IPs)
+            {
+                if (NetworkUtil.HasIPAddress(ip.ToString()))
+                {
+                    Program.InstanceConfig.HttpEndpoint = "http://" + ip.ToString() + ":8771/eureka/apps";
+                    Program.InstanceConfig.SecureHttpEndpoint = "http://" + ip.ToString() + ":8443/eureka/apps";
+                }
+            }
         }
     }
 }

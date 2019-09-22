@@ -5,6 +5,8 @@ namespace NServiceDiscovery
     public class ConfigurationData
     {
         public String ServerInstanceID { get; set; }
+        public String HttpEndpoint { get; set; }
+        public String SecureHttpEndpoint { get; set; }
 
         public String TenantID { get; set; }
         public String TenantType { get; set; }

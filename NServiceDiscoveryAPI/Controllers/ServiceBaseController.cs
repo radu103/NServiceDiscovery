@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NServiceDiscovery.Entity;
 using NServiceDiscovery.RuntimeInMemory;
 using System.Collections.Generic;
 
@@ -23,7 +24,7 @@ namespace NServiceDiscoveryAPI.Controllers
 
         [HttpGet]
         [Route("/info")]
-        public ActionResult<List<string>> GetInfo()
+        public ActionResult<List<DiscoveryPeer>> GetInfo()
         {
             return Memory.Peers;
         }
