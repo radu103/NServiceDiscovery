@@ -3,6 +3,7 @@ using MQTTnet.Client;
 using MQTTnet.Client.Options;
 using Newtonsoft.Json;
 using NServiceDiscovery.MQTT;
+using NServiceDiscovery.RuntimeInMemory;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,18 +16,22 @@ namespace NServiceDiscoveryAPI.Services
 
         private IMqttClient _mqttClient;
         private IMqttClientOptions _mqttClientOptions;
+
+        private string _mqttClientID = string.Empty;
         private string _mqttTopic = string.Empty;
 
         public MQTTService()
         {
             _mqttClient = _factory.CreateMqttClient();
+
+            _mqttClientID = Program.InstanceConfig.ServerInstanceID;
             _mqttTopic = Program.InstanceConfig.MQTTTopicName;
 
             if (string.IsNullOrEmpty(Program.InstanceConfig.MQTTUsername))
             {
                 _mqttClientOptions = new MqttClientOptionsBuilder()
                                 .WithTcpServer(Program.InstanceConfig.MQTTHost, Program.InstanceConfig.MQTTPort)
-                                .WithClientId(Program.InstanceConfig.ServerInstanceID)
+                                .WithClientId(_mqttClientID)
                                 .Build();
             }
             else
@@ -34,7 +39,7 @@ namespace NServiceDiscoveryAPI.Services
                 _mqttClientOptions = new MqttClientOptionsBuilder()
                     .WithTcpServer(Program.InstanceConfig.MQTTHost, Program.InstanceConfig.MQTTPort)
                     .WithCredentials(Program.InstanceConfig.MQTTUsername, Program.InstanceConfig.MQTTPassword)
-                    .WithClientId(Program.InstanceConfig.ServerInstanceID)
+                    .WithClientId(_mqttClientID)
                     .Build();
             }
 
@@ -59,6 +64,8 @@ namespace NServiceDiscoveryAPI.Services
                 Console.WriteLine("MQTT CLIENT - CONNECTED TO MQTT BROKER WITH CLIENT ID : '" + conn.AuthenticateResult.AssignedClientIdentifier + "'");
 
                 _mqttClient.SubscribeAsync(_mqttTopic);
+
+                _mqttClient.PublishAsync(_mqttTopic, "{\"from_instance_id\":\"id1\",\"to_instance_id\":\"ALL\",\"type\":\"INSTANCE_CONNECTED\",\"message\":\"" + _mqttClientID + "\"}");
             });
 
             _mqttClient.UseApplicationMessageReceivedHandler(async message =>
@@ -70,6 +77,21 @@ namespace NServiceDiscoveryAPI.Services
                 Console.WriteLine(string.Empty);
 
                 var mqttMessage = JsonConvert.DeserializeObject<MQTTMessage>(jsonStr);
+
+                if (mqttMessage.ToInstanceId.CompareTo("ALL") == 0){
+
+                    if(mqttMessage.Type.CompareTo("INSTANCE_CONNECTED") == 0)
+                    {
+                        var receivedPeerId = mqttMessage.Message.ToString();
+                        if (receivedPeerId.CompareTo(_mqttClientID) != 0)
+                        {
+                            if(Memory.Peers.IndexOf(receivedPeerId) < 0)
+                            {
+                                Memory.Peers.Add(receivedPeerId);
+                            }
+                        }
+                    }
+                }
 
                 Console.WriteLine("MQTT CLIENT - MQTT MESSAGE RECEIVED");
                 Console.WriteLine(jsonStr);

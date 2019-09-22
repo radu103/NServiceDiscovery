@@ -13,13 +13,6 @@ namespace NServiceDiscoveryAPI.Controllers
     public class EurekaServicesController : TenantController
     {
         [HttpGet]
-        [Route("/favicon.ico")]
-        public ActionResult<string> GetFavIcon()
-        {
-            return string.Empty;
-        }
-
-        [HttpGet]
         [Route("/eureka/apps")]        
         public ActionResult<ServicesRuntime> GetAllApps()
         {

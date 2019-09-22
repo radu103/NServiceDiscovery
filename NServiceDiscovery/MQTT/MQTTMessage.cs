@@ -14,6 +14,6 @@ namespace NServiceDiscovery.MQTT
         public string Type { get; set; } = string.Empty;
 
         [JsonProperty("message")]
-        public MQTTMessageContent Message { get; set; } = new MQTTMessageContent();
+        public string Message { get; set; } = string.Empty;
     }
 }

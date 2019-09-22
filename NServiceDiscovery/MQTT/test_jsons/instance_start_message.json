@@ -1,1 +1,1 @@
-{"from_instance_id": "id1","to_instance_id": "ALL","type": "START_REQUEST","message": null}
+{"from_instance_id":"id1","to_instance_id":"ALL","type":"START_REQUEST","message":"client-guid"}

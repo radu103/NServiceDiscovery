@@ -27,6 +27,6 @@ namespace NServiceDiscovery.Configuration
         public static string DefaultMQTTUsername = string.Empty;
         public static string DefaultMQTTPassword = string.Empty;
         public static string DefaultMQTTTopicName = "NServiceDiscovery-" + DefaultConfigurationData.DefaultTenantID + "-" + DefaultConfigurationData.DefaultTenantType;
-        public static int DefaultMQTTReconnectSeconds = 5;
+        public static int DefaultMQTTReconnectSeconds = 1;
     }
 }

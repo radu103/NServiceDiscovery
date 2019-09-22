@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using NServiceDiscovery;
+using NServiceDiscoveryAPI.Services;
 
 namespace NServiceDiscoveryAPI
 {
     public class Program
     {
         public static ConfigurationData InstanceConfig;
+
+        public static IMQTTService mqttService;
 
         public static void Main(string[] args)
         {

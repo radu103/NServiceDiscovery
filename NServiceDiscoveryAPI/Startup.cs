@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,7 +46,7 @@ namespace NServiceDiscoveryAPI
 
             // instantiate the MQTTService singleton instance
             var serviceProvider = app.ApplicationServices;
-            var mqttService = (IMQTTService)serviceProvider.GetService(typeof(IMQTTService));
+            Program.mqttService = serviceProvider.GetService<IMQTTService>();
         }
     }
 }
