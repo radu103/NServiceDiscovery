@@ -10,8 +10,29 @@ namespace NServiceDiscovery
         public static ConfigurationData Load()
         {
             var conf = new ConfigurationData(){
+
+                ServerInstanceID = Guid.NewGuid().ToString(),
+
                 TenantID = DefaultConfigurationData.DefaultTenantID,
-                OwnBaseHref = DefaultConfigurationData.DefaultOwnBaseHref
+                TenantType = DefaultConfigurationData.DefaultTenantType,
+                TenantToken = DefaultConfigurationData.DefaultTenantToken,
+
+                EvictionInSecs = DefaultConfigurationData.DefaultEvictionInSecs,
+                RenewalIntervalInSecs = DefaultConfigurationData.DefaultRenewalIntervalInSecs,
+                DurationInSecs = DefaultConfigurationData.DefaultDurationInSecs,
+
+                PersistencyHostName = DefaultConfigurationData.DefaultPersistencyHostName,
+                PersistencyPort = DefaultConfigurationData.DefaultPersistencyPort,
+                PersistencyUsername = DefaultConfigurationData.DefaultPersistencyUsername,
+                PersistencyPassword = DefaultConfigurationData.DefaultPersistencyPassword,
+                PersistencyDBName = DefaultConfigurationData.DefaultPersistencyDBName,
+
+                MQTTHost = DefaultConfigurationData.DefaultMQTTHost,
+                MQTTPort = DefaultConfigurationData.DefaultMQTTPort,
+                MQTTUsername = DefaultConfigurationData.DefaultMQTTUsername,
+                MQTTPassword = DefaultConfigurationData.DefaultMQTTPassword,
+                MQTTTopicName = DefaultConfigurationData.DefaultMQTTTopicName,
+                MQTTReconnectSeconds = DefaultConfigurationData.DefaultMQTTReconnectSeconds
             };
 
             return conf;

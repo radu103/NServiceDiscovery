@@ -11,7 +11,7 @@ namespace NServiceDiscovery.Entity
         public int RenewalIntervalInSecs { get; set; } = DefaultConfigurationData.DefaultRenewalIntervalInSecs;
 
         [JsonProperty("durationInSecs")]
-        public int DurationInSecs { get; set; } = DefaultConfigurationData.DefaultRenewalIntervalInSecs;
+        public int DurationInSecs { get; set; } = DefaultConfigurationData.DefaultDurationInSecs;
 
         [JsonProperty("lastHealthCheckDurationInMs")]
         public int LastHealthCheckDurationInMs { get; set; } = 0;

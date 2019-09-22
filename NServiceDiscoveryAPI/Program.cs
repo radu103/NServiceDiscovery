@@ -6,11 +6,11 @@ namespace NServiceDiscoveryAPI
 {
     public class Program
     {
-        public static ConfigurationData config;
+        public static ConfigurationData InstanceConfig;
 
         public static void Main(string[] args)
         {
-            Program.config = ConfigurationHelper.Load();
+            Program.InstanceConfig = ConfigurationHelper.Load();
 
             CreateWebHostBuilder(args).Build().Run();
         }

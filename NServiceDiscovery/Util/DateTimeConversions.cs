@@ -4,6 +4,8 @@ namespace NServiceDiscovery.Util
 {
     public static class DateTimeConversions
     {
+        public static int TicksPerSecond = 10000000;
+
         private static DateTime baseTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         public static long ToJavaMillis(DateTime dt)
