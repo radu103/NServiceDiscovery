@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NServiceDiscovery.Entity;
 using NServiceDiscovery.RuntimeInMemory;
+using NServiceDiscoveryAPI.Services;
 using System.Collections.Generic;
 
 namespace NServiceDiscoveryAPI.Controllers
@@ -31,9 +32,9 @@ namespace NServiceDiscoveryAPI.Controllers
 
         [HttpGet]
         [Route("/status")]
-        public ActionResult<string> GetStatus()
+        public ActionResult<InstanceStatus> GetStatus([FromServices] IInstanceStatusService statusService)
         {
-            return "STATUS";
+            return statusService.GetStatus();
         }
     }
 }

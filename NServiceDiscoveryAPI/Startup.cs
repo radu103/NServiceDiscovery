@@ -29,6 +29,7 @@ namespace NServiceDiscoveryAPI
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddSingleton<IMQTTService, MQTTService>();
+            services.AddSingleton<IInstanceStatusService, InstanceStatusService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,27 +53,9 @@ namespace NServiceDiscoveryAPI
 
         private void StartupOps(IApplicationBuilder app)
         {
-            // set Instance endpoints
-            var ips = NetworkUtil.GetIPAddresses();
-            FindInstanceUrl(ips);
-
             // instantiate the MQTTService singleton instance
             var serviceProvider = app.ApplicationServices;
             Program.mqttService = serviceProvider.GetService<IMQTTService>();
-        }
-
-        private void FindInstanceUrl(IPAddress[] ips)
-        {
-            var ipv4IPs = ips.Where(ip => ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork && ip.Address.ToString().CompareTo("127.0.0.1") != 0).ToList();
-
-            foreach (var ip in ipv4IPs)
-            {
-                if (NetworkUtil.HasIPAddress(ip.ToString()))
-                {
-                    Program.InstanceConfig.HttpEndpoint = "http://" + ip.ToString() + ":8771/eureka/apps";
-                    Program.InstanceConfig.SecureHttpEndpoint = "http://" + ip.ToString() + ":8443/eureka/apps";
-                }
-            }
         }
     }
 }
