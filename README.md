@@ -15,8 +15,11 @@
 	* key value store for general & app configuration
 	* app dependency requirements (appNames)
 * [READY] Deployable in Cloud Foundry (SAP Cloud Platform)
-* [TO DO] Persistence with SAP HANA / Mongo/Redis
-* [TO DO] Sync multiple instances via MQTT broker messages (save to persistency by the changer & load from persistency on mqqt message by the others)
+* [READY] Expired metadata removal
+    * [READY] Automatic instance eviction task if no heartbeat http message received
+    * [READY] Automatic peer removal task if no heartbeat mqtt message received
+* [TO DO] Sync metadata in memory for multiple instances via MQTT broker messages (save to persistency by the changer & load from persistency on mqqt message by the others)
+* [TO DO] Persistence with SAP HANA / Mongo/ Redis
 
 ## Not in scope yet
 

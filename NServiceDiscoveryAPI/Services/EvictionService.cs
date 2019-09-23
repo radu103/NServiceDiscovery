@@ -1,5 +1,9 @@
-﻿using NServiceDiscovery.Repository;
+﻿using NServiceDiscovery.Entity;
+using NServiceDiscovery.Repository;
+using NServiceDiscovery.RuntimeInMemory;
+using NServiceDiscovery.Util;
 using System;
+using System.Collections.Generic;
 using System.Timers;
 
 namespace NServiceDiscoveryAPI.Services
@@ -7,6 +11,7 @@ namespace NServiceDiscoveryAPI.Services
     public class EvictionService : IEvictionService
     {
         private static IMemoryDiscoveryPeerRepository _memoryDiscoveryPeerRepository;
+        private MemoryServicesRepository _memoryServicesRuntimeRepository;
 
         private Timer _evictionTimer;
 
@@ -14,6 +19,14 @@ namespace NServiceDiscoveryAPI.Services
         {
             _memoryDiscoveryPeerRepository = memoryDiscoveryPeerRepository;
 
+            var tenantId = Program.SINGLE_TENANT_ID + "0" + Program.SINGLE_TENANT_TYPE;
+
+            //if (string.IsNullOrEmpty(tenantId))
+            //    _memoryServicesRuntimeRepository = new MemoryServicesRepository();
+            //}
+            //else{
+            //    _memoryServicesRuntimeRepository = new MemoryServicesRepository(tenantId);
+            //}
             _evictionTimer = new Timer(Program.InstanceConfig.EvictionTimerIntervalInSecs * 1000);
             _evictionTimer.AutoReset = true;
             _evictionTimer.Enabled = true;
@@ -28,8 +41,26 @@ namespace NServiceDiscoveryAPI.Services
             var peersEvicted = _memoryDiscoveryPeerRepository.EvictPeers(Program.InstanceConfig.PeerEvictionInSecs);
             Console.WriteLine("Peers evicted {0}", peersEvicted);
 
-            // evict outdated instances
-            // TO DO
+            // evict outdated instances for all tenants
+            foreach(var app in ServicesRuntime.AllApplications.Applications)
+            {
+                List<Instance> instancesToRemove = new List<Instance>();
+                foreach(var instance in app.Instances)
+                {
+                    var instanceLastUpdate = DateTimeConversions.FromJavaMillis(instance.LastUpdatedTimestamp);
+                    if (instanceLastUpdate.AddSeconds(Program.InstanceConfig.EvictionInSecs) < DateTime.UtcNow)
+                    {
+                        instancesToRemove.Add(instance);
+                    }
+                }
+
+                foreach(var inst in instancesToRemove)
+                {
+                    app.Instances.Remove(inst);
+                }
+
+                Console.WriteLine("For app '{0}' instances evicted {1}", app.Name, instancesToRemove.Count);
+            }
         }
     }
 }

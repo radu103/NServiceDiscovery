@@ -10,7 +10,12 @@ namespace NServiceDiscovery.Repository
 {
     public class MemoryServicesRepository
     {
-        private string repoTenantId = DefaultConfigurationData.DefaultTenantID + "-" + DefaultConfigurationData.DefaultTenantType;
+        private string repoTenantId = string.Empty;
+
+        public MemoryServicesRepository()
+        {
+            repoTenantId = DefaultConfigurationData.DefaultTenantID + "-" + DefaultConfigurationData.DefaultTenantType;
+        }
 
         public MemoryServicesRepository(string tenantId)
         {
