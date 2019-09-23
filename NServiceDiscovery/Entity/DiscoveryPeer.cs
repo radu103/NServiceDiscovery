@@ -11,7 +11,7 @@ namespace NServiceDiscovery.Entity
         [JsonProperty("lastconnecttimestamp")]
         public DateTime LastConnectTimestamp { get; set; } = DateTime.UtcNow;
 
-        [JsonProperty("discoveryUrl")]
-        public string DiscoveryUrl { get; set; }
+        [JsonProperty("discoveryUrls")]
+        public string DiscoveryUrls { get; set; }
     }
 }

@@ -181,21 +181,7 @@ All instances subscribe to the topic and process messages
 
 Topic template name : `NServiceDiscovery-{tenantId}-{landscape}`
 
-### Update & version increased = published by some instance that processed a change (published for all instances listening
-
-```json
-{
-    "from_instance_id" : "id1",
-    "to_instance_id" : "ALL",
-	"type" : "UPDATE_BROADCAST",
-	"message" : {
-            "new_version" : 123,
-            "new_version_timestamp" : 1234567890
-	}
-}
-```
-
-### Request Last Version = to be published by new instance that has started
+### INSTANCE_CONNECTED = to be published by new instance that has started
 
 ```json
 {
@@ -209,17 +195,18 @@ Topic template name : `NServiceDiscovery-{tenantId}-{landscape}`
 }
 ```
 
-### Start Request Acknowledged = sent back after persistency is synched by only 1 processor that is listening
+
+### INSTANCE_HEARTBEAT = to be published by new instance that has started
 
 ```json
 {
-    "from_instance_id" : "id2",
-    "to_instance_id" : "id1",
-	"type" : "START_RESPONSE",
-	"message" : {
-            "new_version" : 123,
-            "new_version_timestamp" : 1234567890
-	}
+    "from_instance_id" : "id1",
+    "to_instance_id" : "ALL",
+    "type" : "INSTANCE_HEARTBEAT",
+    "message" : {
+         "peerId" : "ServerInstanceID",
+         "discoveryUrls" : "url",
+    }
 }
 ```
 

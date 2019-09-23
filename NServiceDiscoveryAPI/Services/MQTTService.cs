@@ -5,11 +5,11 @@ using Newtonsoft.Json;
 using NServiceDiscovery.MQTT;
 using NServiceDiscovery.RuntimeInMemory;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using NServiceDiscovery.Entity;
-using System.Net;
+using System.Timers;
+using System.Threading;
 
 namespace NServiceDiscoveryAPI.Services
 {
@@ -22,6 +22,8 @@ namespace NServiceDiscoveryAPI.Services
 
         private string _mqttClientID = string.Empty;
         private string _mqttTopic = string.Empty;
+
+        private System.Timers.Timer _broadcastPeerTimer;
 
         public MQTTService()
         {
@@ -69,11 +71,8 @@ namespace NServiceDiscoveryAPI.Services
                 // subscribe to tenant and landscape specific topic
                 _mqttClient.SubscribeAsync(_mqttTopic);
 
-                // create my peer data object
-                var myPeerMessage = GetMyPeerMessage();
-
-                // send mqtt peer message
-                _mqttClient.PublishAsync(_mqttTopic, JsonConvert.SerializeObject(myPeerMessage));
+                // brodcast my peer info
+                BroadcastMyPeerInfo();
             });
 
             _mqttClient.UseApplicationMessageReceivedHandler(async message =>
@@ -96,6 +95,12 @@ namespace NServiceDiscoveryAPI.Services
                     }
 
                     // TO DO : other messages
+                    if (mqttMessage.ToInstanceId.CompareTo("ALL") == 0 && mqttMessage.Type.CompareTo("INSTANCE_HEARTBEAT") == 0 && mqttMessage.ToInstanceId.CompareTo(_mqttClientID) != 0)
+                    {
+                        ProcessInstanceHeartbeat(mqttMessage);
+                    }
+
+                    // TO DO : other messages
                 }
 
                 Console.WriteLine("MQTT CLIENT - MQTT MESSAGE RECEIVED");
@@ -105,9 +110,21 @@ namespace NServiceDiscoveryAPI.Services
 
             var task = _mqttClient.ConnectAsync(_mqttClientOptions);
             task.Wait();
+
+            // start broadcast timer
+            _broadcastPeerTimer = new System.Timers.Timer((Program.InstanceConfig.EvictionTimerIntervalInSecs - 5) * 1000);
+            _broadcastPeerTimer.AutoReset = true;
+            _broadcastPeerTimer.Enabled = true;
+            _broadcastPeerTimer.Elapsed += OnBroadcastTimedEvent;
         }
 
-        private MQTTMessage GetMyPeerMessage(string toInstanceId = "ALL")
+        private void OnBroadcastTimedEvent(Object source, ElapsedEventArgs e)
+        {
+            Console.WriteLine("Send broadcast to Peers at {0:HH:mm:ss.fff}", e.SignalTime);
+            BroadcastMyPeerInfo();
+        }
+
+        private MQTTMessage GetMyPeerMessage(string toInstanceId = "ALL", string type = "INSTANCE_CONNECTED")
         {
             var myPeerData = new MQTTPeerMessageContent()
             {
@@ -121,11 +138,17 @@ namespace NServiceDiscoveryAPI.Services
             {
                 FromInstanceId = _mqttClientID,
                 ToInstanceId = toInstanceId,
-                Type = "INSTANCE_CONNECTED",
+                Type = type,
                 Message = jsonPeer
             };
 
             return newPeerMessage;
+        }
+
+        private void BroadcastMyPeerInfo()
+        {
+            var myPeerMessage = GetMyPeerMessage("ALL", "INSTANCE_HEARTBEAT");
+            _mqttClient.PublishAsync(_mqttTopic, JsonConvert.SerializeObject(myPeerMessage));
         }
 
         private void ProcessInstanceConnected(MQTTMessage mqttMessage)
@@ -149,10 +172,44 @@ namespace NServiceDiscoveryAPI.Services
                     {
                         LastConnectTimestamp = DateTime.UtcNow,
                         ServerInstanceID = peerMessageContent.PeerId,
-                        DiscoveryUrl = peerMessageContent.DiscoveryUrls
+                        DiscoveryUrls = peerMessageContent.DiscoveryUrls
                     };
 
                     Memory.Peers.Add(newPeer);
+                }
+            }
+        }
+
+        private void ProcessInstanceHeartbeat(MQTTMessage mqttMessage)
+        {
+            var receivedMessage = mqttMessage.Message.ToString().Replace("'", "\"");
+
+            var peerMessageContent = JsonConvert.DeserializeObject<MQTTPeerMessageContent>(receivedMessage);
+
+            if (peerMessageContent != null && peerMessageContent.PeerId.CompareTo(_mqttClientID) != 0)
+            {
+                // respond back with my peer data
+                var myPeerMessage = GetMyPeerMessage(peerMessageContent.PeerId);
+                _mqttClient.PublishAsync(_mqttTopic, JsonConvert.SerializeObject(myPeerMessage));
+
+                // add new peer to my peers
+                var existingPeer = Memory.Peers.SingleOrDefault(p => p.ServerInstanceID.CompareTo(peerMessageContent.PeerId) == 0);
+
+                if (existingPeer == null)
+                {
+                    var newPeer = new DiscoveryPeer()
+                    {
+                        LastConnectTimestamp = DateTime.UtcNow,
+                        ServerInstanceID = peerMessageContent.PeerId,
+                        DiscoveryUrls = peerMessageContent.DiscoveryUrls
+                    };
+
+                    Memory.Peers.Add(newPeer);
+                }
+                else
+                {
+                    existingPeer.LastConnectTimestamp = DateTime.UtcNow;
+                    existingPeer.DiscoveryUrls = peerMessageContent.DiscoveryUrls;
                 }
             }
         }
