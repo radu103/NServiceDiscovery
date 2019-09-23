@@ -67,7 +67,7 @@ namespace NServiceDiscoveryAPI
                 var TENANT_TYPE = Environment.GetEnvironmentVariable("SINGLE_TENANT_TYPE");
 
                 Console.WriteLine("SINGLE_TENANT_ID : " + TENANT_ID);
-                Console.WriteLine("SINGLE_TENANT_ID : " + TENANT_TYPE);
+                Console.WriteLine("SINGLE_TENANT_TYPE : " + TENANT_TYPE);
 
                 Program.SINGLE_TENANT_ID = TENANT_ID;
                 Program.SINGLE_TENANT_TYPE = TENANT_TYPE;
