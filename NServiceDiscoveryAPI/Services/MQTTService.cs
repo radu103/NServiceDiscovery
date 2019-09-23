@@ -112,7 +112,7 @@ namespace NServiceDiscoveryAPI.Services
             task.Wait();
 
             // start broadcast timer
-            _broadcastPeerTimer = new System.Timers.Timer((Program.InstanceConfig.EvictionTimerIntervalInSecs - 5) * 1000);
+            _broadcastPeerTimer = new System.Timers.Timer(Math.Min(Program.InstanceConfig.EvictionInSecs - 5, 5) * 1000);
             _broadcastPeerTimer.AutoReset = true;
             _broadcastPeerTimer.Enabled = true;
             _broadcastPeerTimer.Elapsed += OnBroadcastTimedEvent;
@@ -188,10 +188,6 @@ namespace NServiceDiscoveryAPI.Services
 
             if (peerMessageContent != null && peerMessageContent.PeerId.CompareTo(_mqttClientID) != 0)
             {
-                // respond back with my peer data
-                var myPeerMessage = GetMyPeerMessage(peerMessageContent.PeerId);
-                _mqttClient.PublishAsync(_mqttTopic, JsonConvert.SerializeObject(myPeerMessage));
-
                 // add new peer to my peers
                 var existingPeer = Memory.Peers.SingleOrDefault(p => p.ServerInstanceID.CompareTo(peerMessageContent.PeerId) == 0);
 
