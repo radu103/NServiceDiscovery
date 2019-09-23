@@ -1,4 +1,4 @@
 ﻿applications:
  - name: NServiceDiscovery
-   memory: 256M
+   memory: 64M
    buildpack: https://github.com/cloudfoundry/dotnet-core-buildpack.git

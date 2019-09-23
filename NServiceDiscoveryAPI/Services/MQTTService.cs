@@ -72,7 +72,7 @@ namespace NServiceDiscoveryAPI.Services
                 _mqttClient.SubscribeAsync(_mqttTopic);
 
                 // brodcast my peer info
-                BroadcastMyPeerInfo();
+                BroadcastMyPeerInfo("INSTANCE_CONNECTED");
             });
 
             _mqttClient.UseApplicationMessageReceivedHandler(async message =>
@@ -129,7 +129,7 @@ namespace NServiceDiscoveryAPI.Services
             var myPeerData = new MQTTPeerMessageContent()
             {
                 PeerId = _mqttClientID,
-                DiscoveryUrls = string.Format("http://{0}/eureka/apps", Program.InstanceConfig.Urls)
+                DiscoveryUrls = string.Format("{0}/eureka/apps", Program.InstanceConfig.Urls)
             };
 
             var jsonPeer = JsonConvert.SerializeObject(myPeerData).Replace("\"", "'");
@@ -145,9 +145,9 @@ namespace NServiceDiscoveryAPI.Services
             return newPeerMessage;
         }
 
-        private void BroadcastMyPeerInfo()
+        private void BroadcastMyPeerInfo(string type = "INSTANCE_HEARTBEAT")
         {
-            var myPeerMessage = GetMyPeerMessage("ALL", "INSTANCE_HEARTBEAT");
+            var myPeerMessage = GetMyPeerMessage("ALL", type);
             _mqttClient.PublishAsync(_mqttTopic, JsonConvert.SerializeObject(myPeerMessage));
         }
 
