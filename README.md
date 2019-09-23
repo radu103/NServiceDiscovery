@@ -1,6 +1,6 @@
 # NServiceDiscovery - Cloud Service Discovery & Configuration Server (.NET Core 2.*)
 
-Features :
+## Features
 
 * [READY] .NET Core 2.2 
 * [READY] Near real-time sync of peers informations using MQTT Broker broadcast messages (and eviction worker with configurable period of validity)
@@ -19,9 +19,19 @@ Features :
 
 AMI metadata processing support for AWS, Azure, Pivotal CF
 
-# Endpoints exposed
+## Endpoints exposed
 
 [Import Postman Collection file](./NServiceDiscoveryAPI/NServiceDiscovery.postman_collection.json) from repository
+
+# Environment variables needed 
+
+### Mandatory
+
+ASPNETCORE_URLS = the public urls (needed for peer broadcast)
+
+### Optional and defaults
+
+[defaults values here](./NServiceDiscovery/Configuration/DefaultConfigurationData.cs)
 
 # HOW-TO-GUIDES
 
