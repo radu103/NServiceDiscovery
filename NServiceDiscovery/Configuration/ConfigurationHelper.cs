@@ -42,7 +42,14 @@ namespace NServiceDiscovery
 
             if (cfApp != null)
             {
-                conf.ServerInstanceID = cfApp.ApplicationId + "-" + cfApp.InstanceIndex;
+                if (string.IsNullOrEmpty(cfApp.InstanceGuid))
+                {
+                    conf.ServerInstanceID = cfApp.ApplicationId + "-" + cfApp.InstanceIndex;
+                }
+                else
+                {
+                    conf.ServerInstanceID = cfApp.InstanceGuid;
+                }
             }
 
             return conf;

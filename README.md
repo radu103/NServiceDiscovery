@@ -34,6 +34,8 @@ ASPNETCORE_URLS = the public urls (needed for peer broadcast)
 
 ### Optional and defaults
 
+On CF : SINGLE_TENANT_ID & SINGLE_TENANT_TYPE user providedd ENV VARIABLES if you want to block the functionality to a single tenant (named by configuration)
+
 [defaults values here](./NServiceDiscovery/Configuration/DefaultConfigurationData.cs)
 
 # HOW-TO-GUIDES
