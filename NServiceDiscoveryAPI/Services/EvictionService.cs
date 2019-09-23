@@ -42,24 +42,33 @@ namespace NServiceDiscoveryAPI.Services
             Console.WriteLine("Peers evicted {0}", peersEvicted);
 
             // evict outdated instances for all tenants
-            foreach(var app in ServicesRuntime.AllApplications.Applications)
+            lock(ServicesRuntime.AllApplications.Applications)
             {
-                List<Instance> instancesToRemove = new List<Instance>();
-                foreach(var instance in app.Instances)
+                foreach (var app in ServicesRuntime.AllApplications.Applications)
                 {
-                    var instanceLastUpdate = DateTimeConversions.FromJavaMillis(instance.LastUpdatedTimestamp);
-                    if (instanceLastUpdate.AddSeconds(Program.InstanceConfig.EvictionInSecs) < DateTime.UtcNow)
+                    List<Instance> instancesToRemove = new List<Instance>();
+                    foreach (var instance in app.Instances)
                     {
-                        instancesToRemove.Add(instance);
+                        var instanceLastUpdate = DateTimeConversions.FromJavaMillis(instance.LastUpdatedTimestamp);
+                        if (instanceLastUpdate.AddSeconds(Program.InstanceConfig.EvictionInSecs) < DateTime.UtcNow)
+                        {
+                            instancesToRemove.Add(instance);
+                        }
                     }
-                }
 
-                foreach(var inst in instancesToRemove)
-                {
-                    app.Instances.Remove(inst);
-                }
+                    if(instancesToRemove.Count > 0)
+                    {
+                        foreach (var inst in instancesToRemove)
+                        {
+                            app.Instances.Remove(inst);
+                        }
 
-                Console.WriteLine("For app '{0}' instances evicted {1}", app.Name, instancesToRemove.Count);
+                        // increase version after eviction
+                        ServicesRuntime.AllApplications.VersionsDelta += 1;
+                    }
+
+                    Console.WriteLine("For app '{0}' instances evicted {1}", app.Name, instancesToRemove.Count);
+                }
             }
         }
     }
