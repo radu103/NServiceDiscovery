@@ -7,7 +7,7 @@ namespace NServiceDiscovery.MQTT
         [JsonProperty("peerId")]
         public string PeerId { get; set; } = string.Empty;
 
-        [JsonProperty("discoveryUrl")]
-        public string DiscoveryUrl { get; set; } = string.Empty;
+        [JsonProperty("discoveryUrls")]
+        public string DiscoveryUrls { get; set; } = string.Empty;
     }
 }

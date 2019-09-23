@@ -201,8 +201,11 @@ Topic template name : `NServiceDiscovery-{tenantId}-{landscape}`
 {
     "from_instance_id" : "id1",
     "to_instance_id" : "ALL",
-    "type" : "START_REQUEST",
-    "message" : null
+    "type" : "INSTANCE_CONNECTED",
+    "message" : {
+         "peerId" : "ServerInstanceID",
+         "discoveryUrls" : "url",
+    }
 }
 ```
 

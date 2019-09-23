@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace NServiceDiscovery.Configuration
 {
     public static class DefaultConfigurationData
@@ -9,8 +8,12 @@ namespace NServiceDiscovery.Configuration
         public static string DefaultTenantType = "dev";
         public static string DefaultTenantToken = "real_token_to_be_checked";
 
+        // peer validity
+        public static int DefaultEvictionTimerIntervalInSecs = 1;
+        public static int DefaultPeerEvictionInSecs = 30;
+
         // instance validity
-        public static int DefaultEvictionInSecs = 300;
+        public static int DefaultEvictionInSecs = 30;
         public static int DefaultRenewalIntervalInSecs = 30;
         public static int DefaultDurationInSecs = 90;
 

@@ -3,11 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NServiceDiscovery.Util;
 using NServiceDiscoveryAPI.GlobalFilters;
 using NServiceDiscoveryAPI.Services;
-using System.Linq;
-using System.Net;
 
 namespace NServiceDiscoveryAPI
 {
@@ -16,6 +13,14 @@ namespace NServiceDiscoveryAPI
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            try {
+                Program.InstanceConfig.Urls = configuration.GetValue<string>("ASPNETCORE_URLS");
+            }
+            catch
+            {
+                Program.InstanceConfig.Urls = string.Empty;
+            }
         }
 
         public IConfiguration Configuration { get; }
@@ -30,6 +35,7 @@ namespace NServiceDiscoveryAPI
 
             services.AddSingleton<IMQTTService, MQTTService>();
             services.AddSingleton<IInstanceStatusService, InstanceStatusService>();
+            services.AddSingleton<IEvictionService, EvictionService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,6 +62,7 @@ namespace NServiceDiscoveryAPI
             // instantiate the MQTTService singleton instance
             var serviceProvider = app.ApplicationServices;
             Program.mqttService = serviceProvider.GetService<IMQTTService>();
+            Program.evictionService = serviceProvider.GetService<IEvictionService>();
         }
     }
 }

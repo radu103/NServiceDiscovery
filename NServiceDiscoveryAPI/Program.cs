@@ -10,6 +10,7 @@ namespace NServiceDiscoveryAPI
         public static ConfigurationData InstanceConfig;
 
         public static IMQTTService mqttService;
+        public static IEvictionService evictionService;
 
         public static void Main(string[] args)
         {
@@ -19,6 +20,6 @@ namespace NServiceDiscoveryAPI
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args).UseStartup<Startup>();
+            WebHost.CreateDefaultBuilder(args).UseIISIntegration().UseStartup<Startup>();
     }
 }

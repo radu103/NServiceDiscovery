@@ -17,6 +17,9 @@ namespace NServiceDiscovery
                 TenantType = DefaultConfigurationData.DefaultTenantType,
                 TenantToken = DefaultConfigurationData.DefaultTenantToken,
 
+                EvictionTimerIntervalInSecs = DefaultConfigurationData.DefaultEvictionTimerIntervalInSecs,
+                PeerEvictionInSecs = DefaultConfigurationData.DefaultPeerEvictionInSecs,
+
                 EvictionInSecs = DefaultConfigurationData.DefaultEvictionInSecs,
                 RenewalIntervalInSecs = DefaultConfigurationData.DefaultRenewalIntervalInSecs,
                 DurationInSecs = DefaultConfigurationData.DefaultDurationInSecs,

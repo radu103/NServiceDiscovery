@@ -17,6 +17,13 @@ namespace NServiceDiscoveryAPI.Controllers
         }
 
         [HttpGet]
+        [Route("/")]
+        public ActionResult<string> GetIndex()
+        {
+            return LocalRedirectPermanent("/eureka/apps");
+        }
+
+        [HttpGet]
         [Route("/health")]
         public ActionResult<string> GetHealth()
         {
@@ -25,7 +32,14 @@ namespace NServiceDiscoveryAPI.Controllers
 
         [HttpGet]
         [Route("/info")]
-        public ActionResult<List<DiscoveryPeer>> GetInfo()
+        public ActionResult<string> GetInfo()
+        {
+            return "INFO";
+        }
+
+        [HttpGet]
+        [Route("/peers")]
+        public ActionResult<List<DiscoveryPeer>> GetPeers()
         {
             return Memory.Peers;
         }

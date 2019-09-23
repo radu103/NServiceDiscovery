@@ -5,10 +5,14 @@ namespace NServiceDiscovery
     public class ConfigurationData
     {
         public String ServerInstanceID { get; set; }
+        public String Urls { get; set; }
 
         public String TenantID { get; set; }
         public String TenantType { get; set; }
         public String TenantToken { get; set; }
+
+        public int EvictionTimerIntervalInSecs { get; set; }
+        public int PeerEvictionInSecs { get; set; }
 
         public int EvictionInSecs { get; set; }
         public int RenewalIntervalInSecs { get; set; }
