@@ -13,40 +13,9 @@ namespace NServiceDiscoveryAPI
 {
     public class Startup
     {
-        private void StartUpEvironmentVars(IConfiguration configuration)
-        {
-            // Kestrel
-            try
-            {
-                Program.InstanceConfig.Urls = configuration.GetValue<string>("ASPNETCORE_URLS");
-            }
-            catch(Exception err)
-            {
-                Program.InstanceConfig.Urls = string.Empty;
-                Console.WriteLine("ASPNETCORE_URLS ERROR : " + err.Message);
-            }
-
-            // cloudd foundry
-            try
-            {
-                var VCAP_APPLICATION = configuration.GetValue<string>("VCAP_APPLICATION");
-                if (VCAP_APPLICATION != null)
-                {
-                    var vcapApp = JsonConvert.DeserializeObject<CloudFoundryVcapApplication>(VCAP_APPLICATION);
-                    Program.InstanceConfig.Urls = vcapApp.ApplicationUrls[0];
-                }
-            }
-            catch (Exception err)
-            {
-                Program.InstanceConfig.Urls = string.Empty;
-                Console.WriteLine("VCAP_APPLICATION" + err.Message);
-            }
-        }
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            StartUpEvironmentVars(configuration);
         }
 
         public IConfiguration Configuration { get; }

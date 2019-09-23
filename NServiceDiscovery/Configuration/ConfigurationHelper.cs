@@ -1,4 +1,5 @@
 ﻿using NServiceDiscovery.Configuration;
+using NServiceDiscovery.Entity;
 using System;
 
 namespace NServiceDiscovery
@@ -7,8 +8,10 @@ namespace NServiceDiscovery
     {
         public String TenantID { get; set; }
 
-        public static ConfigurationData Load()
+        public static ConfigurationData Load(CloudFoundryVcapApplication cfApp)
         {
+
+
             var conf = new ConfigurationData(){
 
                 ServerInstanceID = Guid.NewGuid().ToString(),
@@ -37,6 +40,11 @@ namespace NServiceDiscovery
                 MQTTTopicName = DefaultConfigurationData.DefaultMQTTTopicName,
                 MQTTReconnectSeconds = DefaultConfigurationData.DefaultMQTTReconnectSeconds
             };
+
+            if (cfApp != null)
+            {
+                conf.ServerInstanceID = cfApp.ApplicationId;
+            }
 
             return conf;
         }
