@@ -5,7 +5,7 @@
 * [READY] .NET Core 2.2 
 * [READY] Nearly Real-Time Sync of peers informations' using MQTT Broker broadcast messages (and eviction worker with configurable period of validity)
 * [READY] Much smaller memory footprint tha Eureka
-    * empty NServiceDiscovery instance size = 28 MB in Cloud Foundry, around 100 MB in IIS Express on Debug mode (aprox 50% less memory consumed)
+    * empty NServiceDiscovery instance size = 28 MB in Cloud Foundry, around 100 MB in IIS Express on Debug mode (more than 100% less memory consumed)
     * empty Eureka Server instance size     = 66 MB
 * [READY] Compatible with Eureka Clients (v1 message format) : Java Spring & .NET NuGets : Steeltoe, Pivotal
 * [READY] Multitenant capable (tenant send as header `Authorization :  Bearer {tenantId}-{landscape}`. By default tenant name and type used is : `public-dev` when Authorization header is missing

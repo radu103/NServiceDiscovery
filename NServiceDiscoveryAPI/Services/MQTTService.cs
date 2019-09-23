@@ -11,21 +11,23 @@ using NServiceDiscovery.Entity;
 using System.Timers;
 using System.Threading;
 using NServiceDiscovery.Repository;
+using NServiceDiscovery.Util;
 
 namespace NServiceDiscoveryAPI.Services
 {
     public class MQTTService : IMQTTService
     {
         private IMemoryDiscoveryPeerRepository _memoryDiscoveryPeerRepository;
+
         private MqttFactory _factory = new MqttFactory();
 
         private IMqttClient _mqttClient;
         private IMqttClientOptions _mqttClientOptions;
 
+        private System.Timers.Timer _broadcastPeerTimer;
+
         private string _mqttClientID = string.Empty;
         private string _mqttTopic = string.Empty;
-
-        private System.Timers.Timer _broadcastPeerTimer;
 
         public MQTTService(IMemoryDiscoveryPeerRepository memoryDiscoveryPeerRepository)
         {
@@ -219,6 +221,5 @@ namespace NServiceDiscoveryAPI.Services
                 }
             }
         }
-
     }
 }

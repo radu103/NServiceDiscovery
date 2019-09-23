@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Newtonsoft.Json;
 using NServiceDiscovery;
 using NServiceDiscovery.Entity;
+using NServiceDiscovery.Util;
 using NServiceDiscoveryAPI.Services;
 using System;
 
@@ -12,6 +13,10 @@ namespace NServiceDiscoveryAPI
     {
         public static string SINGLE_TENANT_ID = string.Empty;
         public static string SINGLE_TENANT_TYPE = string.Empty;
+
+        public static string INSTANCE_GUID = string.Empty;
+        public static string INSTANCE_IP = string.Empty;
+        public static int INSTANCE_PORT = 0;
 
         public static CloudFoundryVcapApplication cloudFoundryVcapApplication;
 
@@ -30,7 +35,7 @@ namespace NServiceDiscoveryAPI
 
                 if (VCAP_APPLICATION != null)
                 {
-                    var vcapApp = JsonConvert.DeserializeObject<CloudFoundryVcapApplication>(VCAP_APPLICATION);
+                    var vcapApp = JsonConvert.DeserializeObject<CloudFoundryVcapApplication>(VCAP_APPLICATION, NServiceDiscoveryJsonSerializerSettings.IgnoreMissingPropetiesSettings);
                     Program.cloudFoundryVcapApplication = vcapApp;
                 }
             }
@@ -51,9 +56,9 @@ namespace NServiceDiscoveryAPI
                 Console.WriteLine("CF_INSTANCE_IP : " + CF_INSTANCE_GUID);
                 Console.WriteLine("CF_INSTANCE_PORT : " + CF_INSTANCE_GUID);
 
-                Program.cloudFoundryVcapApplication.InstanceGuid = CF_INSTANCE_GUID;
-                Program.cloudFoundryVcapApplication.InstanceIP = CF_INSTANCE_IP;
-                Program.cloudFoundryVcapApplication.InstancePort = Convert.ToInt32(CF_INSTANCE_PORT);
+                Program.INSTANCE_GUID = CF_INSTANCE_GUID;
+                Program.INSTANCE_IP = CF_INSTANCE_IP;
+                Program.INSTANCE_PORT = Convert.ToInt32(CF_INSTANCE_PORT);
             }
             catch (Exception err)
             {
@@ -82,7 +87,7 @@ namespace NServiceDiscoveryAPI
         {
             GetCFEnv();
 
-            Program.InstanceConfig = ConfigurationHelper.Load(cloudFoundryVcapApplication);
+            Program.InstanceConfig = ConfigurationHelper.Load(cloudFoundryVcapApplication, Program.INSTANCE_GUID);
 
             if(Program.InstanceConfig != null && Program.cloudFoundryVcapApplication != null && Program.cloudFoundryVcapApplication.ApplicationUrls.Count > 0)
             {
