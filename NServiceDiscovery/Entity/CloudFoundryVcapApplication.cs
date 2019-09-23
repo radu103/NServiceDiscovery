@@ -8,6 +8,9 @@ namespace NServiceDiscovery.Entity
         [JsonProperty("application_id")]
         public string ApplicationId { get; set; }
 
+        [JsonProperty("instance_index")]
+        public int InstanceIndex { get; set; }
+
         [JsonProperty("application_name")]
         public string ApplicationName { get; set; }
 

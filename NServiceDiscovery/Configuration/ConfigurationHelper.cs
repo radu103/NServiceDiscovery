@@ -6,8 +6,6 @@ namespace NServiceDiscovery
 {
     public class ConfigurationHelper
     {
-        public String TenantID { get; set; }
-
         public static ConfigurationData Load(CloudFoundryVcapApplication cfApp)
         {
 
@@ -44,7 +42,7 @@ namespace NServiceDiscovery
 
             if (cfApp != null)
             {
-                conf.ServerInstanceID = cfApp.ApplicationId;
+                conf.ServerInstanceID = cfApp.ApplicationId + "-" + cfApp.InstanceIndex;
             }
 
             return conf;

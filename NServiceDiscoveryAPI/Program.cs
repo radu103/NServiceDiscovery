@@ -21,6 +21,7 @@ namespace NServiceDiscoveryAPI
             try
             {
                 var VCAP_APPLICATION = Environment.GetEnvironmentVariable("VCAP_APPLICATION");
+                Console.WriteLine("VCAP_APPLICATION : " + VCAP_APPLICATION);
 
                 if (VCAP_APPLICATION != null)
                 {
@@ -40,6 +41,11 @@ namespace NServiceDiscoveryAPI
             GetCFEnv();
 
             Program.InstanceConfig = ConfigurationHelper.Load(cloudFoundryVcapApplication);
+
+            if(Program.InstanceConfig != null && Program.cloudFoundryVcapApplication != null && Program.cloudFoundryVcapApplication.ApplicationUrls.Count > 0)
+            {
+                Program.InstanceConfig.Urls = Program.cloudFoundryVcapApplication.ApplicationUrls[0];
+            }
 
             CreateWebHostBuilder(args).Build().Run();
         }
