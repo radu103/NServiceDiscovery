@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using NServiceDiscovery.Entity;
+using NServiceDiscovery.Repository;
 using NServiceDiscoveryAPI.GlobalFilters;
 using NServiceDiscoveryAPI.Services;
 using System;
@@ -31,6 +32,7 @@ namespace NServiceDiscoveryAPI
             services.AddSingleton<IMQTTService, MQTTService>();
             services.AddSingleton<IInstanceStatusService, InstanceStatusService>();
             services.AddSingleton<IEvictionService, EvictionService>();
+            services.AddSingleton<IMemoryDiscoveryPeerRepository, MemoryDiscoveryPeerRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

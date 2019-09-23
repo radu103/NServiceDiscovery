@@ -10,11 +10,13 @@ using System.Linq;
 using NServiceDiscovery.Entity;
 using System.Timers;
 using System.Threading;
+using NServiceDiscovery.Repository;
 
 namespace NServiceDiscoveryAPI.Services
 {
     public class MQTTService : IMQTTService
     {
+        private IMemoryDiscoveryPeerRepository _memoryDiscoveryPeerRepository;
         private MqttFactory _factory = new MqttFactory();
 
         private IMqttClient _mqttClient;
@@ -25,8 +27,10 @@ namespace NServiceDiscoveryAPI.Services
 
         private System.Timers.Timer _broadcastPeerTimer;
 
-        public MQTTService()
+        public MQTTService(IMemoryDiscoveryPeerRepository memoryDiscoveryPeerRepository)
         {
+            _memoryDiscoveryPeerRepository = memoryDiscoveryPeerRepository;
+
             _mqttClient = _factory.CreateMqttClient();
 
             _mqttClientID = Program.InstanceConfig.ServerInstanceID;
@@ -148,7 +152,10 @@ namespace NServiceDiscoveryAPI.Services
         private void BroadcastMyPeerInfo(string type = "INSTANCE_HEARTBEAT")
         {
             var myPeerMessage = GetMyPeerMessage("ALL", type);
-            _mqttClient.PublishAsync(_mqttTopic, JsonConvert.SerializeObject(myPeerMessage));
+            if (_mqttClient.IsConnected)
+            {
+                _mqttClient.PublishAsync(_mqttTopic, JsonConvert.SerializeObject(myPeerMessage));
+            }
         }
 
         private void ProcessInstanceConnected(MQTTMessage mqttMessage)
@@ -160,8 +167,11 @@ namespace NServiceDiscoveryAPI.Services
             if (peerMessageContent != null && peerMessageContent.PeerId.CompareTo(_mqttClientID) != 0)
             {
                 // respond back with my peer data
-                var myPeerMessage = GetMyPeerMessage(peerMessageContent.PeerId);
-                _mqttClient.PublishAsync(_mqttTopic, JsonConvert.SerializeObject(myPeerMessage));
+                if (_mqttClient.IsConnected)
+                {
+                    var myPeerMessage = GetMyPeerMessage(peerMessageContent.PeerId);
+                    _mqttClient.PublishAsync(_mqttTopic, JsonConvert.SerializeObject(myPeerMessage));
+                }
 
                 // add new peer to my peers
                 var existingPeer = Memory.Peers.SingleOrDefault(p => p.ServerInstanceID.CompareTo(peerMessageContent.PeerId) == 0);
@@ -200,7 +210,7 @@ namespace NServiceDiscoveryAPI.Services
                         DiscoveryUrls = peerMessageContent.DiscoveryUrls
                     };
 
-                    Memory.Peers.Add(newPeer);
+                    _memoryDiscoveryPeerRepository.Add(newPeer);
                 }
                 else
                 {
