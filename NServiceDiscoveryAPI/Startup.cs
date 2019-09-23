@@ -3,12 +3,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
-using NServiceDiscovery.Entity;
 using NServiceDiscovery.Repository;
 using NServiceDiscoveryAPI.GlobalFilters;
 using NServiceDiscoveryAPI.Services;
-using System;
 
 namespace NServiceDiscoveryAPI
 {
