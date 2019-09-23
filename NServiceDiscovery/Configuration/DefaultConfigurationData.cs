@@ -11,6 +11,7 @@ namespace NServiceDiscovery.Configuration
         // peer validity
         public static int DefaultEvictionTimerIntervalInSecs = 1;
         public static int DefaultPeerEvictionInSecs = 10;
+        public static int DefaultPeerHeartbeatBeforeEvictionInSecs = 3;
 
         // instance validity
         public static int DefaultEvictionInSecs = 30;

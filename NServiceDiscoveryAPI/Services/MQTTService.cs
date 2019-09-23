@@ -112,7 +112,7 @@ namespace NServiceDiscoveryAPI.Services
             task.Wait();
 
             // start broadcast timer
-            _broadcastPeerTimer = new System.Timers.Timer(Math.Min(Program.InstanceConfig.EvictionInSecs - 5, 5) * 1000);
+            _broadcastPeerTimer = new System.Timers.Timer(Math.Min(Program.InstanceConfig.PeerEvictionInSecs - Program.InstanceConfig.PeerHeartbeatBeforeEvictionInSecs, 5) * 1000);
             _broadcastPeerTimer.AutoReset = true;
             _broadcastPeerTimer.Enabled = true;
             _broadcastPeerTimer.Elapsed += OnBroadcastTimedEvent;

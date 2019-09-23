@@ -1,18 +1,18 @@
-﻿using System;
-
+﻿
 namespace NServiceDiscovery
 {
     public class ConfigurationData
     {
-        public String ServerInstanceID { get; set; }
-        public String Urls { get; set; }
+        public string ServerInstanceID { get; set; }
+        public string Urls { get; set; }
 
-        public String TenantID { get; set; }
-        public String TenantType { get; set; }
-        public String TenantToken { get; set; }
+        public string TenantID { get; set; }
+        public string TenantType { get; set; }
+        public string TenantToken { get; set; }
 
         public int EvictionTimerIntervalInSecs { get; set; }
         public int PeerEvictionInSecs { get; set; }
+        public int PeerHeartbeatBeforeEvictionInSecs { get; set; }
 
         public int EvictionInSecs { get; set; }
         public int RenewalIntervalInSecs { get; set; }

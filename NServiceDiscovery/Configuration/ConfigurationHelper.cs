@@ -22,6 +22,7 @@ namespace NServiceDiscovery
 
                 EvictionTimerIntervalInSecs = DefaultConfigurationData.DefaultEvictionTimerIntervalInSecs,
                 PeerEvictionInSecs = DefaultConfigurationData.DefaultPeerEvictionInSecs,
+                PeerHeartbeatBeforeEvictionInSecs = DefaultConfigurationData.DefaultPeerHeartbeatBeforeEvictionInSecs,
 
                 EvictionInSecs = DefaultConfigurationData.DefaultEvictionInSecs,
                 RenewalIntervalInSecs = DefaultConfigurationData.DefaultRenewalIntervalInSecs,
