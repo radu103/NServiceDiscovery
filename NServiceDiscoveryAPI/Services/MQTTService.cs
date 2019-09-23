@@ -129,7 +129,7 @@ namespace NServiceDiscoveryAPI.Services
             var myPeerData = new MQTTPeerMessageContent()
             {
                 PeerId = _mqttClientID,
-                DiscoveryUrls = string.Format("{0}/eureka/apps", Program.InstanceConfig.Urls)
+                DiscoveryUrls = string.Format("http://{0}/eureka/apps", Program.InstanceConfig.Urls)
             };
 
             var jsonPeer = JsonConvert.SerializeObject(myPeerData).Replace("\"", "'");
