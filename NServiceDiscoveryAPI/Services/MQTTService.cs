@@ -12,6 +12,7 @@ using System.Timers;
 using System.Threading;
 using NServiceDiscovery.Repository;
 using NServiceDiscovery.Util;
+using System.Collections.Generic;
 
 namespace NServiceDiscoveryAPI.Services
 {
@@ -75,7 +76,7 @@ namespace NServiceDiscoveryAPI.Services
                 Console.WriteLine("MQTT CLIENT - CONNECTED TO MQTT BROKER");
 
                 // subscribe to tenant and landscape specific topic
-                _mqttClient.SubscribeAsync(_mqttTopic);
+                _mqttClient.SubscribeAsync(_mqttTopic, MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce);
 
                 // brodcast my peer info
                 BroadcastMyPeerInfo("INSTANCE_CONNECTED");
@@ -92,16 +93,16 @@ namespace NServiceDiscoveryAPI.Services
                 var mqttMessage = JsonConvert.DeserializeObject<MQTTMessage>(jsonStr);
 
                 // do not process own messages except ALL broadcast messages
-                if (mqttMessage != null && (mqttMessage.FromInstanceId.CompareTo(_mqttClientID) != 0 || mqttMessage.ToInstanceId.CompareTo("ALL") == 0) )
+                if (mqttMessage != null && (mqttMessage.FromInstanceId.CompareTo(_mqttClientID) != 0 || mqttMessage.ToInstancesIds.IndexOf("ALL") == 0) )
                 {
                     // process peer broadcast message
-                    if (mqttMessage.ToInstanceId.CompareTo("ALL") == 0 && mqttMessage.Type.CompareTo("INSTANCE_CONNECTED") == 0)
+                    if (mqttMessage.ToInstancesIds.IndexOf("ALL") >= 0 && mqttMessage.Type.CompareTo("INSTANCE_CONNECTED") == 0 && mqttMessage.FromInstanceId.CompareTo(_mqttClientID) != 0)
                     {
                          ProcessInstanceConnected(mqttMessage);
                     }
 
                     // TO DO : other messages
-                    if (mqttMessage.ToInstanceId.CompareTo("ALL") == 0 && mqttMessage.Type.CompareTo("INSTANCE_HEARTBEAT") == 0 && mqttMessage.ToInstanceId.CompareTo(_mqttClientID) != 0)
+                    if (mqttMessage.ToInstancesIds.IndexOf("ALL") >= 0 && mqttMessage.Type.CompareTo("INSTANCE_HEARTBEAT") == 0 && mqttMessage.FromInstanceId.CompareTo(_mqttClientID) != 0)
                     {
                         ProcessInstanceHeartbeat(mqttMessage);
                     }
@@ -142,10 +143,13 @@ namespace NServiceDiscoveryAPI.Services
 
             var jsonPeer = JsonConvert.SerializeObject(myPeerData).Replace("\"", "'");
 
+            var destInstances = new List<string>();
+            destInstances.Add(toInstanceId);
+
             var newPeerMessage = new MQTTMessage()
             {
                 FromInstanceId = _mqttClientID,
-                ToInstanceId = toInstanceId,
+                ToInstancesIds = destInstances,
                 Type = type,
                 Message = jsonPeer
             };
