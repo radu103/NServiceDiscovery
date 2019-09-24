@@ -6,6 +6,7 @@ using NServiceDiscovery.RuntimeInMemory;
 using System.Linq;
 using System;
 using System.Collections.Generic;
+using NServiceDiscovery.Util;
 
 namespace NServiceDiscoveryAPI.Controllers
 {
@@ -44,6 +45,7 @@ namespace NServiceDiscoveryAPI.Controllers
             request.instance.AppName = appName;
 
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
+
             Instance instance = repo.Add(request.instance);
 
             this.HttpContext.Response.StatusCode = 204;
@@ -95,13 +97,17 @@ namespace NServiceDiscoveryAPI.Controllers
         [HttpPut]
         [Route("/eureka/apps/{appName}/{instanceID}")]
         // "/eureka/apps/{appName}/{instanceID}?status=UP&lastDirtyTimestamp=1568804226113"
-        public ActionResult<string> ReceiveInstanceHeartbeat([FromRoute] string appName, [FromRoute] string instanceID)
+        public ActionResult<string> ReceiveInstanceHeartbeat([FromRoute] string appName, [FromRoute] string instanceID, [FromQuery] long lastDirtyTimestamp)
         {
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
 
             var status = string.Empty;
-            long lastDirtyTimestamp = DateTime.Now.Ticks;
 
+            if(lastDirtyTimestamp == 0)
+            {
+                lastDirtyTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
+            }
+          
             if (Request.QueryString.Value.ToString().IndexOf("status") >= 0)
             {
                 // status change request

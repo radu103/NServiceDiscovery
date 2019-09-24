@@ -160,6 +160,11 @@ namespace NServiceDiscovery.Repository
             instance.Status = "STARTING";
             instance.ActionType = "ADDED";
 
+            if (string.IsNullOrEmpty(instance.InstanceId))
+            {
+                instance.InstanceId = instance.HostName;
+            }
+
             instance.LastDirtyTimestamp = instance.LastUpdatedTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
 
             instance.LeaseInfo.RegistrationTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
