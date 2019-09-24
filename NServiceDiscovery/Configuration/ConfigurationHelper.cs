@@ -1,5 +1,5 @@
-﻿using NServiceDiscovery.Configuration;
-using NServiceDiscovery.Entity;
+﻿using NServiceDiscovery.CloudFoundry;
+using NServiceDiscovery.Configuration;
 using System;
 
 namespace NServiceDiscovery
