@@ -445,6 +445,44 @@
 			"response": []
 		},
 		{
+			"name": "InstanceHeartBeat_1_1",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer public2"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8771/eureka/apps/APPID_1/APPHOST11?value=UP&lastDirtyTimestamp=1569313053570",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8771",
+					"path": [
+						"eureka",
+						"apps",
+						"APPID_1",
+						"APPHOST11"
+					],
+					"query": [
+						{
+							"key": "value",
+							"value": "UP"
+						},
+						{
+							"key": "lastDirtyTimestamp",
+							"value": "1569313053570"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "GetKeyFromStore",
 			"request": {
 				"method": "GET",
