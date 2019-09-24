@@ -184,7 +184,9 @@ namespace NServiceDiscoveryAPI.Services
                     {
                         LastConnectTimestamp = DateTime.UtcNow,
                         ServerInstanceID = peerMessageContent.PeerId,
-                        DiscoveryUrls = peerMessageContent.DiscoveryUrls
+                        DiscoveryUrls = peerMessageContent.DiscoveryUrls,
+                        InstanceIP = Program.INSTANCE_IP,
+                        InstancePort = Program.INSTANCE_PORT
                     };
 
                     Memory.Peers.Add(newPeer);
@@ -209,7 +211,9 @@ namespace NServiceDiscoveryAPI.Services
                     {
                         LastConnectTimestamp = DateTime.UtcNow,
                         ServerInstanceID = peerMessageContent.PeerId,
-                        DiscoveryUrls = peerMessageContent.DiscoveryUrls
+                        DiscoveryUrls = peerMessageContent.DiscoveryUrls,
+                        InstanceIP = Program.INSTANCE_IP,
+                        InstancePort = Program.INSTANCE_PORT
                     };
 
                     _memoryDiscoveryPeerRepository.Add(newPeer);

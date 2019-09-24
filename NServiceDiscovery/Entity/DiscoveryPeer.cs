@@ -13,5 +13,11 @@ namespace NServiceDiscovery.Entity
 
         [JsonProperty("discoveryUrls")]
         public string DiscoveryUrls { get; set; }
+
+        [JsonProperty("instanceIP", Required = Required.AllowNull)]
+        public string InstanceIP { get; set; }
+
+        [JsonProperty("instancePort", Required = Required.AllowNull)]
+        public int InstancePort { get; set; }
     }
 }
