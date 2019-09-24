@@ -135,7 +135,9 @@ namespace NServiceDiscoveryAPI.Services
             var myPeerData = new MQTTPeerMessageContent()
             {
                 PeerId = _mqttClientID,
-                DiscoveryUrls = string.Format("http://{0}/eureka/apps", Program.InstanceConfig.Urls)
+                DiscoveryUrls = string.Format("http://{0}/eureka/apps", Program.InstanceConfig.Urls),
+                InstanceIP = Program.INSTANCE_IP,
+                InstancePort = Program.INSTANCE_PORT
             };
 
             var jsonPeer = JsonConvert.SerializeObject(myPeerData).Replace("\"", "'");
@@ -185,8 +187,8 @@ namespace NServiceDiscoveryAPI.Services
                         LastConnectTimestamp = DateTime.UtcNow,
                         ServerInstanceID = peerMessageContent.PeerId,
                         DiscoveryUrls = peerMessageContent.DiscoveryUrls,
-                        InstanceIP = Program.INSTANCE_IP,
-                        InstancePort = Program.INSTANCE_PORT
+                        InstanceIP = peerMessageContent.InstanceIP,
+                        InstancePort = peerMessageContent.InstancePort
                     };
 
                     Memory.Peers.Add(newPeer);
@@ -212,8 +214,8 @@ namespace NServiceDiscoveryAPI.Services
                         LastConnectTimestamp = DateTime.UtcNow,
                         ServerInstanceID = peerMessageContent.PeerId,
                         DiscoveryUrls = peerMessageContent.DiscoveryUrls,
-                        InstanceIP = Program.INSTANCE_IP,
-                        InstancePort = Program.INSTANCE_PORT
+                        InstanceIP = peerMessageContent.InstanceIP,
+                        InstancePort = peerMessageContent.InstancePort
                     };
 
                     _memoryDiscoveryPeerRepository.Add(newPeer);
@@ -222,6 +224,8 @@ namespace NServiceDiscoveryAPI.Services
                 {
                     existingPeer.LastConnectTimestamp = DateTime.UtcNow;
                     existingPeer.DiscoveryUrls = peerMessageContent.DiscoveryUrls;
+                    existingPeer.InstanceIP = peerMessageContent.InstanceIP;
+                    existingPeer.InstancePort = peerMessageContent.InstancePort;
                 }
             }
         }
