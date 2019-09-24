@@ -31,15 +31,15 @@ AMI metadata processing support for AWS, Azure, Pivotal CF
 
 # Environment variables needed 
 
-### Mandatory
+[defaults values here](./NServiceDiscovery/Configuration/DefaultConfigurationData.cs)
+
+### Mandatory configuration
 
 ASPNETCORE_URLS = the public urls (needed for peer broadcast)
 
-### Optional and defaults
+### Optional configuration
 
 On CF : SINGLE_TENANT_ID & SINGLE_TENANT_TYPE user providedd ENV VARIABLES if you want to block the functionality to a single tenant (named by configuration)
-
-[defaults values here](./NServiceDiscovery/Configuration/DefaultConfigurationData.cs)
 
 # HOW-TO-GUIDES
 
@@ -215,7 +215,7 @@ Topic template name : `NServiceDiscovery-{tenantId}-{landscape}`
 ```
 
 
-### INSTANCE_HEARTBEAT = to be published by new instance that has started
+### INSTANCE_HEARTBEAT = to be published by all instances at constant interval
 
 ```json
 {
