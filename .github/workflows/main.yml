@@ -1,0 +1,10 @@
+name: docker build
+
+on:
+  push:
+    branches:
+    - master
+
+steps:
+  - name: docker build image
+    run: docker build -f "C:\Work\NServiceDiscovery\NServiceDiscoveryAPI\Dockerfile" -t nservicediscovery
