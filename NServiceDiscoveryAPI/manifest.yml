@@ -6,3 +6,5 @@
    env:
     SINGLE_TENANT_ID : public
     SINGLE_TENANT_TYPE : production
+   services:
+    - mongodb1
