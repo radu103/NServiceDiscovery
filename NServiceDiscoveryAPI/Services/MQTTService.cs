@@ -188,7 +188,7 @@ namespace NServiceDiscoveryAPI.Services
                 {
                     var newPeer = new DiscoveryPeer()
                     {
-                        LastConnectTimestamp = DateTime.UtcNow,
+                        LastUpdateTimestamp = DateTime.UtcNow,
                         ServerInstanceID = peerMessageContent.PeerId,
                         DiscoveryUrls = peerMessageContent.DiscoveryUrls,
                         InstanceIP = peerMessageContent.InstanceIP,
@@ -215,7 +215,7 @@ namespace NServiceDiscoveryAPI.Services
                 {
                     var newPeer = new DiscoveryPeer()
                     {
-                        LastConnectTimestamp = DateTime.UtcNow,
+                        LastUpdateTimestamp = DateTime.UtcNow,
                         ServerInstanceID = peerMessageContent.PeerId,
                         DiscoveryUrls = peerMessageContent.DiscoveryUrls,
                         InstanceIP = peerMessageContent.InstanceIP,
@@ -226,7 +226,7 @@ namespace NServiceDiscoveryAPI.Services
                 }
                 else
                 {
-                    existingPeer.LastConnectTimestamp = DateTime.UtcNow;
+                    existingPeer.LastUpdateTimestamp = DateTime.UtcNow;
                     existingPeer.DiscoveryUrls = peerMessageContent.DiscoveryUrls;
                     existingPeer.InstanceIP = peerMessageContent.InstanceIP;
                     existingPeer.InstancePort = peerMessageContent.InstancePort;

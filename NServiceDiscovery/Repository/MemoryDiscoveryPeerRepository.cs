@@ -10,13 +10,13 @@ namespace NServiceDiscovery.Repository
         public void Add(DiscoveryPeer newPeer)
         {
             Memory.Peers.Add(newPeer);
-            Memory.Peers = Memory.Peers.OrderByDescending(p => p.LastConnectTimestamp).ToList();
+            Memory.Peers = Memory.Peers.OrderByDescending(p => p.LastUpdateTimestamp).ToList();
         }
 
         public int EvictPeers(int peerEvictionInSecs)
         {
-            var peersEvicted = Memory.Peers.RemoveAll(p => p.LastConnectTimestamp.AddSeconds(peerEvictionInSecs) < DateTime.UtcNow);
-            Memory.Peers = Memory.Peers.OrderByDescending(p => p.LastConnectTimestamp).ToList();
+            var peersEvicted = Memory.Peers.RemoveAll(p => p.LastUpdateTimestamp.AddSeconds(peerEvictionInSecs) < DateTime.UtcNow);
+            Memory.Peers = Memory.Peers.OrderByDescending(p => p.LastUpdateTimestamp).ToList();
             return peersEvicted;
         }
     }

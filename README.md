@@ -18,8 +18,8 @@
 * [READY] Expired metadata removal
     * [READY] Automatic instance eviction task if no heartbeat http message received
     * [READY] Automatic peer removal task if no heartbeat mqtt message received
-* [TO DO] Sync metadata in memory for multiple instances via MQTT broker messages (save to persistency by the changer & load from persistency on mqqt message by the others)
-* [TO DO] Persistence with SAP HANA / Mongo/ Redis
+* [TO DO] Sync metadata in memory for multiple instances via MQTT broadcast messages for known peers with QoS 1 (at least once)
+* [TO DO] Persistence with SAP HANA / Mongo / Redis
 
 ## Not in scope yet
 
