@@ -13,6 +13,8 @@ using System.Threading;
 using NServiceDiscovery.Repository;
 using System.Collections.Generic;
 using NServiceDiscoveryAPI.MQTT;
+using MQTTnet.Client.Disconnecting;
+using MQTTnet.Client.Connecting;
 
 namespace NServiceDiscoveryAPI.Services
 {
@@ -21,14 +23,71 @@ namespace NServiceDiscoveryAPI.Services
         private IMemoryDiscoveryPeerRepository _memoryDiscoveryPeerRepository;
 
         private MqttFactory _factory = new MqttFactory();
-
         private string _mqttClientID { get; set; }
-
         private List<MyMQTTClient> _mqttClients = new List<MyMQTTClient>();
-
         private IMqttClientOptions _mqttClientOptions;
 
         private System.Timers.Timer _broadcastPeerTimer;
+
+        private async void UseDisconnectedHandler(IMqttClient mqttClient, MqttClientDisconnectedEventArgs disconnected)
+        {
+            Console.WriteLine("MQTT CLIENT - DISCONNECTED FROM MQTT BROKER");
+            await Task.Delay(TimeSpan.FromSeconds(Program.InstanceConfig.MQTTReconnectSeconds));
+
+            try
+            {
+                await mqttClient.ConnectAsync(_mqttClientOptions, CancellationToken.None);
+            }
+            catch (Exception err)
+            {
+                Console.WriteLine(err.Message);
+                Console.WriteLine("MQTT CLIENT - RECONNECTING FAILED");
+            }
+        }
+
+        private async void UseConnectedHandler(IMqttClient mqttClient, string topic, MqttClientConnectedEventArgs conn)
+        {
+            Console.WriteLine("MQTT CLIENT - CONNECTED TO MQTT BROKER");
+
+            // subscribe to tenant and landscape specific topic
+            mqttClient.SubscribeAsync(topic, MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce);
+
+            // brodcast my peer info
+            BroadcastMyPeerInfo("INSTANCE_CONNECTED");
+        }
+
+        private async void UseApplicationMessageReceivedHandler(MqttApplicationMessageReceivedEventArgs message)
+        {
+            var jsonStr = message.ApplicationMessage.ConvertPayloadToString();
+
+            Console.WriteLine("MQTT CLIENT - MQTT MESSAGE RECEIVED");
+            Console.WriteLine(jsonStr);
+            Console.WriteLine(string.Empty);
+
+            var mqttMessage = JsonConvert.DeserializeObject<MQTTMessage>(jsonStr);
+
+            // do not process own messages except ALL broadcast messages
+            if (mqttMessage != null && (mqttMessage.FromInstanceId.CompareTo(_mqttClientID) != 0 || mqttMessage.ToInstancesIds.IndexOf("ALL") == 0))
+            {
+                // process peer broadcast message
+                if (mqttMessage.ToInstancesIds.IndexOf("ALL") >= 0 && mqttMessage.Type.CompareTo("INSTANCE_CONNECTED") == 0 && mqttMessage.FromInstanceId.CompareTo(_mqttClientID) != 0)
+                {
+                    ProcessInstanceConnected(message.ApplicationMessage.Topic, mqttMessage);
+                }
+
+                // TO DO : other messages
+                if (mqttMessage.ToInstancesIds.IndexOf("ALL") >= 0 && mqttMessage.Type.CompareTo("INSTANCE_HEARTBEAT") == 0 && mqttMessage.FromInstanceId.CompareTo(_mqttClientID) != 0)
+                {
+                    ProcessInstanceHeartbeat(message.ApplicationMessage.Topic, mqttMessage);
+                }
+
+                // TO DO : other messages
+            }
+
+            Console.WriteLine("MQTT CLIENT - MQTT MESSAGE RECEIVED");
+            Console.WriteLine(jsonStr);
+            Console.WriteLine(string.Empty);
+        }
 
         public MQTTService(IMemoryDiscoveryPeerRepository memoryDiscoveryPeerRepository)
         {
@@ -68,62 +127,17 @@ namespace NServiceDiscoveryAPI.Services
 
                 mqttClient.UseDisconnectedHandler(async disconnected =>
                 {
-                    Console.WriteLine("MQTT CLIENT - DISCONNECTED FROM MQTT BROKER");
-                    await Task.Delay(TimeSpan.FromSeconds(Program.InstanceConfig.MQTTReconnectSeconds));
-
-                    try
-                    {
-                        await mqttClient.ConnectAsync(_mqttClientOptions, CancellationToken.None);
-                    }
-                    catch (Exception err)
-                    {
-                        Console.WriteLine(err.Message);
-                        Console.WriteLine("MQTT CLIENT - RECONNECTING FAILED");
-                    }
+                    UseDisconnectedHandler(mqttClient, disconnected);
                 });
 
                 mqttClient.UseConnectedHandler(async conn =>
                 {
-                    Console.WriteLine("MQTT CLIENT - CONNECTED TO MQTT BROKER");
-
-                // subscribe to tenant and landscape specific topic
-                mqttClient.SubscribeAsync(myMqttClient.mqttTopic, MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce);
-
-                // brodcast my peer info
-                BroadcastMyPeerInfo("INSTANCE_CONNECTED");
+                    UseConnectedHandler(mqttClient, myMqttClient.mqttTopic, conn);
                 });
 
                 mqttClient.UseApplicationMessageReceivedHandler(async message =>
                 {
-                    var jsonStr = message.ApplicationMessage.ConvertPayloadToString();
-
-                    Console.WriteLine("MQTT CLIENT - MQTT MESSAGE RECEIVED");
-                    Console.WriteLine(jsonStr);
-                    Console.WriteLine(string.Empty);
-
-                    var mqttMessage = JsonConvert.DeserializeObject<MQTTMessage>(jsonStr);
-
-                // do not process own messages except ALL broadcast messages
-                if (mqttMessage != null && (mqttMessage.FromInstanceId.CompareTo(_mqttClientID) != 0 || mqttMessage.ToInstancesIds.IndexOf("ALL") == 0))
-                    {
-                    // process peer broadcast message
-                    if (mqttMessage.ToInstancesIds.IndexOf("ALL") >= 0 && mqttMessage.Type.CompareTo("INSTANCE_CONNECTED") == 0 && mqttMessage.FromInstanceId.CompareTo(_mqttClientID) != 0)
-                        {
-                            ProcessInstanceConnected(message.ApplicationMessage.Topic, mqttMessage);
-                        }
-
-                    // TO DO : other messages
-                    if (mqttMessage.ToInstancesIds.IndexOf("ALL") >= 0 && mqttMessage.Type.CompareTo("INSTANCE_HEARTBEAT") == 0 && mqttMessage.FromInstanceId.CompareTo(_mqttClientID) != 0)
-                        {
-                            ProcessInstanceHeartbeat(message.ApplicationMessage.Topic, mqttMessage);
-                        }
-
-                    // TO DO : other messages
-                }
-
-                    Console.WriteLine("MQTT CLIENT - MQTT MESSAGE RECEIVED");
-                    Console.WriteLine(jsonStr);
-                    Console.WriteLine(string.Empty);
+                    UseApplicationMessageReceivedHandler(message);
                 });
 
                 var task = mqttClient.ConnectAsync(_mqttClientOptions);

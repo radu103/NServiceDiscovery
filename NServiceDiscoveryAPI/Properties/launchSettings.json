@@ -14,8 +14,10 @@
       "launchBrowser": true,
       "launchUrl": "eureka/apps",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "http://localhost:8771"
+        "SINGLE_TENANT_ID": "public",
+        "ASPNETCORE_URLS": "http://localhost:8771",
+        "SINGLE_TENANT_TYPE": "production",
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "NServiceDiscoveryAPI": {
