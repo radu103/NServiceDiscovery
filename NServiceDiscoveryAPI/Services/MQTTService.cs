@@ -215,7 +215,7 @@ namespace NServiceDiscoveryAPI.Services
 
             var peerMessageContent = JsonConvert.DeserializeObject<MQTTPeerMessageContent>(receivedMessage);
 
-            if (peerMessageContent != null && peerMessageContent.PeerId.CompareTo(mqttMessage.FromInstanceId) != 0)
+            if (peerMessageContent != null && mqttMessage.FromInstanceId.CompareTo(Program.InstanceConfig.ServerInstanceID) != 0)
             {
                 // respond back with my peer data
                 var myMqttClient = _mqttClients.SingleOrDefault(c => c.mqttTopic.CompareTo(topic) == 0);
@@ -227,7 +227,7 @@ namespace NServiceDiscoveryAPI.Services
                 }
 
                 // add new peer to my peers
-                var existingPeer = Memory.Peers.SingleOrDefault(p => p.ServerInstanceID.CompareTo(peerMessageContent.PeerId) == 0);
+                var existingPeer = Memory.Peers.FirstOrDefault(p => p.ServerInstanceID.CompareTo(peerMessageContent.PeerId) == 0);
 
                 if (existingPeer == null)
                 {
@@ -251,10 +251,10 @@ namespace NServiceDiscoveryAPI.Services
 
             var peerMessageContent = JsonConvert.DeserializeObject<MQTTPeerMessageContent>(receivedMessage);
 
-            if (peerMessageContent != null && peerMessageContent.PeerId.CompareTo(mqttMessage.FromInstanceId) != 0)
+            if (peerMessageContent != null && mqttMessage.FromInstanceId.CompareTo(Program.InstanceConfig.ServerInstanceID) != 0)
             {
                 // add new peer to my peers
-                var existingPeer = Memory.Peers.SingleOrDefault(p => p.ServerInstanceID.CompareTo(peerMessageContent.PeerId) == 0);
+                var existingPeer = Memory.Peers.FirstOrDefault(p => p.ServerInstanceID.CompareTo(peerMessageContent.PeerId) == 0);
 
                 if (existingPeer == null)
                 {
