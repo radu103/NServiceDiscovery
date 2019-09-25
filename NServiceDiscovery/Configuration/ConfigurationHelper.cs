@@ -13,10 +13,6 @@ namespace NServiceDiscovery
 
                 ServerInstanceID = Guid.NewGuid().ToString(),
 
-                TenantID = DefaultConfigurationData.DefaultTenantID,
-                TenantType = DefaultConfigurationData.DefaultTenantType,
-                TenantToken = DefaultConfigurationData.DefaultTenantToken,
-
                 EvictionTimerIntervalInSecs = DefaultConfigurationData.DefaultEvictionTimerIntervalInSecs,
                 PeerEvictionInSecs = DefaultConfigurationData.DefaultPeerEvictionInSecs,
                 PeerHeartbeatBeforeEvictionInSecs = DefaultConfigurationData.DefaultPeerHeartbeatBeforeEvictionInSecs,
@@ -35,7 +31,6 @@ namespace NServiceDiscovery
                 MQTTPort = DefaultConfigurationData.DefaultMQTTPort,
                 MQTTUsername = DefaultConfigurationData.DefaultMQTTUsername,
                 MQTTPassword = DefaultConfigurationData.DefaultMQTTPassword,
-                MQTTTopicName = DefaultConfigurationData.DefaultMQTTTopicName,
                 MQTTReconnectSeconds = DefaultConfigurationData.DefaultMQTTReconnectSeconds
             };
 

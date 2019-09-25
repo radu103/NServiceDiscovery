@@ -6,10 +6,6 @@ namespace NServiceDiscovery
         public string ServerInstanceID { get; set; }
         public string Urls { get; set; }
 
-        public string TenantID { get; set; }
-        public string TenantType { get; set; }
-        public string TenantToken { get; set; }
-
         public int EvictionTimerIntervalInSecs { get; set; }
         public int PeerEvictionInSecs { get; set; }
         public int PeerHeartbeatBeforeEvictionInSecs { get; set; }
@@ -28,7 +24,6 @@ namespace NServiceDiscovery
         public int MQTTPort { get; set; }
         public string MQTTUsername { get; set; }
         public string MQTTPassword { get; set; }
-        public string MQTTTopicName { get; set; }
         public int MQTTReconnectSeconds { get; set; }
     }
 }

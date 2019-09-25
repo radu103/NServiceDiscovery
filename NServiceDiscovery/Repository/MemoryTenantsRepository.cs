@@ -1,21 +1,10 @@
-﻿using NServiceDiscovery.Configuration;
-using NServiceDiscovery.Entity;
+﻿using NServiceDiscovery.Entity;
 using System.Collections.Generic;
 
 namespace NServiceDiscovery.Repository
 {
-    public class MemoryTenantsRepository
+    public class MemoryTenantsRepository : IMemoryTenantsRepository
     {
-        private string repoTenantId = DefaultConfigurationData.DefaultTenantID;
-
-        public MemoryTenantsRepository(string tenantId)
-        {
-            if (!string.IsNullOrEmpty(tenantId))
-            {
-                repoTenantId = tenantId;
-            }
-        }
-
         public List<Tenant> GetAll()
         {
             var list = new List<Tenant>();

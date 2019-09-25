@@ -11,22 +11,13 @@ namespace NServiceDiscoveryAPI.Services
     public class EvictionService : IEvictionService
     {
         private static IMemoryDiscoveryPeerRepository _memoryDiscoveryPeerRepository;
-        private MemoryServicesRepository _memoryServicesRuntimeRepository;
-
+        
         private Timer _evictionTimer;
 
         public EvictionService(IMemoryDiscoveryPeerRepository memoryDiscoveryPeerRepository)
         {
             _memoryDiscoveryPeerRepository = memoryDiscoveryPeerRepository;
 
-            var tenantId = Program.SINGLE_TENANT_ID + "0" + Program.SINGLE_TENANT_TYPE;
-
-            //if (string.IsNullOrEmpty(tenantId))
-            //    _memoryServicesRuntimeRepository = new MemoryServicesRepository();
-            //}
-            //else{
-            //    _memoryServicesRuntimeRepository = new MemoryServicesRepository(tenantId);
-            //}
             _evictionTimer = new Timer(Program.InstanceConfig.EvictionTimerIntervalInSecs * 1000);
             _evictionTimer.AutoReset = true;
             _evictionTimer.Enabled = true;

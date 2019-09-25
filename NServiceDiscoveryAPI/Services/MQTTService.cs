@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using NServiceDiscoveryAPI.MQTT;
 using MQTTnet.Client.Disconnecting;
 using MQTTnet.Client.Connecting;
+using NServiceDiscovery.Configuration;
 
 namespace NServiceDiscoveryAPI.Services
 {
@@ -96,15 +97,16 @@ namespace NServiceDiscoveryAPI.Services
             _mqttClientID = Program.InstanceConfig.ServerInstanceID;
 
             // single tenant case, only 1 MQTT client needed
-            if (!string.IsNullOrEmpty(Program.SINGLE_TENANT_ID))
+            for(var t = 0; t < Program.Tenants.Count; t++)
             {
+                var mqttTopic = DefaultConfigurationData.DefaultMQTTTopicTemplate.Replace("{TenantId}", Program.Tenants[t].TenantId).Replace("{TenantType}", Program.Tenants[t].TenantType);
                 var mqttClient = _factory.CreateMqttClient();
 
                 var myMqttClient = new MyMQTTClient()
                 {
-                    TenantId = Program.SINGLE_TENANT_ID,
-                    TenantType = Program.SINGLE_TENANT_TYPE,
-                    mqttTopic = Program.InstanceConfig.MQTTTopicName,
+                    TenantId = Program.Tenants[t].TenantId,
+                    TenantType = Program.Tenants[t].TenantType,
+                    mqttTopic = mqttTopic,
                     mqttClient = mqttClient
                 };
                
@@ -141,7 +143,6 @@ namespace NServiceDiscoveryAPI.Services
                 });
 
                 var task = mqttClient.ConnectAsync(_mqttClientOptions);
-                task.Wait();
 
                 _mqttClients.Add(myMqttClient);
             }

@@ -2,15 +2,17 @@
 using Microsoft.AspNetCore.Hosting;
 using NServiceDiscovery;
 using NServiceDiscovery.CloudFoundry;
+using NServiceDiscovery.Entity;
+using NServiceDiscovery.Repository;
 using NServiceDiscovery.Util;
 using NServiceDiscoveryAPI.Services;
+using System.Collections.Generic;
 
 namespace NServiceDiscoveryAPI
 {
     public class Program
     {
-        public static string SINGLE_TENANT_ID = string.Empty;
-        public static string SINGLE_TENANT_TYPE = string.Empty;
+        public static List<Tenant> Tenants = new List<Tenant>();
 
         public static string INSTANCE_GUID = string.Empty;
         public static string INSTANCE_IP = string.Empty;
@@ -26,8 +28,8 @@ namespace NServiceDiscoveryAPI
 
         public static void Main(string[] args)
         {
-            Program.SINGLE_TENANT_ID = CloudFoundryEnvironmentUtil.GetTenantIdFromEnv();
-            Program.SINGLE_TENANT_TYPE = CloudFoundryEnvironmentUtil.GetTenantTypeFromEnv();
+            var SINGLE_TENANT_ID = CloudFoundryEnvironmentUtil.GetTenantIdFromEnv();
+            var SINGLE_TENANT_TYPE = CloudFoundryEnvironmentUtil.GetTenantTypeFromEnv();
 
             Program.INSTANCE_GUID = CloudFoundryEnvironmentUtil.GetInstanceGuidFromEnv();
             Program.INSTANCE_IP = CloudFoundryEnvironmentUtil.GetInstanceIpFromEnv();
@@ -43,9 +45,20 @@ namespace NServiceDiscoveryAPI
                 Program.InstanceConfig.Urls = Program.cloudFoundryVcapApplication.ApplicationUrls[0];
             }
 
-            if (!string.IsNullOrEmpty(Program.SINGLE_TENANT_ID))
+            if (!string.IsNullOrEmpty(SINGLE_TENANT_ID))
             {
-                Program.InstanceConfig.MQTTTopicName = "NServiceDiscovery-" + Program.SINGLE_TENANT_ID + "-" + Program.SINGLE_TENANT_TYPE;
+                Tenant singleTenant = new Tenant()
+                {
+                    TenantId = SINGLE_TENANT_ID,
+                    TenantType = SINGLE_TENANT_TYPE
+                };
+
+                Tenants.Add(singleTenant);
+            }
+            else
+            {
+                var repoTenants = new MemoryTenantsRepository();
+                Tenants = repoTenants.GetAll();
             }
 
             CreateWebHostBuilder(args).Build().Run();

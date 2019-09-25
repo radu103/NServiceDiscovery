@@ -30,7 +30,7 @@ namespace NServiceDiscovery.Configuration
         public static int DefaultMQTTPort = 1883;
         public static string DefaultMQTTUsername = string.Empty;
         public static string DefaultMQTTPassword = string.Empty;
-        public static string DefaultMQTTTopicName = "NServiceDiscovery-" + DefaultConfigurationData.DefaultTenantID + "-" + DefaultConfigurationData.DefaultTenantType;
+        public static string DefaultMQTTTopicTemplate = "NServiceDiscovery-{TenantID}-{TenantType}";
         public static int DefaultMQTTReconnectSeconds = 1;
     }
 }
