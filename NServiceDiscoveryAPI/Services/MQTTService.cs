@@ -159,11 +159,11 @@ namespace NServiceDiscoveryAPI.Services
             BroadcastMyPeerInfo();
         }
 
-        private MQTTMessage GetPeerMessage(string fromInstanceId, string toInstanceId = "ALL", string type = "INSTANCE_CONNECTED")
+        private MQTTMessage GetPeerMessage(string toInstanceId = "ALL", string type = "INSTANCE_CONNECTED")
         {
             var myPeerData = new MQTTPeerMessageContent()
             {
-                PeerId = fromInstanceId,
+                PeerId = Program.InstanceConfig.ServerInstanceID,
                 DiscoveryUrls = string.Format("http://{0}/eureka/apps", Program.InstanceConfig.Urls),
                 InstanceIP = Program.INSTANCE_IP,
                 InstancePort = Program.INSTANCE_PORT
@@ -176,7 +176,7 @@ namespace NServiceDiscoveryAPI.Services
 
             var newPeerMessage = new MQTTMessage()
             {
-                FromInstanceId = fromInstanceId,
+                FromInstanceId = Program.InstanceConfig.ServerInstanceID,
                 ToInstancesIds = destInstances,
                 Type = type,
                 Message = jsonPeer
@@ -189,7 +189,7 @@ namespace NServiceDiscoveryAPI.Services
         {
             try
             {
-                var myPeerMessage = GetPeerMessage(Program.InstanceConfig.ServerInstanceID, "ALL", type);
+                var myPeerMessage = GetPeerMessage("ALL", type);
 
                 for (var t = 0; t < _mqttClients.Count; t++)
                 {
