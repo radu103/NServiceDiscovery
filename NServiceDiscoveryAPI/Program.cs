@@ -43,6 +43,11 @@ namespace NServiceDiscoveryAPI
                 Program.InstanceConfig.Urls = Program.cloudFoundryVcapApplication.ApplicationUrls[0];
             }
 
+            if (!string.IsNullOrEmpty(Program.SINGLE_TENANT_ID))
+            {
+                Program.InstanceConfig.MQTTTopicName = "NServiceDiscovery-" + Program.SINGLE_TENANT_ID + "-" + Program.SINGLE_TENANT_TYPE;
+            }
+
             CreateWebHostBuilder(args).Build().Run();
         }
 

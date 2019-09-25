@@ -28,8 +28,14 @@ namespace NServiceDiscovery.Repository
 
             list.Add(new Tenant()
             {
-                TenantId = "public2",
-                TenantType = "dev"
+                TenantId = "public",
+                TenantType = "qa"
+            });
+
+            list.Add(new Tenant()
+            {
+                TenantId = "public",
+                TenantType = "production"
             });
 
             return list;
