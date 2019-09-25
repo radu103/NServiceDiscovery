@@ -6,7 +6,9 @@ using NServiceDiscovery.Entity;
 using NServiceDiscovery.Repository;
 using NServiceDiscovery.Util;
 using NServiceDiscoveryAPI.Services;
+using System;
 using System.Collections.Generic;
+using System.Timers;
 
 namespace NServiceDiscoveryAPI
 {
@@ -26,8 +28,26 @@ namespace NServiceDiscoveryAPI
         public static IMQTTService mqttService;
         public static IEvictionService evictionService;
 
+        private static Timer _gcTimer;
+
+        private static void OnGCTimedEvent(Object source, ElapsedEventArgs e)
+        {
+            Console.WriteLine("GC started at {0:HH:mm:ss.fff}", e.SignalTime);
+            System.GC.Collect();
+        }
+
+        private static void StartGCTimer()
+        {
+            _gcTimer = new System.Timers.Timer(10 * 60 * 1000); // 10 minutes
+            _gcTimer.AutoReset = true;
+            _gcTimer.Enabled = true;
+            _gcTimer.Elapsed += OnGCTimedEvent;
+        }
+
         public static void Main(string[] args)
         {
+            StartGCTimer();
+
             var SINGLE_TENANT_ID = CloudFoundryEnvironmentUtil.GetTenantIdFromEnv();
             var SINGLE_TENANT_TYPE = CloudFoundryEnvironmentUtil.GetTenantTypeFromEnv();
 
