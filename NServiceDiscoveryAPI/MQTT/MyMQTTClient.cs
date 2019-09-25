@@ -10,6 +10,8 @@ namespace NServiceDiscoveryAPI.MQTT
 
         public string mqttTopic { get; set; }
 
+        public string mqttClientId { get; set; }
+
         public IMqttClient mqttClient { get; set; }
     }
 }

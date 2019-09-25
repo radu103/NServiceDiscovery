@@ -14,7 +14,6 @@
       "launchBrowser": true,
       "launchUrl": "eureka/apps",
       "environmentVariables": {
-        "SINGLE_TENANT_ID": "public",
         "ASPNETCORE_URLS": "http://localhost:8771"
       }
     },

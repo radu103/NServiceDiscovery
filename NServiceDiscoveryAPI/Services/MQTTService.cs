@@ -24,7 +24,6 @@ namespace NServiceDiscoveryAPI.Services
         private IMemoryDiscoveryPeerRepository _memoryDiscoveryPeerRepository;
 
         private MqttFactory _factory = new MqttFactory();
-        private string _mqttClientID { get; set; }
         private List<MyMQTTClient> _mqttClients = new List<MyMQTTClient>();
         private IMqttClientOptions _mqttClientOptions;
 
@@ -68,16 +67,16 @@ namespace NServiceDiscoveryAPI.Services
             var mqttMessage = JsonConvert.DeserializeObject<MQTTMessage>(jsonStr);
 
             // do not process own messages except ALL broadcast messages
-            if (mqttMessage != null && (mqttMessage.FromInstanceId.CompareTo(_mqttClientID) != 0 || mqttMessage.ToInstancesIds.IndexOf("ALL") == 0))
+            if (mqttMessage != null && (mqttMessage.FromInstanceId.IndexOf(Program.InstanceConfig.ServerInstanceID) < 0 || mqttMessage.ToInstancesIds.IndexOf("ALL") == 0))
             {
-                // process peer broadcast message
-                if (mqttMessage.ToInstancesIds.IndexOf("ALL") >= 0 && mqttMessage.Type.CompareTo("INSTANCE_CONNECTED") == 0 && mqttMessage.FromInstanceId.CompareTo(_mqttClientID) != 0)
+                // process peer broadcast message : INSTANCE_CONNECTED
+                if (mqttMessage.ToInstancesIds.IndexOf("ALL") >= 0 && mqttMessage.Type.CompareTo("INSTANCE_CONNECTED") == 0 && mqttMessage.FromInstanceId.IndexOf(Program.InstanceConfig.ServerInstanceID) < 0)
                 {
                     ProcessInstanceConnected(message.ApplicationMessage.Topic, mqttMessage);
                 }
 
-                // TO DO : other messages
-                if (mqttMessage.ToInstancesIds.IndexOf("ALL") >= 0 && mqttMessage.Type.CompareTo("INSTANCE_HEARTBEAT") == 0 && mqttMessage.FromInstanceId.CompareTo(_mqttClientID) != 0)
+                // process peer broadcast message : INSTANCE_HEARTBEAT
+                if (mqttMessage.ToInstancesIds.IndexOf("ALL") >= 0 && mqttMessage.Type.CompareTo("INSTANCE_HEARTBEAT") == 0 && mqttMessage.FromInstanceId.IndexOf(Program.InstanceConfig.ServerInstanceID) < 0)
                 {
                     ProcessInstanceHeartbeat(message.ApplicationMessage.Topic, mqttMessage);
                 }
@@ -94,28 +93,28 @@ namespace NServiceDiscoveryAPI.Services
         {
             _memoryDiscoveryPeerRepository = memoryDiscoveryPeerRepository;
 
-            _mqttClientID = Program.InstanceConfig.ServerInstanceID;
-
             // single tenant case, only 1 MQTT client needed
             for(var t = 0; t < Program.Tenants.Count; t++)
             {
                 var mqttTopic = DefaultConfigurationData.DefaultMQTTTopicTemplate.Replace("{TenantId}", Program.Tenants[t].TenantId).Replace("{TenantType}", Program.Tenants[t].TenantType);
                 var mqttClient = _factory.CreateMqttClient();
 
+                var mqttClientID = Program.InstanceConfig.ServerInstanceID + ":" + Program.Tenants[t].TenantId + ":" + Program.Tenants[t].TenantType;
+
                 var myMqttClient = new MyMQTTClient()
                 {
                     TenantId = Program.Tenants[t].TenantId,
                     TenantType = Program.Tenants[t].TenantType,
                     mqttTopic = mqttTopic,
-                    mqttClient = mqttClient
+                    mqttClient = mqttClient,
+                    mqttClientId = mqttClientID
                 };
-               
 
                 if (string.IsNullOrEmpty(Program.InstanceConfig.MQTTUsername))
                 {
                     _mqttClientOptions = new MqttClientOptionsBuilder()
                                     .WithTcpServer(Program.InstanceConfig.MQTTHost, Program.InstanceConfig.MQTTPort)
-                                    .WithClientId(_mqttClientID)
+                                    .WithClientId(myMqttClient.mqttClientId)
                                     .Build();
                 }
                 else
@@ -123,7 +122,7 @@ namespace NServiceDiscoveryAPI.Services
                     _mqttClientOptions = new MqttClientOptionsBuilder()
                         .WithTcpServer(Program.InstanceConfig.MQTTHost, Program.InstanceConfig.MQTTPort)
                         .WithCredentials(Program.InstanceConfig.MQTTUsername, Program.InstanceConfig.MQTTPassword)
-                        .WithClientId(_mqttClientID)
+                        .WithClientId(myMqttClient.mqttClientId)
                         .Build();
                 }
 
@@ -160,11 +159,11 @@ namespace NServiceDiscoveryAPI.Services
             BroadcastMyPeerInfo();
         }
 
-        private MQTTMessage GetMyPeerMessage(string toInstanceId = "ALL", string type = "INSTANCE_CONNECTED")
+        private MQTTMessage GetPeerMessage(string fromInstanceId, string toInstanceId = "ALL", string type = "INSTANCE_CONNECTED")
         {
             var myPeerData = new MQTTPeerMessageContent()
             {
-                PeerId = _mqttClientID,
+                PeerId = fromInstanceId,
                 DiscoveryUrls = string.Format("http://{0}/eureka/apps", Program.InstanceConfig.Urls),
                 InstanceIP = Program.INSTANCE_IP,
                 InstancePort = Program.INSTANCE_PORT
@@ -177,7 +176,7 @@ namespace NServiceDiscoveryAPI.Services
 
             var newPeerMessage = new MQTTMessage()
             {
-                FromInstanceId = _mqttClientID,
+                FromInstanceId = fromInstanceId,
                 ToInstancesIds = destInstances,
                 Type = type,
                 Message = jsonPeer
@@ -188,13 +187,25 @@ namespace NServiceDiscoveryAPI.Services
 
         private void BroadcastMyPeerInfo(string type = "INSTANCE_HEARTBEAT")
         {
-            var myPeerMessage = GetMyPeerMessage("ALL", type);
-            for(var i = 0; i < _mqttClients.Count; i++)
+            try
             {
-                if (_mqttClients[i].mqttClient.IsConnected)
+                var myPeerMessage = GetPeerMessage(Program.InstanceConfig.ServerInstanceID, "ALL", type);
+
+                for (var t = 0; t < _mqttClients.Count; t++)
                 {
-                    _mqttClients[i].mqttClient.PublishAsync(_mqttClients[i].mqttTopic, JsonConvert.SerializeObject(myPeerMessage));
+                    var topicName = _mqttClients[t].mqttTopic;
+                    var jsonMessage = JsonConvert.SerializeObject(myPeerMessage);
+
+                    if (_mqttClients[t].mqttClient.IsConnected)
+                    {
+                        _mqttClients[t].mqttClient.PublishAsync(topicName, jsonMessage, MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce);
+                    }
                 }
+            }
+            catch(Exception err)
+            {
+                Console.WriteLine("BroadcastMyPeerInfo ERROR : ", err.Message);
+                Console.WriteLine("BroadcastMyPeerInfo Stack Trace : ", err.StackTrace);
             }
         }
 
@@ -204,14 +215,14 @@ namespace NServiceDiscoveryAPI.Services
 
             var peerMessageContent = JsonConvert.DeserializeObject<MQTTPeerMessageContent>(receivedMessage);
 
-            if (peerMessageContent != null && peerMessageContent.PeerId.CompareTo(_mqttClientID) != 0)
+            if (peerMessageContent != null && peerMessageContent.PeerId.CompareTo(mqttMessage.FromInstanceId) != 0)
             {
                 // respond back with my peer data
                 var myMqttClient = _mqttClients.SingleOrDefault(c => c.mqttTopic.CompareTo(topic) == 0);
 
                 if (myMqttClient != null && myMqttClient.mqttClient.IsConnected)
                 {
-                    var myPeerMessage = GetMyPeerMessage(peerMessageContent.PeerId);
+                    var myPeerMessage = GetPeerMessage(peerMessageContent.PeerId, "INSTANCE_HEARTBEAT");
                     myMqttClient.mqttClient.PublishAsync(myMqttClient.mqttTopic, JsonConvert.SerializeObject(myPeerMessage));
                 }
 
@@ -240,7 +251,7 @@ namespace NServiceDiscoveryAPI.Services
 
             var peerMessageContent = JsonConvert.DeserializeObject<MQTTPeerMessageContent>(receivedMessage);
 
-            if (peerMessageContent != null && peerMessageContent.PeerId.CompareTo(_mqttClientID) != 0)
+            if (peerMessageContent != null && peerMessageContent.PeerId.CompareTo(mqttMessage.FromInstanceId) != 0)
             {
                 // add new peer to my peers
                 var existingPeer = Memory.Peers.SingleOrDefault(p => p.ServerInstanceID.CompareTo(peerMessageContent.PeerId) == 0);

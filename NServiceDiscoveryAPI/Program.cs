@@ -45,7 +45,7 @@ namespace NServiceDiscoveryAPI
                 Program.InstanceConfig.Urls = Program.cloudFoundryVcapApplication.ApplicationUrls[0];
             }
 
-            if (!string.IsNullOrEmpty(SINGLE_TENANT_ID))
+            if (!string.IsNullOrEmpty(SINGLE_TENANT_ID) && !string.IsNullOrEmpty(SINGLE_TENANT_TYPE))
             {
                 Tenant singleTenant = new Tenant()
                 {
