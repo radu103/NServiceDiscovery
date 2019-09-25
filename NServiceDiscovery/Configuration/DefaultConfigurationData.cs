@@ -19,11 +19,12 @@ namespace NServiceDiscovery.Configuration
         public static int DefaultDurationInSecs = 90;
 
         // persistency config
-        public static string DefaultPersistencyHostName = "";
-        public static int DefaultPersistencyPort = 0;
-        public static string DefaultPersistencyUsername = "";
-        public static string DefaultPersistencyPassword = "";
-        public static string DefaultPersistencyDBName = "";
+        public static string DefaultPersistencyType = "MONGODB";
+        public static string DefaultPersistencyHostName = "ds235711.mlab.com";
+        public static int DefaultPersistencyPort = 35711;
+        public static string DefaultPersistencyUsername = "admin";
+        public static string DefaultPersistencyPassword = "admin2019";
+        public static string DefaultPersistencyDBName = "nservicediscovery";
 
         // mqtt messaging config
         public static string DefaultMQTTHost = "broker.hivemq.com";

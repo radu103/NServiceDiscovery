@@ -21,6 +21,7 @@ namespace NServiceDiscovery
                 RenewalIntervalInSecs = DefaultConfigurationData.DefaultRenewalIntervalInSecs,
                 DurationInSecs = DefaultConfigurationData.DefaultDurationInSecs,
 
+                PersistencyType = DefaultConfigurationData.DefaultPersistencyType,
                 PersistencyHostName = DefaultConfigurationData.DefaultPersistencyHostName,
                 PersistencyPort = DefaultConfigurationData.DefaultPersistencyPort,
                 PersistencyUsername = DefaultConfigurationData.DefaultPersistencyUsername,

@@ -16,7 +16,12 @@ namespace NServiceDiscovery.Repository
         public int EvictPeers(int peerEvictionInSecs)
         {
             var peersEvicted = Memory.Peers.RemoveAll(p => p.LastUpdateTimestamp.AddSeconds(peerEvictionInSecs) < DateTime.UtcNow);
-            Memory.Peers = Memory.Peers.OrderByDescending(p => p.LastUpdateTimestamp).ToList();
+
+            if (Memory.Peers.Count > 0)
+            {
+                Memory.Peers = Memory.Peers.OrderByDescending(p => p.LastUpdateTimestamp).ToList();
+            }
+            
             return peersEvicted;
         }
     }

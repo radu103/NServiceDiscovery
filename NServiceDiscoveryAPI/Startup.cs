@@ -30,6 +30,7 @@ namespace NServiceDiscoveryAPI
             services.AddSingleton<IInstanceStatusService, InstanceStatusService>();
             services.AddSingleton<IEvictionService, EvictionService>();
             services.AddSingleton<IMemoryDiscoveryPeerRepository, MemoryDiscoveryPeerRepository>();
+            services.AddSingleton<IPersistencyRepository, PersistencyRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

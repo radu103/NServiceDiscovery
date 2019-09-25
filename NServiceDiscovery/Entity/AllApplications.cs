@@ -5,10 +5,6 @@ namespace NServiceDiscovery.Entity
 {
     public class AllApplications
     {
-        [JsonIgnore]
-        [JsonProperty("tenantId")]
-        public string TenantId { get; set; } = string.Empty;
-
         [JsonProperty("versions__delta")]
         public long VersionsDelta { get; set; }
 

@@ -10,6 +10,16 @@ namespace NServiceDiscovery.Repository
     {
         private string repoTenantId = DefaultConfigurationData.DefaultTenantID + "-" + DefaultConfigurationData.DefaultTenantType;
 
+        private void IncreaseVersionForGeneralStore()
+        {
+            Memory.ConfigurationStore.VersionsDelta += 1;
+        }
+
+        private void IncreaseVersionForServicesRuntime()
+        {
+            ServicesRuntime.AllApplications.VersionsDelta  += 1;
+        }
+
         public MemoryConfigurationStoreRepository(string tenantId)
         {
             if (!string.IsNullOrEmpty(tenantId))
@@ -32,6 +42,8 @@ namespace NServiceDiscovery.Repository
                 Memory.ConfigurationStore.AllKeyValues.Add(keyValue);
             }
 
+            IncreaseVersionForGeneralStore();
+
             return true;
         }
 
@@ -48,7 +60,9 @@ namespace NServiceDiscovery.Repository
                     break;
                 }
             }
-          
+
+            IncreaseVersionForGeneralStore();
+
             return ok;
         }
 
@@ -76,6 +90,8 @@ namespace NServiceDiscovery.Repository
                 existingApp.Configuration.Add(keyValue);
             }
 
+            IncreaseVersionForServicesRuntime();
+
             return true;
         }
 
@@ -92,6 +108,8 @@ namespace NServiceDiscovery.Repository
                     break;
                 }
             }
+
+            IncreaseVersionForServicesRuntime();
 
             return ok;
         }
@@ -130,6 +148,8 @@ namespace NServiceDiscovery.Repository
                 existingApp.Configuration[idx2].Value = keyValue.Value;
             }
 
+            IncreaseVersionForServicesRuntime();
+
             return true;
         }
 
@@ -140,6 +160,7 @@ namespace NServiceDiscovery.Repository
             if (existingKey != null)
             {
                 var idx = Memory.ConfigurationStore.AllKeyValues.Remove(existingKey);
+                IncreaseVersionForGeneralStore();
             }
             else
             {
@@ -179,6 +200,8 @@ namespace NServiceDiscovery.Repository
             {
                 return false;
             }
+
+            IncreaseVersionForServicesRuntime();
 
             return true;
         }

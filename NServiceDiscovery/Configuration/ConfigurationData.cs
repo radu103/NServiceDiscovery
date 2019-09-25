@@ -14,6 +14,7 @@ namespace NServiceDiscovery
         public int RenewalIntervalInSecs { get; set; }
         public int DurationInSecs { get; set; }
 
+        public string PersistencyType { get; set; }
         public string PersistencyHostName { get; set; }
         public int PersistencyPort { get; set; }
         public string PersistencyUsername { get; set; }
