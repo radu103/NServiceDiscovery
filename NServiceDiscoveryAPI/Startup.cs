@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NServiceDiscovery.Repository;
@@ -26,6 +27,11 @@ namespace NServiceDiscoveryAPI
                 config.Filters.Add(new CopyTenantIdFromBearerTokentoRouteDataFilter());
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            services.AddResponseCompression(options =>
+            {
+                options.Providers.Add<GzipCompressionProvider>();
+            });
+
             services.AddSingleton<IMQTTService, MQTTService>();
             services.AddSingleton<IInstanceStatusService, InstanceStatusService>();
             services.AddSingleton<IEvictionService, EvictionService>();
@@ -46,6 +52,7 @@ namespace NServiceDiscoveryAPI
                 app.UseHsts();
             }
 
+            app.UseResponseCompression();
             app.UseHttpsRedirection();
             app.UseMvc();
 
