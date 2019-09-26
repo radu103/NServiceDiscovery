@@ -214,7 +214,6 @@ Topic template name : `NServiceDiscovery-{tenantId}-{landscape}`
 }
 ```
 
-
 ### INSTANCE_HEARTBEAT = to be published by all instances at constant interval
 
 ```json
@@ -228,6 +227,40 @@ Topic template name : `NServiceDiscovery-{tenantId}-{landscape}`
     }
 }
 ```
+
+### PERSISTENCY_SYNC = to be published by one instance at constant interval. Value of interval with be randomized between 5 and 10 minutes on instance startup
+
+Persistency consensus algorithm :
+* Runned for each tenant individually
+* When the instance launches the `PERSISTENCY_SYNC` the Persistency objects are backed up
+* If the instance receives at least N / 2 (half of no peer nodes registered already for the tenant) responses with same hashes than the instance saves its data to persistency
+* All instances receiving `PERSISTENCY_SYNC` message with backup the state and save the content for validation
+* All instances that see N / 2 messsages with identical values for hash after `PERSISTENCY_SYNC` message in the next minute will save to persistency
+
+`MD5Hash` property algorithm :
+
+    * start with empty string var
+    * filter apps by TenantId & Type 
+    * order apps by name
+    * append `<AppName>_`
+    * for each app, filter instances by status = UP:
+        * order instances that have status = UP by id
+        * append `<instance_id>_`
+    * compute MD5 string hash on the string var in the end
+ 
+```json
+{
+    "from_instance_id" : "id1",
+    "to_instance_id" : "ALL",
+    "type" : "INSTANCE_CONNECTED",
+    "message" : {
+        "tenantId" : "public",
+        "tenantType" : "dev",
+        "md5Hash" : "md5string"
+    }
+}
+```
+
 
 # Cool tools used
 
