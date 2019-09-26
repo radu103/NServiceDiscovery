@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NServiceDiscovery.Repository;
 using NServiceDiscoveryAPI.GlobalFilters;
 using NServiceDiscoveryAPI.Services;
+using System.IO.Compression;
 
 namespace NServiceDiscoveryAPI
 {
@@ -30,6 +31,11 @@ namespace NServiceDiscoveryAPI
             services.AddResponseCompression(options =>
             {
                 options.Providers.Add<GzipCompressionProvider>();
+            });
+
+            services.Configure<GzipCompressionProviderOptions>(options =>
+            {
+                options.Level = CompressionLevel.Fastest;
             });
 
             services.AddSingleton<IMQTTService, MQTTService>();
