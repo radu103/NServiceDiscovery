@@ -7,6 +7,7 @@ using System.Linq;
 using System;
 using System.Collections.Generic;
 using NServiceDiscovery.Util;
+using NServiceDiscoveryAPI.Services;
 
 namespace NServiceDiscoveryAPI.Controllers
 {
@@ -40,13 +41,15 @@ namespace NServiceDiscoveryAPI.Controllers
 
         [HttpPost]
         [Route("/eureka/apps/{appName}")]
-        public ActionResult<string> AddAppInstance([FromRoute] string appName, [FromBody] ServiceInstaceRegisterRequest request)
+        public ActionResult<string> AddAppInstance([FromRoute] string appName, [FromBody] ServiceInstaceRegisterRequest request, [FromServices] IPublishChangesService publishService)
         {
             request.instance.AppName = appName;
 
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
 
             Instance instance = repo.Add(request.instance);
+
+            publishService.PublishAddedorUpdatedInstance(instance);
 
             this.HttpContext.Response.StatusCode = 204;
 
@@ -55,14 +58,16 @@ namespace NServiceDiscoveryAPI.Controllers
 
         [HttpDelete]
         [Route("/eureka/apps/{appName}/{instanceID}")]
-        public ActionResult<string> DeleteInstance([FromRoute] string appName, [FromRoute] string instanceID)
+        public ActionResult<string> DeleteInstance([FromRoute] string appName, [FromRoute] string instanceID, [FromServices] IPublishChangesService publishService)
         {
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
 
-            var result = repo.Delete(appName, instanceID);
+            var instance = repo.Delete(appName, instanceID);
 
-            if (result)
+            if (instance != null)
             {
+                publishService.PublishDeletedInstance(instance.TenantId, instanceID);
+
                 this.HttpContext.Response.StatusCode = 200;
             }
             else
@@ -76,14 +81,16 @@ namespace NServiceDiscoveryAPI.Controllers
         [HttpPut]
         [Route("/eureka/apps/{appName}/{instanceID}/status")]
         // "/eureka/apps/{appName}/{instanceID}/status?value={status}&lastDirtyTimestamp=1568746948343"
-        public ActionResult<string> ChangeInstanceStatus([FromRoute] string appName, [FromRoute] string instanceID, [FromQuery] string value, [FromQuery] long lastDirtyTimestamp)
+        public ActionResult<string> ChangeInstanceStatus([FromRoute] string appName, [FromRoute] string instanceID, [FromQuery] string value, [FromQuery] long lastDirtyTimestamp, [FromServices] IPublishChangesService publishService)
         {
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
 
-            var result = repo.ChangeStatus(appName, instanceID, value, lastDirtyTimestamp);
+            var instance = repo.ChangeStatus(appName, instanceID, value, lastDirtyTimestamp);
 
-            if (result)
+            if (instance != null)
             {
+                publishService.PublishAddedorUpdatedInstance(instance);
+
                 this.HttpContext.Response.StatusCode = 200;
             }
             else
@@ -97,7 +104,7 @@ namespace NServiceDiscoveryAPI.Controllers
         [HttpPut]
         [Route("/eureka/apps/{appName}/{instanceID}")]
         // "/eureka/apps/{appName}/{instanceID}?status=UP&lastDirtyTimestamp=1568804226113"
-        public ActionResult<string> ReceiveInstanceHeartbeat([FromRoute] string appName, [FromRoute] string instanceID, [FromQuery] long lastDirtyTimestamp)
+        public ActionResult<string> ReceiveInstanceHeartbeat([FromRoute] string appName, [FromRoute] string instanceID, [FromQuery] long lastDirtyTimestamp, [FromServices] IPublishChangesService publishService)
         {
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
 
@@ -127,10 +134,12 @@ namespace NServiceDiscoveryAPI.Controllers
                 }
             }
             
-            var result = repo.SaveInstanceHearbeat(appName, instanceID, status, lastDirtyTimestamp);
+            var instance = repo.SaveInstanceHearbeat(appName, instanceID, status, lastDirtyTimestamp);
 
-            if (result)
+            if (instance != null)
             {
+                publishService.PublishAddedorUpdatedInstance(instance);
+
                 this.HttpContext.Response.StatusCode = 200;
             }
             else

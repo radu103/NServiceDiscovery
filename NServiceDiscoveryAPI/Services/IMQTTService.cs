@@ -1,11 +1,14 @@
 ﻿using NServiceDiscovery.MQTT;
+using System.Collections.Generic;
 
 namespace NServiceDiscoveryAPI.Services
 {
     public interface IMQTTService
     {
-        void sendMQTTMessageToAll(string tenantId, string tenantType, MQTTMessage message);
+        void SendMQTTMessageToAll(string tenantId, MQTTMessage message);
 
-        void sendMQTTMessageToInstance(string tenantId, string tenantType, string toInstanceId, MQTTMessage message);
+        void SendMQTTMessageToInstance(string tenantId, string toInstanceId, MQTTMessage message);
+
+        void SendMQTTMessageToMultipleInstances(string tenantId, List<string> toInstanceIds, MQTTMessage message);
     }
 }

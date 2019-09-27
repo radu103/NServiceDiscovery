@@ -115,7 +115,7 @@ namespace NServiceDiscoveryAPI.Services
                     Message = jsonMessage
                 };
 
-                Program.mqttService.sendMQTTMessageToAll(synchInfo.SynchTenant.TenantId, synchInfo.SynchTenant.TenantType, mqttMessage);
+                Program.mqttService.SendMQTTMessageToAll(synchInfo.SynchTenant.TenantId + "-" + synchInfo.SynchTenant.TenantType, mqttMessage);
             }
 
             if (!string.IsNullOrEmpty(synchInfo.KeysMD5))
@@ -141,7 +141,7 @@ namespace NServiceDiscoveryAPI.Services
                     Message = jsonMessage
                 };
 
-                Program.mqttService.sendMQTTMessageToAll(synchInfo.SynchTenant.TenantId, synchInfo.SynchTenant.TenantType, mqttMessage);
+                Program.mqttService.SendMQTTMessageToAll(synchInfo.SynchTenant.TenantId + "-" + synchInfo.SynchTenant.TenantType, mqttMessage);
             }
 
             return true;

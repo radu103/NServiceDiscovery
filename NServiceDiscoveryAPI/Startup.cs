@@ -41,6 +41,7 @@ namespace NServiceDiscoveryAPI
             });
 
             services.AddSingleton<IMQTTService, MQTTService>();
+            services.AddSingleton<IPublishChangesService, PublishChangesService>();
             services.AddSingleton<IInstanceStatusService, InstanceStatusService>();
             services.AddSingleton<IEvictionService, EvictionService>();
             services.AddSingleton<IMemoryDiscoveryPeerRepository, MemoryDiscoveryPeerRepository>();

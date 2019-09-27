@@ -288,6 +288,41 @@ Topic template name : `NServiceDiscovery-{tenantId}-{landscape}`
 }
 ```
 
+### ADD_UPDATE_INSTANCE = published when app instance is added or updated
+
+```json
+{
+    "from_instance_id": "ea42ea39-8959-4e01-a72e-44467239f1c5",
+    "to_instances_ids": [
+            "c109e4e7-101f-4923-729d-ebc7",
+            "48e7d808-f425-4858-4824-f3fd",
+            "01341a0e-8ce8-4e80-4c7a-9d4a",
+            "3683bf4a-869a-4b22-47cb-6ce5",
+            "9b00842e-df61-4120-46f1-6099",
+            "928018ca-ea58-49cb-6a84-c49e",
+            "2b4a3880-f1f3-4c6a-7c15-b6d0",
+            "bb06fa92-2013-493a-51a5-4a0f"
+    ],
+    "type": "ADD_UPDATE_INSTANCE",
+    "message": "{'app':'APPID_1','appGroupName':null,'instanceId':'APPHOST11','status':'STARTING','overriddenStatus':'UNKNOWN','hostName':'APPHOST11','ipAddr':'10.0.0.10','sid':null,'vipAddress':'APPHOST11','secureVipAddress':'APPHOST11','port':{'@enabled':true,'$':8080},'securePort':{'@enabled':true,'$':8443},'countryId':1,'homePageUrl':'http://APPHOST11:8080','healthCheckUrl':'http://APPHOST11:8080/healthcheck','statusPageUrl':'http://APPHOST11:8080/status','secureHealthCheckUrl':'','isCoordinatingDiscoveryServer':false,'lastUpdatedTimestamp':1569608540834,'lastDirtyTimestamp':1569608540834,'actionType':'ADDED','metadata':null,'leaseInfo':{'renewalIntervalInSecs':30,'durationInSecs':90,'lastHealthCheckDurationInMs':0,'registrationTimestamp':1569608540834,'lastRenewalTimestamp':1569608540834,'evictionTimestamp':1569908540834,'serviceUpTimestamp':1569608540835},'dataCenterInfo':{'@class':'com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo','name':'MyOwn'}}"
+}
+```
+
+### DELETE_INSTANCE = published when app instance is added or updated
+
+```json
+{
+    "from_instance_id" : "id1",
+    "to_instance_id" : "id2",
+    "type" : "DELETE_INSTANCE",
+    "message" : {
+         "peerId" : "id1",
+         "tenantId" : "id-type",
+         "deletedInstanceId" : "string"
+    }
+}
+```
+
 # Persistency consensus algorithm
 
 * Runned for each tenant individually

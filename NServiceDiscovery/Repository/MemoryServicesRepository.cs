@@ -154,9 +154,11 @@ namespace NServiceDiscovery.Repository
             return app;
         }
 
-        public bool ChangeStatus(string appName, string instanceId, string status, long lastDirtyTimestamp)
+        public Instance ChangeStatus(string appName, string instanceId, string status, long lastDirtyTimestamp)
         {
             var app = ServicesRuntime.AllApplications.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
+
+            var idx = -1;
 
             if (app != null)
             {
@@ -164,6 +166,8 @@ namespace NServiceDiscovery.Repository
                 {
                     if(app.Instances[i].TenantId.CompareTo(repoTenantId) == 0 && app.Instances[i].InstanceId.CompareTo(instanceId) == 0)
                     {
+                        idx = i;
+
                         app.Instances[i].ActionType = "MODIFIED";
                         app.Instances[i].Status = status;
                         
@@ -183,13 +187,13 @@ namespace NServiceDiscovery.Repository
 
                 IncreaseVersion();
 
-                return true;
+                return app.Instances[idx];
             }
 
-            return false;
+            return null;
         }
 
-        public bool Delete(string appName, string instanceId)
+        public Instance Delete(string appName, string instanceId)
         {
             Instance instance = null;
 
@@ -205,11 +209,11 @@ namespace NServiceDiscovery.Repository
 
                     IncreaseVersion();
 
-                    return true;
+                    return instance;
                 }
             }
 
-            return false;
+            return null;
         }
 
         public Instance Add(Instance instance)
@@ -261,9 +265,11 @@ namespace NServiceDiscovery.Repository
             return instance;
         }
 
-        public bool SaveInstanceHearbeat(string appName, string instanceId, string status, long lastDirtyTimestamp)
+        public Instance SaveInstanceHearbeat(string appName, string instanceId, string status, long lastDirtyTimestamp)
         {
             var app = ServicesRuntime.AllApplications.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
+
+            int idx = -1;
 
             if (app != null)
             {
@@ -271,6 +277,8 @@ namespace NServiceDiscovery.Repository
                 {
                     if (app.Instances[i].TenantId.CompareTo(repoTenantId) == 0 && app.Instances[i].InstanceId.CompareTo(instanceId) == 0)
                     {
+                        idx = i;
+
                         app.Instances[i].ActionType = "MODIFIED";
                         app.Instances[i].Status = status;
 
@@ -290,10 +298,10 @@ namespace NServiceDiscovery.Repository
 
                 IncreaseVersion();
 
-                return true;
+                return app.Instances[idx];
             }
 
-            return false;
+            return null;
         }
 
         public List<Instance> GetInstancesForVipAddress(string vipAddress)
@@ -402,7 +410,6 @@ namespace NServiceDiscovery.Repository
 
             return ok;
         }
-
 
         public bool DeleteDependencyForApplication(string appName, string dependency)
         {
