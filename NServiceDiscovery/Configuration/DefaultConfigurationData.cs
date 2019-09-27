@@ -26,10 +26,12 @@ namespace NServiceDiscovery.Configuration
         public static string DefaultPersistencyPassword = "admin2019";
         public static string DefaultPersistencyDBName = "nservicediscovery";
         public static int DefaultPersistencySyncWaitSeconds = 60;
-        public static int DefaultPersistencySyncMinRandomSeconds = 3;
-        public static int DefaultPersistencySyncMaxRandomSeconds = 6;
-        //public static int DefaultPersistencySyncMinRandomSeconds = 300;
-        //public static int DefaultPersistencySyncMaxRandomSeconds = 600;
+
+        // persistency sync messages' constants
+        //public static int DefaultPersistencySyncMinRandomSeconds = 3;
+        //public static int DefaultPersistencySyncMaxRandomSeconds = 6;
+        public static int DefaultPersistencySyncMinRandomSeconds = 300;
+        public static int DefaultPersistencySyncMaxRandomSeconds = 600;
 
         // mqtt messaging config
         public static string DefaultMQTTHost = "broker.hivemq.com";
