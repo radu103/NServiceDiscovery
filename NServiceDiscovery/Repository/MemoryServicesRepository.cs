@@ -5,6 +5,9 @@ using NServiceDiscovery.RuntimeInMemory;
 using NServiceDiscovery.Configuration;
 using System;
 using NServiceDiscovery.Util;
+using Newtonsoft.Json;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace NServiceDiscovery.Repository
 {
@@ -23,6 +26,78 @@ namespace NServiceDiscovery.Repository
             {
                 repoTenantId = tenantId;
             }
+        }
+
+        private Tenant GetTenant()
+        {
+            var tenant = new Tenant();
+
+            var aux = repoTenantId.Split(new char[] { '-' });
+
+            tenant.TenantId = aux[0];
+            tenant.TenantType = aux[1];
+
+            return tenant;
+        }
+
+        public AppsSyncInfo GetTenantSyncInfo()
+        {
+            var info = new AppsSyncInfo();
+
+            Tenant tenant = GetTenant();
+
+            info.TenantId = tenant.TenantId;
+            info.TenantType = tenant.TenantType;
+
+            try
+            {
+                var tenantApps = ServicesRuntime.AllApplications.Applications.FindAll(app => app.TenantId.CompareTo(repoTenantId) == 0).ToList();
+                tenantApps = tenantApps.OrderBy(app => app.Name).ToList();
+
+                var AllTenantApps = new AllApplications()
+                {
+                    Applications = tenantApps,
+                    VersionsDelta = ServicesRuntime.AllApplications.VersionsDelta,
+                    AppsHashCode = string.Empty
+                };
+
+                var appsJson = JsonConvert.SerializeObject(AllTenantApps);
+                info.Apps = JsonConvert.DeserializeObject<AllApplications>(appsJson);
+
+                info.Apps.Applications = info.Apps.Applications;
+
+                StringBuilder signature = new StringBuilder();
+
+                foreach (var app in info.Apps.Applications)
+                {
+                    signature.Append(app.Name + "_");
+
+                    var instances = app.Instances.OrderBy(i => i.InstanceId).ToList();
+                    foreach (var inst in instances)
+                    {
+                        signature.Append(inst.InstanceId + "_" + inst.Status + "_" + inst.OverriddenStatus + "_");
+                    }
+                }
+
+                var sigStr = signature.ToString();
+
+                if (!string.IsNullOrEmpty(sigStr))
+                {
+                    info.MD5Hash = sigStr.GetMd5Hash();
+                }
+                else
+                {
+                    info.MD5Hash = string.Empty;
+                }
+
+                return info;
+            }
+            catch(Exception err)
+            {
+                Console.WriteLine("GetTenantSyncInfo ERROR - ",  err.Message);
+            }
+
+            return null;
         }
 
         private void UpdateAppsHashCode()

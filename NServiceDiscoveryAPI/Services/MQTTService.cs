@@ -227,7 +227,12 @@ namespace NServiceDiscoveryAPI.Services
                 }
 
                 // add new peer to my peers
-                var existingPeer = Memory.Peers.FirstOrDefault(p => p.ServerInstanceID.CompareTo(peerMessageContent.PeerId) == 0);
+                DiscoveryPeer existingPeer = null;
+
+                lock (Memory.Peers)
+                {
+                    existingPeer = Memory.Peers.FirstOrDefault(p => p.ServerInstanceID.CompareTo(peerMessageContent.PeerId) == 0);
+                }
 
                 if (existingPeer == null)
                 {
@@ -253,8 +258,13 @@ namespace NServiceDiscoveryAPI.Services
 
             if (peerMessageContent != null && mqttMessage.FromInstanceId.CompareTo(Program.InstanceConfig.ServerInstanceID) != 0)
             {
+                DiscoveryPeer existingPeer = null;
+
                 // add new peer to my peers
-                var existingPeer = Memory.Peers.FirstOrDefault(p => p.ServerInstanceID.CompareTo(peerMessageContent.PeerId) == 0);
+                lock (Memory.Peers)
+                {
+                    existingPeer = Memory.Peers.FirstOrDefault(p => p.ServerInstanceID.CompareTo(peerMessageContent.PeerId) == 0);
+                }
 
                 if (existingPeer == null)
                 {

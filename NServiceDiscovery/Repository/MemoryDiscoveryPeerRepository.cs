@@ -1,6 +1,7 @@
 ﻿using NServiceDiscovery.Entity;
 using NServiceDiscovery.RuntimeInMemory;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace NServiceDiscovery.Repository
@@ -9,20 +10,33 @@ namespace NServiceDiscovery.Repository
     {
         public void Add(DiscoveryPeer newPeer)
         {
-            Memory.Peers.Add(newPeer);
-            Memory.Peers = Memory.Peers.OrderByDescending(p => p.LastUpdateTimestamp).ToList();
+            lock (Memory.Peers)
+            {
+                Memory.Peers.Add(newPeer);
+                Memory.Peers = Memory.Peers.OrderByDescending(p => p.LastUpdateTimestamp).ToList();
+            }
         }
 
         public int EvictPeers(int peerEvictionInSecs)
         {
-            var peersEvicted = Memory.Peers.RemoveAll(p => p.LastUpdateTimestamp.AddSeconds(peerEvictionInSecs) < DateTime.UtcNow);
+            var peersEvicted = 0;
 
-            if (Memory.Peers.Count > 0)
+            lock (Memory.Peers)
             {
-                Memory.Peers = Memory.Peers.OrderByDescending(p => p.LastUpdateTimestamp).ToList();
+                peersEvicted = Memory.Peers.RemoveAll(p => p.LastUpdateTimestamp.AddSeconds(peerEvictionInSecs) < DateTime.UtcNow);
+
+                if (Memory.Peers.Count > 0)
+                {
+                    Memory.Peers = Memory.Peers.OrderByDescending(p => p.LastUpdateTimestamp).ToList();
+                }
             }
-            
+
             return peersEvicted;
+        }
+
+        public List<DiscoveryPeer> GetAll()
+        {
+            return Memory.Peers;
         }
     }
 }

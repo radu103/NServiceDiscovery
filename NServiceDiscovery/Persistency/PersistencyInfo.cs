@@ -6,6 +6,8 @@ namespace NServiceDiscovery.Persistency
 {
     public class PersistencyInfo
     {
+        public Tenant SynchTenant { get; set; }
+
         public bool SynchStarted { get; set; }
 
         public string LastSynchStarterId { get; set; }
