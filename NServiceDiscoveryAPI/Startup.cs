@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NServiceDiscovery.Repository;
 using NServiceDiscoveryAPI.GlobalFilters;
 using NServiceDiscoveryAPI.Services;
+using System;
 using System.IO.Compression;
 
 namespace NServiceDiscoveryAPI
@@ -43,7 +44,7 @@ namespace NServiceDiscoveryAPI
             services.AddSingleton<IInstanceStatusService, InstanceStatusService>();
             services.AddSingleton<IEvictionService, EvictionService>();
             services.AddSingleton<IMemoryDiscoveryPeerRepository, MemoryDiscoveryPeerRepository>();
-            services.AddSingleton<IPersistencyRepository, PersistencyRepository>();
+            services.AddSingleton<IPersistencyService, PersistencyService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -72,6 +73,10 @@ namespace NServiceDiscoveryAPI
             var serviceProvider = app.ApplicationServices;
             Program.mqttService = serviceProvider.GetService<IMQTTService>();
             Program.evictionService = serviceProvider.GetService<IEvictionService>();
+            Program.persistencyService = serviceProvider.GetService<IPersistencyService>();
+
+            var random = new Random();
+            Program.persistencyService.SetPersistencyTimerInterval(random.Next(Program.InstanceConfig.PersistencySyncMinRandomSeconds, Program.InstanceConfig.PersistencySyncMaxRandomSeconds));
         }
     }
 }

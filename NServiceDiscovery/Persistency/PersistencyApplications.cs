@@ -6,6 +6,8 @@ namespace NServiceDiscovery.Persistency
 {
     public class PersistencyApplications
     {
+        public string ID { get; set; }
+
         public string TenantId { get; set; }
 
         public string TenantType { get; set; }

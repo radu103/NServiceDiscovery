@@ -27,6 +27,7 @@ namespace NServiceDiscoveryAPI
 
         public static IMQTTService mqttService;
         public static IEvictionService evictionService;
+        public static IPersistencyService persistencyService;
 
         private static Timer _gcTimer;
 

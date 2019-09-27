@@ -27,6 +27,9 @@ namespace NServiceDiscovery
                 PersistencyUsername = DefaultConfigurationData.DefaultPersistencyUsername,
                 PersistencyPassword = DefaultConfigurationData.DefaultPersistencyPassword,
                 PersistencyDBName = DefaultConfigurationData.DefaultPersistencyDBName,
+                PersistencySyncWaitSeconds = DefaultConfigurationData.DefaultPersistencySyncWaitSeconds,
+                PersistencySyncMinRandomSeconds = DefaultConfigurationData.DefaultPersistencySyncMinRandomSeconds,
+                PersistencySyncMaxRandomSeconds = DefaultConfigurationData.DefaultPersistencySyncMaxRandomSeconds,
 
                 MQTTHost = DefaultConfigurationData.DefaultMQTTHost,
                 MQTTPort = DefaultConfigurationData.DefaultMQTTPort,

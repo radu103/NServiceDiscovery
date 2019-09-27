@@ -20,6 +20,9 @@ namespace NServiceDiscovery
         public string PersistencyUsername { get; set; }
         public string PersistencyPassword { get; set; }
         public string PersistencyDBName { get; set; }
+        public int PersistencySyncWaitSeconds { get; set; }
+        public int PersistencySyncMinRandomSeconds { get; set; }
+        public int PersistencySyncMaxRandomSeconds { get; set; }
 
         public string MQTTHost { get; set; }
         public int MQTTPort { get; set; }
