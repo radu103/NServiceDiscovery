@@ -209,7 +209,7 @@ Topic template name : `NServiceDiscovery-{tenantId}-{landscape}`
     "type" : "INSTANCE_CONNECTED",
     "message" : {
          "peerId" : "ServerInstanceID",
-         "discoveryUrls" : "url",
+         "discoveryUrls" : "url"
     }
 }
 ```
@@ -223,14 +223,73 @@ Topic template name : `NServiceDiscovery-{tenantId}-{landscape}`
     "type" : "INSTANCE_HEARTBEAT",
     "message" : {
          "peerId" : "ServerInstanceID",
-         "discoveryUrls" : "url",
+         "discoveryUrls" : "url"
     }
 }
 ```
 
-### PERSISTENCY_SYNC = to be published by one instance at constant interval. Value of interval with be randomized between 5 and 10 minutes on instance startup
+### PERSISTENCY_SYNC_APPS = to be published by one instance at constant interval. Value of interval with be randomized between 5 and 10 minutes on instance startup
 
-Persistency consensus algorithm :
+```json
+{
+    "from_instance_id" : "id1",
+    "to_instance_id" : "ALL",
+    "type" : "PERSISTENCY_SYNC",
+    "message" : {
+         "peerId" : "id1",
+         "tenantId" : "id-type",
+         "appsMd5Hash" : "string"
+    }
+}
+```
+
+### PERSISTENCY_SYNC_APPS_RESPONSE = response sent back after an PERSISTENCY_SYNC by all receiving peers
+
+```json
+{
+    "from_instance_id" : "id1",
+    "to_instance_id" : "id2",
+    "type" : "PERSISTENCY_RESPONSE",
+    "message" : {
+         "peerId" : "id1",
+         "tenantId" : "id-type",
+         "appsMd5Hash" : "string"
+    }
+}
+```
+
+### PERSISTENCY_SYNC_KEYS = to be published by one instance at constant interval. Value of interval with be randomized between 5 and 10 minutes on instance startup
+
+```json
+{
+    "from_instance_id" : "id1",
+    "to_instance_id" : "ALL",
+    "type" : "PERSISTENCY_SYNC",
+    "message" : {
+         "peerId" : "id1",
+         "tenantId" : "id-type",
+         "keysMd5Hash" : "string"
+    }
+}
+```
+
+### PERSISTENCY_SYNC_KEYS_RESPONSE = response sent back after an PERSISTENCY_SYNC by all receiving peers
+
+```json
+{
+    "from_instance_id" : "id1",
+    "to_instance_id" : "id2",
+    "type" : "PERSISTENCY_RESPONSE",
+    "message" : {
+         "peerId" : "id1",
+         "tenantId" : "id-type",
+         "keysMd5Hash" : "string"
+    }
+}
+```
+
+# Persistency consensus algorithm
+
 * Runned for each tenant individually
 * When the instance launches the `PERSISTENCY_SYNC` the Persistency objects are backed up
 * If the instance receives at least N / 2 (half of no peer nodes registered already for the tenant) responses with same hashes than the instance saves its data to persistency
@@ -260,7 +319,6 @@ Persistency consensus algorithm :
     }
 }
 ```
-
 
 # Cool tools used
 

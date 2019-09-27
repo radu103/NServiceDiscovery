@@ -288,5 +288,21 @@ namespace NServiceDiscoveryAPI.Services
                 }
             }
         }
+
+        public void sendMQTTMessageToAll(string tenantId, string tenantType, MQTTMessage message)
+        {
+            var myMqttClient = _mqttClients.SingleOrDefault(c => c.TenantId.CompareTo(tenantId) == 0 && c.TenantType.CompareTo(tenantType) == 0);
+
+            if(myMqttClient != null && myMqttClient.mqttClient.IsConnected)
+            {
+                string jsonMessage = JsonConvert.SerializeObject(message);
+                myMqttClient.mqttClient.PublishAsync(myMqttClient.mqttTopic, jsonMessage, MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce);
+            }
+        }
+
+        public void sendMQTTMessageToInstance(string tenantId, string tenantType, string toInstanceId, MQTTMessage message)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

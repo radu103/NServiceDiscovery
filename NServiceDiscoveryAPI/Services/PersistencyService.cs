@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Timers;
 using System.Linq;
+using NServiceDiscovery.MQTT;
 
 namespace NServiceDiscoveryAPI.Services
 {
@@ -33,11 +34,11 @@ namespace NServiceDiscoveryAPI.Services
                 if(tenantSynchInfo != null)
                 {
                     var keyValueRepo = new MemoryConfigurationStoreRepository(tenant.TenantId + "-" + tenant.TenantType);
-                    var keyValues = keyValueRepo.GetAll();
+                    var keysSyncInfo = keyValueRepo.GetAllKeysSyncInfo();
 
-                    if(keyValues != null)
+                    if(keysSyncInfo != null)
                     {
-                        StartSyncProcess(tenant, peers, tenantSynchInfo.Apps, keyValues, Program.InstanceConfig.PersistencySyncWaitSeconds);
+                        StartSyncProcess(tenant, peers, tenantSynchInfo, keysSyncInfo, Program.InstanceConfig.PersistencySyncWaitSeconds);
                     }
                 }
             }
@@ -61,9 +62,11 @@ namespace NServiceDiscoveryAPI.Services
             _PersistencyTimer.Elapsed += OnStartPersistencySync;
         }
 
-        public bool StartSyncProcess(Tenant tenant, List<DiscoveryPeer> peers, AllApplications apps, List<StoreKeyValue> generalKeyValues, int seconds)
+        public bool StartSyncProcess(Tenant tenant, List<DiscoveryPeer> peers, AppsSyncInfo apps, KeysSyncInfo keys, int seconds)
         {
             PersistencyInfo synchInfo = null;
+
+            // save sync state infos for tenant
 
             lock(SyncInfos){
 
@@ -81,12 +84,65 @@ namespace NServiceDiscoveryAPI.Services
             synchInfo.LastSynchStarterId = Program.InstanceConfig.ServerInstanceID;
             synchInfo.SyncStart = DateTime.Now;
             synchInfo.SyncEnd = DateTime.Now.AddSeconds(seconds);
-            synchInfo.Apps = JsonConvert.DeserializeObject<AllApplications>(JsonConvert.SerializeObject(apps));
-            synchInfo.KeyValues = JsonConvert.DeserializeObject<List<StoreKeyValue>>(JsonConvert.SerializeObject(generalKeyValues));
+            synchInfo.Apps = JsonConvert.DeserializeObject<AllApplications>(JsonConvert.SerializeObject(apps.Apps));
+            synchInfo.KeyValues = JsonConvert.DeserializeObject<List<StoreKeyValue>>(JsonConvert.SerializeObject(keys.Keys));
             synchInfo.Peers = JsonConvert.DeserializeObject<List<DiscoveryPeer>>(JsonConvert.SerializeObject(peers));
             synchInfo.PeerSyncResponses = new List<PeerSyncResponse>();
-            
-            // TO DO send MQTT PERSISTENCY_SYNC message
+            synchInfo.AppsMD5 = apps.MD5Hash;
+            synchInfo.KeysMD5 = keys.MD5Hash;
+
+            // send MQTT PERSISTENCY_SYNC message
+            if (!string.IsNullOrEmpty(synchInfo.AppsMD5))
+            {
+                var syncMessage = new MQTTPersistencySyncAppsMessageContent()
+                {
+                    TenantId = tenant.TenantId + "-" + tenant.TenantType,
+                    PeerId = Program.InstanceConfig.ServerInstanceID,
+                    AppsMd5Hash = synchInfo.AppsMD5
+                };
+
+                var toIds = new List<string>();
+                toIds.Add("ALL");
+
+                var jsonMessage = JsonConvert.SerializeObject(syncMessage);
+                jsonMessage = jsonMessage.Replace("\"", "'");
+
+                var mqttMessage = new MQTTMessage()
+                {
+                    FromInstanceId = Program.InstanceConfig.ServerInstanceID,
+                    ToInstancesIds = toIds,
+                    Type = "PERSISTENCY_SYNC_APPS",
+                    Message = jsonMessage
+                };
+
+                Program.mqttService.sendMQTTMessageToAll(synchInfo.SynchTenant.TenantId, synchInfo.SynchTenant.TenantType, mqttMessage);
+            }
+
+            if (!string.IsNullOrEmpty(synchInfo.KeysMD5))
+            {
+                var syncMessage = new MQTTPersistencySyncKeysMessageContent()
+                {
+                    TenantId = tenant.TenantId + "-" + tenant.TenantType,
+                    PeerId = Program.InstanceConfig.ServerInstanceID,
+                    KeysMd5Hash = synchInfo.KeysMD5
+                };
+
+                var toIds = new List<string>();
+                toIds.Add("ALL");
+
+                var jsonMessage = JsonConvert.SerializeObject(syncMessage);
+                jsonMessage = jsonMessage.Replace("\"", "'");
+
+                var mqttMessage = new MQTTMessage()
+                {
+                    FromInstanceId = Program.InstanceConfig.ServerInstanceID,
+                    ToInstancesIds = toIds,
+                    Type = "PERSISTENCY_SYNC_KEYS",
+                    Message = jsonMessage
+                };
+
+                Program.mqttService.sendMQTTMessageToAll(synchInfo.SynchTenant.TenantId, synchInfo.SynchTenant.TenantType, mqttMessage);
+            }
 
             return true;
         }

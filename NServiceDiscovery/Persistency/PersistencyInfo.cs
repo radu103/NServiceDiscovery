@@ -18,7 +18,11 @@ namespace NServiceDiscovery.Persistency
 
         public AllApplications Apps { get; set; }
 
+        public string AppsMD5 { get; set; }
+
         public List<StoreKeyValue> KeyValues { get; set; }
+
+        public string KeysMD5 { get; set; }
 
         public List<DiscoveryPeer> Peers { get; set; }
 

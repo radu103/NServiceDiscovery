@@ -1,8 +1,12 @@
-﻿using NServiceDiscovery.Configuration;
+﻿using Newtonsoft.Json;
+using NServiceDiscovery.Configuration;
 using NServiceDiscovery.Entity;
 using NServiceDiscovery.RuntimeInMemory;
+using NServiceDiscovery.Util;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace NServiceDiscovery.Repository
 {
@@ -26,6 +30,18 @@ namespace NServiceDiscovery.Repository
             {
                 repoTenantId = tenantId;
             }
+        }
+
+        private Tenant GetTenant()
+        {
+            var tenant = new Tenant();
+
+            var aux = repoTenantId.Split(new char[] { '-' });
+
+            tenant.TenantId = aux[0];
+            tenant.TenantType = aux[1];
+
+            return tenant;
         }
 
         public bool Add(StoreKeyValue keyValue)
@@ -228,6 +244,52 @@ namespace NServiceDiscovery.Repository
         {
             var existingKeys = Memory.ConfigurationStore.AllKeyValues.FindAll(g => g.TenantId.CompareTo(repoTenantId) == 0 && g.AppName.CompareTo(appName) == 0).ToList();
             return existingKeys;
+        }
+
+        public KeysSyncInfo GetAllKeysSyncInfo()
+        {
+            var info = new KeysSyncInfo();
+
+            Tenant tenant = GetTenant();
+
+            info.TenantId = tenant.TenantId;
+            info.TenantType = tenant.TenantType;
+
+            try
+            {
+                var tenantKeys = Memory.ConfigurationStore.AllKeyValues.FindAll(g => g.TenantId.CompareTo(repoTenantId) == 0 && g.AppName.CompareTo(string.Empty) == 0).ToList();
+
+                tenantKeys = tenantKeys.OrderBy(k => k.Key).ToList();
+
+                var keysJson = JsonConvert.SerializeObject(tenantKeys);
+                info.Keys = JsonConvert.DeserializeObject<List<StoreKeyValue>>(keysJson);
+
+                StringBuilder signature = new StringBuilder();
+
+                foreach (var k in info.Keys)
+                {
+                    signature.Append(k.Key + "_" + k.Value + "_");
+                }
+
+                var sigStr = signature.ToString();
+
+                if (!string.IsNullOrEmpty(sigStr))
+                {
+                    info.MD5Hash = sigStr.GetMd5Hash();
+                }
+                else
+                {
+                    info.MD5Hash = string.Empty;
+                }
+
+                return info;
+            }
+            catch (Exception err)
+            {
+                Console.WriteLine("GetAllKeysSyncInfo ERROR - ", err.Message);
+            }
+
+            return null;
         }
     }
 }

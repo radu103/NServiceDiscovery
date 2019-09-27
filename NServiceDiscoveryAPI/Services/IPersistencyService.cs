@@ -7,7 +7,7 @@ namespace NServiceDiscoveryAPI.Services
     {
         int GetPersistencyTimerInterval();
         void SetPersistencyTimerInterval(int seconds);
-        bool StartSyncProcess(Tenant tenant, List<DiscoveryPeer> peers, AllApplications apps, List<StoreKeyValue> generalKeyValues, int seconds);
+        bool StartSyncProcess(Tenant tenant, List<DiscoveryPeer> peers, AppsSyncInfo apps, KeysSyncInfo keys, int seconds);
         bool StopSyncProcess(Tenant tenant);
     }
 }
