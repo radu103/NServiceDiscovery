@@ -288,7 +288,7 @@ Topic template name : `NServiceDiscovery-{tenantId}-{landscape}`
 }
 ```
 
-### ADD_UPDATE_INSTANCE = published when app instance is added or updated
+### ADD_INSTANCE and UPDATE_INSTANCE = published when app instance is added or updated
 
 ```json
 {
@@ -308,17 +308,34 @@ Topic template name : `NServiceDiscovery-{tenantId}-{landscape}`
 }
 ```
 
+### CHANGE_INSTANCE_STATUS = published when app instance status is updated
+
+```json
+{
+    "from_instance_id" : "id1",
+    "to_instance_ids" : ["id2"],
+    "type" : "DELETE_INSTANCE",
+    "message" : {
+        "appName" : "string", 
+        "tenantId" : "string", 
+        "instanceId" : "string",
+        "status" : "string",
+        "lastDirtyTimestamp" : 1242
+    }
+}
+```
+
 ### DELETE_INSTANCE = published when app instance is added or updated
 
 ```json
 {
     "from_instance_id" : "id1",
-    "to_instance_id" : "id2",
+    "to_instance_ids" : ["id2"],
     "type" : "DELETE_INSTANCE",
     "message" : {
-         "peerId" : "id1",
-         "tenantId" : "id-type",
-         "deletedInstanceId" : "string"
+        "appName" : "string", 
+        "tenantId" : "string", 
+        "instanceId" : "string"
     }
 }
 ```

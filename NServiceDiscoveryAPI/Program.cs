@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using NServiceDiscovery;
 using NServiceDiscovery.CloudFoundry;
@@ -14,6 +15,7 @@ namespace NServiceDiscoveryAPI
 {
     public class Program
     {
+        public static IServiceProvider serviceProvider;
         public static List<Tenant> Tenants = new List<Tenant>();
 
         public static string INSTANCE_GUID = string.Empty;

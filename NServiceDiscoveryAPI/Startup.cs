@@ -71,11 +71,13 @@ namespace NServiceDiscoveryAPI
         private void StartupOps(IApplicationBuilder app)
         {
             // instantiate the MQTTService singleton instance
-            var serviceProvider = app.ApplicationServices;
-            Program.mqttService = serviceProvider.GetService<IMQTTService>();
-            Program.evictionService = serviceProvider.GetService<IEvictionService>();
-            Program.persistencyService = serviceProvider.GetService<IPersistencyService>();
+            Program.serviceProvider = app.ApplicationServices;
 
+            Program.mqttService = Program.serviceProvider.GetService<IMQTTService>();
+            Program.evictionService = Program.serviceProvider.GetService<IEvictionService>();
+            Program.persistencyService = Program.serviceProvider.GetService<IPersistencyService>();
+
+            // start persistency sync timer with random interval
             var random = new Random();
             Program.persistencyService.SetPersistencyTimerInterval(random.Next(Program.InstanceConfig.PersistencySyncMinRandomSeconds, Program.InstanceConfig.PersistencySyncMaxRandomSeconds));
         }

@@ -6,7 +6,6 @@ using NServiceDiscovery.Configuration;
 using System;
 using NServiceDiscovery.Util;
 using Newtonsoft.Json;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace NServiceDiscovery.Repository
@@ -92,9 +91,9 @@ namespace NServiceDiscovery.Repository
 
                 return info;
             }
-            catch(Exception err)
+            catch (Exception err)
             {
-                Console.WriteLine("GetTenantSyncInfo ERROR - ",  err.Message);
+                Console.WriteLine("GetTenantSyncInfo ERROR - ", err.Message);
             }
 
             return null;
@@ -108,7 +107,7 @@ namespace NServiceDiscovery.Repository
 
             var up_instances_count = 0;
 
-            foreach(var app in apps)
+            foreach (var app in apps)
             {
                 var up_instances = app.Instances.FindAll(i => i.TenantId.CompareTo(repoTenantId) == 0 && i.Status.CompareTo("UP") == 0).ToList();
                 up_instances_count += up_instances.Count;
@@ -139,7 +138,7 @@ namespace NServiceDiscovery.Repository
             foreach (var app in ServicesRuntime.AllApplications.Applications)
             {
                 instance = app.Instances.SingleOrDefault(i => i.TenantId.CompareTo(repoTenantId) == 0 && i.InstanceId.CompareTo(instanceId) == 0);
-                if(instance != null) { break; }
+                if (instance != null) { break; }
             }
 
             return instance;
@@ -162,15 +161,15 @@ namespace NServiceDiscovery.Repository
 
             if (app != null)
             {
-                for(var i = 0; i < app.Instances.Count; i++)
+                for (var i = 0; i < app.Instances.Count; i++)
                 {
-                    if(app.Instances[i].TenantId.CompareTo(repoTenantId) == 0 && app.Instances[i].InstanceId.CompareTo(instanceId) == 0)
+                    if (app.Instances[i].TenantId.CompareTo(repoTenantId) == 0 && app.Instances[i].InstanceId.CompareTo(instanceId) == 0)
                     {
                         idx = i;
 
                         app.Instances[i].ActionType = "MODIFIED";
                         app.Instances[i].Status = status;
-                        
+
                         app.Instances[i].LastDirtyTimestamp = lastDirtyTimestamp;
                         app.Instances[i].LastUpdatedTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
 
@@ -199,11 +198,12 @@ namespace NServiceDiscovery.Repository
 
             var app = ServicesRuntime.AllApplications.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
 
-            if(app != null)
+            if (app != null)
             {
                 instance = app.Instances.SingleOrDefault(i => i.TenantId.CompareTo(repoTenantId) == 0 && i.InstanceId.CompareTo(instanceId) == 0);
 
-                if (instance != null) {
+                if (instance != null)
+                {
 
                     app.Instances.Remove(instance);
 
@@ -253,7 +253,7 @@ namespace NServiceDiscovery.Repository
 
             var existingInstance = appFound.Instances.SingleOrDefault(i => i.TenantId.CompareTo(repoTenantId) == 0 && i.InstanceId.CompareTo(instance.InstanceId) == 0);
 
-            if(existingInstance != null)
+            if (existingInstance != null)
             {
                 Delete(existingInstance.AppName, existingInstance.InstanceId);
             }
@@ -310,10 +310,10 @@ namespace NServiceDiscovery.Repository
 
             var apps = ServicesRuntime.AllApplications.Applications.FindAll(a => a.TenantId.CompareTo(repoTenantId) == 0).ToList();
 
-            foreach(var app in apps)
+            foreach (var app in apps)
             {
                 var instances = app.Instances.FindAll(i => i.TenantId.CompareTo(repoTenantId) == 0 && i.VipAddress.CompareTo(vipAddress) == 0).ToList();
-                list.AddRange(instances);                
+                list.AddRange(instances);
             }
 
             return list;
@@ -325,11 +325,11 @@ namespace NServiceDiscovery.Repository
 
             var apps = ServicesRuntime.AllApplications.Applications.FindAll(a => a.TenantId.CompareTo(repoTenantId) == 0).ToList();
 
-            foreach(var app in apps)
+            foreach (var app in apps)
             {
                 var instances = app.Instances.FindAll(i => i.TenantId.CompareTo(repoTenantId) == 0).ToList();
 
-                foreach(var instance in instances)
+                foreach (var instance in instances)
                 {
                     list.Add(instance.DataCenterInfo.Name);
                 }
@@ -398,7 +398,7 @@ namespace NServiceDiscovery.Repository
         {
             var ok = true;
 
-            foreach(var dependency in dependencies)
+            foreach (var dependency in dependencies)
             {
                 var dOk = AddDependencyForApplication(appName, dependency);
                 if (!dOk)
