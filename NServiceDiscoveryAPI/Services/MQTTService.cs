@@ -90,7 +90,7 @@ namespace NServiceDiscoveryAPI.Services
             }
 
             // start broadcast timer
-            _broadcastPeerTimer = new System.Timers.Timer(Math.Min(Program.InstanceConfig.PeerEvictionInSecs - Program.InstanceConfig.PeerHeartbeatBeforeEvictionInSecs, 5) * 1000);
+            _broadcastPeerTimer = new System.Timers.Timer(Math.Min(Program.InstanceConfig.PeerEvictionInSecs - Program.InstanceConfig.PeerHeartbeatBeforeEvictionInSecs, Program.InstanceConfig.PeerMinHeartbeatInSecs) * 1000);
             _broadcastPeerTimer.AutoReset = true;
             _broadcastPeerTimer.Enabled = true;
             _broadcastPeerTimer.Elapsed += OnBroadcastTimedEvent;
@@ -154,6 +154,11 @@ namespace NServiceDiscoveryAPI.Services
                 if (mqttMessage.ToInstancesIds.IndexOf(Program.InstanceConfig.ServerInstanceID) >= 0 && (mqttMessage.Type.CompareTo("ADD_INSTANCE") == 0 || mqttMessage.Type.CompareTo("UPDATE_INSTANCE") == 0) && mqttMessage.FromInstanceId.CompareTo(Program.InstanceConfig.ServerInstanceID) != 0)
                 {
                     ProcessInstanceAdded(mqttMessage);
+                }
+
+                if (mqttMessage.ToInstancesIds.IndexOf(Program.InstanceConfig.ServerInstanceID) >= 0 && (mqttMessage.Type.CompareTo("UPDATE_INSTANCE") == 0 || mqttMessage.Type.CompareTo("UPDATE_INSTANCE") == 0) && mqttMessage.FromInstanceId.CompareTo(Program.InstanceConfig.ServerInstanceID) != 0)
+                {
+                    ProcessInstanceUpdated(mqttMessage);
                 }
 
                 // process peer message : CHANGE_INSTANCE_STATUS
@@ -381,6 +386,19 @@ namespace NServiceDiscoveryAPI.Services
         }
 
         private void ProcessInstanceAdded(MQTTMessage mqttMessage)
+        {
+            var receivedMessage = mqttMessage.Message.ToString().Replace("'", "\"");
+
+            var instance = JsonConvert.DeserializeObject<Instance>(receivedMessage);
+
+            if (instance != null && mqttMessage.FromInstanceId.CompareTo(Program.InstanceConfig.ServerInstanceID) != 0)
+            {
+                var memoryRepo = new MemoryServicesRepository(instance.TenantId);
+                memoryRepo.Add(instance);
+            }
+        }
+
+        private void ProcessInstanceUpdated(MQTTMessage mqttMessage)
         {
             var receivedMessage = mqttMessage.Message.ToString().Replace("'", "\"");
 

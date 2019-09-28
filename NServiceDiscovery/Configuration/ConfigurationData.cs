@@ -8,6 +8,7 @@ namespace NServiceDiscovery
 
         public int EvictionTimerIntervalInSecs { get; set; }
         public int PeerEvictionInSecs { get; set; }
+        public int PeerMinHeartbeatInSecs { get; set; }
         public int PeerHeartbeatBeforeEvictionInSecs { get; set; }
 
         public int EvictionInSecs { get; set; }
