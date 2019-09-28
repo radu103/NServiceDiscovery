@@ -49,7 +49,7 @@ namespace NServiceDiscoveryAPI.Controllers
 
             Instance instance = repo.Add(request.instance);
 
-            publishService.PublishAddedorUpdatedInstance(instance);
+            publishService.PublishAddedOrUpdatedInstance(instance, "ADD_INSTANCE");
 
             this.HttpContext.Response.StatusCode = 204;
 
@@ -66,7 +66,7 @@ namespace NServiceDiscoveryAPI.Controllers
 
             if (instance != null)
             {
-                publishService.PublishDeletedInstance(instance.TenantId, instanceID);
+                publishService.PublishDeletedInstance(instance.TenantId, appName, instanceID);
 
                 this.HttpContext.Response.StatusCode = 200;
             }
@@ -85,11 +85,16 @@ namespace NServiceDiscoveryAPI.Controllers
         {
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
 
+            if(lastDirtyTimestamp == 0)
+            {
+                lastDirtyTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
+            }
+
             var instance = repo.ChangeStatus(appName, instanceID, value, lastDirtyTimestamp);
 
             if (instance != null)
             {
-                publishService.PublishAddedorUpdatedInstance(instance);
+                publishService.PublishInstanceStatusChange(instance.TenantId, appName, instanceID, value, lastDirtyTimestamp);
 
                 this.HttpContext.Response.StatusCode = 200;
             }
@@ -138,7 +143,7 @@ namespace NServiceDiscoveryAPI.Controllers
 
             if (instance != null)
             {
-                publishService.PublishAddedorUpdatedInstance(instance);
+                publishService.PublishAddedOrUpdatedInstance(instance, "UPDATE_INSTANCE");
 
                 this.HttpContext.Response.StatusCode = 200;
             }

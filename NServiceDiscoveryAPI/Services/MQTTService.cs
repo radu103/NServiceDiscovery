@@ -84,7 +84,7 @@ namespace NServiceDiscoveryAPI.Services
                     UseApplicationMessageReceivedHandler(message);
                 });
 
-                var task = mqttClient.ConnectAsync(_mqttClientOptions);
+                mqttClient.ConnectAsync(_mqttClientOptions);
 
                 _mqttClients.Add(myMqttClient);
             }
@@ -218,6 +218,11 @@ namespace NServiceDiscoveryAPI.Services
                 {
                     var topicName = _mqttClients[t].mqttTopic;
                     var jsonMessage = JsonConvert.SerializeObject(myPeerMessage);
+
+                    while (!_mqttClients[t].mqttClient.IsConnected)
+                    {
+                        Thread.Sleep(10);
+                    }
 
                     if (_mqttClients[t].mqttClient.IsConnected)
                     {
