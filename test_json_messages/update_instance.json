@@ -1,0 +1,6 @@
+{
+	"from_instance_id": "96e65324-5991-4e8a-ac5b-dff2c35f9ad2",
+	"to_instances_ids": [ "9763cd65-f004-4f25-41d5-4b8f", "b6c8cbe5-73c9-45e3-44ee-5fad", "013280d5-58a2-4033-65cd-5c98" ],
+	"type": "UPDATE_INSTANCE",
+	"message": "{'app':'APPID_1','appGroupName':null,'instanceId':'APPHOST11','status':'','overriddenStatus':'UNKNOWN','hostName':'APPHOST11','ipAddr':'10.0.0.10','sid':null,'vipAddress':'APPHOST11','secureVipAddress':'APPHOST11','port':{'@enabled':true,'$':8080},'securePort':{'@enabled':true,'$':8443},'countryId':1,'homePageUrl':'http://APPHOST11:8080','healthCheckUrl':'http://APPHOST11:8080/healthcheck','statusPageUrl':'http://APPHOST11:8080/status','secureHealthCheckUrl':'','isCoordinatingDiscoveryServer':false,'lastUpdatedTimestamp':1569696432084,'lastDirtyTimestamp':1569696432084,'actionType':'MODIFIED','metadata':null,'leaseInfo':{'renewalIntervalInSecs':30,'durationInSecs':90,'lastHealthCheckDurationInMs':0,'registrationTimestamp':1569696403975,'lastRenewalTimestamp':1569696432084,'evictionTimestamp':1569996432084,'serviceUpTimestamp':1569696403975},'dataCenterInfo':{'@class':'com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo','name':'MyOwn'}}"
+}

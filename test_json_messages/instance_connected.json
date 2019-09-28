@@ -1,0 +1,6 @@
+{
+	"from_instance_id": "f7741a5b-a01f-4dcc-a0ea-557e29ccd22e",
+	"to_instances_ids": [ "ALL" ],
+	"type": "INSTANCE_CONNECTED",
+	"message": "{'peerId':'f7741a5b-a01f-4dcc-a0ea-557e29ccd22e','discoveryUrls':'http:///eureka/apps','instanceIP':null,'instancePort':0}"
+}

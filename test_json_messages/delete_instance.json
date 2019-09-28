@@ -1,0 +1,6 @@
+{
+	"from_instance_id": "f7741a5b-a01f-4dcc-a0ea-557e29ccd22e",
+	"to_instances_ids": [ "1d944d96-5185-4774-4493-62d0", "987472ea-ce6a-4be0-667e-f3ee", "d922288d-8115-44f5-7b3e-0a7e", "9763cd65-f004-4f25-41d5-4b8f", "b6c8cbe5-73c9-45e3-44ee-5fad", "013280d5-58a2-4033-65cd-5c98", "be54b3e1-8122-4cb0-55ff-7c80", "351e98bf-ef47-45f2-6c08-4269", "b4d4fc3b-f6ea-4726-5d0b-721e" ],
+	"type": "DELETE_INSTANCE",
+	"message": "{'appName':'APPID_1','instanceId':'APPHOST11','tenantId':'public-dev'}"
+}

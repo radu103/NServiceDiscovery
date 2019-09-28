@@ -1,0 +1,6 @@
+{
+	"from_instance_id": "be54b3e1-8122-4cb0-55ff-7c80",
+	"to_instances_ids": [ "f7741a5b-a01f-4dcc-a0ea-557e29ccd22e" ],
+	"type": "INSTANCE_HEARTBEAT",
+	"message": "{'peerId':'be54b3e1-8122-4cb0-55ff-7c80','discoveryUrls':'http://nservicediscovery2.cfapps.eu10.hana.ondemand.com/eureka/apps','instanceIP':'10.0.75.23','instancePort':61019}"
+}
