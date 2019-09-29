@@ -287,7 +287,8 @@ namespace NServiceDiscovery.Repository
                         app.Instances[i].ActionType = "MODIFIED";
                         app.Instances[i].Status = status;
 
-                        app.Instances[i].LastDirtyTimestamp = app.Instances[i].LastUpdatedTimestamp = lastDirtyTimestamp;
+                        app.Instances[i].LastDirtyTimestamp = lastDirtyTimestamp;
+                        app.Instances[i].LastUpdatedTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
 
                         app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
                         app.Instances[i].LeaseInfo.EvictionTimestamp = app.Instances[i].LeaseInfo.LastRenewalTimestamp + this._evictionInSeconds * DateTimeConversions.TicksPerSecond;

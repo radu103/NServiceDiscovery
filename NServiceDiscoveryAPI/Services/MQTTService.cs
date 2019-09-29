@@ -131,8 +131,11 @@ namespace NServiceDiscoveryAPI.Services
 
                     foreach (var qMessage in MQTTSendQueue.MessagesToSend)
                     {
-                        mqttClient.PublishAsync(topic, qMessage.QueuedMessage, qMessage.QoS);
-                        MQTTSendQueue.MessagesToSend.Remove(qMessage);
+                        if (mqttClient.IsConnected)
+                        {
+                            mqttClient.PublishAsync(topic, qMessage.QueuedMessage, qMessage.QoS);
+                            MQTTSendQueue.MessagesToSend.Remove(qMessage);
+                        }
                     }
                 }
             }

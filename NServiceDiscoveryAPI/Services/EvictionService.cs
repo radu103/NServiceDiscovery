@@ -41,7 +41,16 @@ namespace NServiceDiscoveryAPI.Services
                     foreach (var instance in app.Instances)
                     {
                         var instanceLastUpdate = DateTimeConversions.FromJavaMillis(instance.LastUpdatedTimestamp);
+
+                        // if no heartbeat first take down instance
                         if (instanceLastUpdate.AddSeconds(Program.InstanceConfig.EvictionInSecs) < DateTime.UtcNow)
+                        {
+                            ServicesRuntime.AllApplications.VersionsDelta += 1;
+                            instance.Status = "DOWN";
+                        }
+
+                        // if no heartbeat after the DOWN Duration then avict the instance
+                        if (instanceLastUpdate.AddSeconds(Program.InstanceConfig.EvictionInSecs + Program.InstanceConfig.DurationInSecs) < DateTime.UtcNow)
                         {
                             instancesToRemove.Add(instance);
                         }
