@@ -18,8 +18,12 @@
 * [READY] Expired metadata removal
     * [READY] Automatic instance eviction task if no heartbeat http message received
     * [READY] Automatic peer removal task if no heartbeat mqtt message received
-* [TO DO] Sync metadata in memory for multiple instances via MQTT broadcast messages for known peers with QoS 1 (at least once)
-* [TO DO] Persistence with SAP HANA / Mongo / Redis
+* [WORK IN PROGRESS] Sync metadata in memory for multiple instances via MQTT broadcast messages for known peers with QoS 1 (at least once)
+    * [READY] Sync of instances (add, update & delete) using mqtt messages
+    * [TO DO] Sync of app dependencies & app configurations using mqtt messages
+    * [TO DO] Sync of general configuration using mqtt messages
+* [TO DO] Auto select persistency type on Cloud Foundry vased on VCAP_SERVICES binded to app
+* [TO DO] Persistence save & load with SAP HANA / Mongo / Redis
 
 ## Not in scope yet
 
