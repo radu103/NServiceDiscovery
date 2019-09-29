@@ -18,7 +18,7 @@ namespace NServiceDiscoveryAPI.Controllers
         [Route("/eureka/apps")]        
         public ActionResult<ServicesRuntime> GetAllApps()
         {
-            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
+            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
             return repo.GetAll();
         }
 
@@ -26,7 +26,7 @@ namespace NServiceDiscoveryAPI.Controllers
         [Route("/eureka/apps/delta")]
         public ActionResult<ServicesRuntime> GetAllAppsDelta()
         {
-            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
+            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
             return repo.GetAll();
         }
 
@@ -35,7 +35,7 @@ namespace NServiceDiscoveryAPI.Controllers
         [Route("/eureka/apps/{appName}")]
         public ActionResult<Application> GetApp([FromRoute] string appName)
         {
-            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
+            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
             return repo.GetByAppName(appName);
         }
 
@@ -45,7 +45,7 @@ namespace NServiceDiscoveryAPI.Controllers
         {
             request.instance.AppName = appName;
 
-            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
+            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
 
             Instance instance = repo.Add(request.instance);
 
@@ -60,7 +60,7 @@ namespace NServiceDiscoveryAPI.Controllers
         [Route("/eureka/apps/{appName}/{instanceID}")]
         public ActionResult<string> DeleteInstance([FromRoute] string appName, [FromRoute] string instanceID, [FromServices] IPublishChangesService publishService)
         {
-            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
+            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
 
             var instance = repo.Delete(appName, instanceID);
 
@@ -83,7 +83,7 @@ namespace NServiceDiscoveryAPI.Controllers
         // "/eureka/apps/{appName}/{instanceID}/status?value={status}&lastDirtyTimestamp=1568746948343"
         public ActionResult<string> ChangeInstanceStatus([FromRoute] string appName, [FromRoute] string instanceID, [FromQuery] string value, [FromQuery] long lastDirtyTimestamp, [FromServices] IPublishChangesService publishService)
         {
-            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
+            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
 
             if(lastDirtyTimestamp == 0)
             {
@@ -111,7 +111,7 @@ namespace NServiceDiscoveryAPI.Controllers
         // "/eureka/apps/{appName}/{instanceID}?status=UP&lastDirtyTimestamp=1568804226113"
         public ActionResult<string> ReceiveInstanceHeartbeat([FromRoute] string appName, [FromRoute] string instanceID, [FromQuery] long lastDirtyTimestamp, [FromServices] IPublishChangesService publishService)
         {
-            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
+            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
 
             var status = string.Empty;
 
@@ -159,7 +159,7 @@ namespace NServiceDiscoveryAPI.Controllers
         [Route("/eureka/vips/{vipAddress}")]
         public ActionResult<List<Instance>> GetInstancesForVipAddress([FromRoute] string vipAddress)
         {
-            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
+            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
 
             List<Instance> list = repo.GetInstancesForVipAddress(vipAddress);
 
@@ -179,7 +179,7 @@ namespace NServiceDiscoveryAPI.Controllers
         [Route("/eureka/svips/{svipAddress}")]
         public ActionResult<List<Instance>> GetInstancesForSVipAddress([FromRoute] string svipAddress)
         {
-            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
+            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
 
             List<Instance> list = repo.GetInstancesForSVipAddress(svipAddress);
 
@@ -199,7 +199,7 @@ namespace NServiceDiscoveryAPI.Controllers
         [Route("/eureka/datacenters")]
         public ActionResult<List<string>> GetDataCenters()
         {
-            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
+            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
 
             List<string> list = repo.GetDataCenters();
 
@@ -210,7 +210,7 @@ namespace NServiceDiscoveryAPI.Controllers
         [Route("/eureka/countries")]
         public ActionResult<List<int>> GeCountries()
         {
-            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
+            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
 
             List<int> list = repo.GetCountries();
 

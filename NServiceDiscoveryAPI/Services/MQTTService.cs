@@ -446,7 +446,7 @@ namespace NServiceDiscoveryAPI.Services
 
             if (instance != null && mqttMessage.FromInstanceId.CompareTo(Program.InstanceConfig.ServerInstanceID) != 0)
             {
-                var memoryRepo = new MemoryServicesRepository(instance.TenantId);
+                var memoryRepo = new MemoryServicesRepository(instance.TenantId, Program.InstanceConfig.EvictionInSecs);
                 memoryRepo.Add(instance);
             }
         }
@@ -460,7 +460,7 @@ namespace NServiceDiscoveryAPI.Services
             
             if (instance != null && mqttMessage.FromInstanceId.CompareTo(Program.InstanceConfig.ServerInstanceID) != 0)
             {
-                var memoryRepo = new MemoryServicesRepository(instance.TenantId);
+                var memoryRepo = new MemoryServicesRepository(instance.TenantId, Program.InstanceConfig.EvictionInSecs);
                 memoryRepo.Add(instance);
             }
         }
@@ -473,7 +473,7 @@ namespace NServiceDiscoveryAPI.Services
 
             if (messageContent != null && mqttMessage.FromInstanceId.CompareTo(Program.InstanceConfig.ServerInstanceID) != 0)
             {
-                var memoryRepo = new MemoryServicesRepository(messageContent.TenantId);
+                var memoryRepo = new MemoryServicesRepository(messageContent.TenantId, Program.InstanceConfig.EvictionInSecs);
                 memoryRepo.ChangeStatus(messageContent.AppName, messageContent.InstanceId, messageContent.Status, messageContent.LastDirtyTimestamp);
             }
         }
@@ -486,7 +486,7 @@ namespace NServiceDiscoveryAPI.Services
 
             if (messageContent != null && mqttMessage.FromInstanceId.CompareTo(Program.InstanceConfig.ServerInstanceID) != 0)
             {
-                var memoryRepo = new MemoryServicesRepository(messageContent.TenantId);
+                var memoryRepo = new MemoryServicesRepository(messageContent.TenantId, Program.InstanceConfig.EvictionInSecs);
                 memoryRepo.Delete(messageContent.AppName, messageContent.InstanceId);
             }
         }

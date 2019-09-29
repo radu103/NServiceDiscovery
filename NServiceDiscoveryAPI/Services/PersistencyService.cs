@@ -28,7 +28,7 @@ namespace NServiceDiscoveryAPI.Services
 
             foreach (var tenant in Program.Tenants)
             {
-                var memoryRepo = new MemoryServicesRepository(tenant.TenantId + "-" + tenant.TenantType);
+                var memoryRepo = new MemoryServicesRepository(tenant.TenantId + "-" + tenant.TenantType, Program.InstanceConfig.EvictionInSecs);
                 var tenantSynchInfo = memoryRepo.GetTenantSyncInfo();
 
                 if(tenantSynchInfo != null)

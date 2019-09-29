@@ -13,14 +13,17 @@ namespace NServiceDiscovery.Repository
     public class MemoryServicesRepository
     {
         private string repoTenantId = string.Empty;
+        private int _evictionInSeconds = DefaultConfigurationData.DefaultEvictionInSecs;
 
         public MemoryServicesRepository()
         {
             repoTenantId = DefaultConfigurationData.DefaultTenantID + "-" + DefaultConfigurationData.DefaultTenantType;
         }
 
-        public MemoryServicesRepository(string tenantId)
+        public MemoryServicesRepository(string tenantId, int evictionInSeconds)
         {
+            _evictionInSeconds = evictionInSeconds;
+
             if (!string.IsNullOrEmpty(tenantId))
             {
                 repoTenantId = tenantId;
@@ -248,7 +251,7 @@ namespace NServiceDiscovery.Repository
 
             instance.LeaseInfo.RegistrationTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
             instance.LeaseInfo.LastRenewalTimestamp = instance.LeaseInfo.RegistrationTimestamp;
-            instance.LeaseInfo.EvictionTimestamp = instance.LeaseInfo.LastRenewalTimestamp + DefaultConfigurationData.DefaultEvictionInSecs * DateTimeConversions.TicksPerSecond;
+            instance.LeaseInfo.EvictionTimestamp = instance.LeaseInfo.LastRenewalTimestamp + this._evictionInSeconds * DateTimeConversions.TicksPerSecond;
             instance.LeaseInfo.ServiceUpTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
 
             var existingInstance = appFound.Instances.SingleOrDefault(i => i.TenantId.CompareTo(repoTenantId) == 0 && i.InstanceId.CompareTo(instance.InstanceId) == 0);
@@ -285,7 +288,7 @@ namespace NServiceDiscovery.Repository
                         app.Instances[i].LastDirtyTimestamp = app.Instances[i].LastUpdatedTimestamp = lastDirtyTimestamp;
 
                         app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
-                        app.Instances[i].LeaseInfo.EvictionTimestamp = app.Instances[i].LeaseInfo.LastRenewalTimestamp + DefaultConfigurationData.DefaultEvictionInSecs * DateTimeConversions.TicksPerSecond;
+                        app.Instances[i].LeaseInfo.EvictionTimestamp = app.Instances[i].LeaseInfo.LastRenewalTimestamp + this._evictionInSeconds * DateTimeConversions.TicksPerSecond;
 
                         if (status.CompareTo("UP") == 0)
                         {
@@ -296,9 +299,10 @@ namespace NServiceDiscovery.Repository
                     }
                 }
 
-                IncreaseVersion();
-
-                return app.Instances[idx];
+                if(idx >= 0) { 
+                    IncreaseVersion();
+                    return app.Instances[idx];
+                }
             }
 
             return null;

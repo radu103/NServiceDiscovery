@@ -13,7 +13,7 @@ namespace NServiceDiscoveryAPI.Controllers
         {
             string tenantId = this.GetTenantIdFromRouteData();
 
-            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
+            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
 
             var res = repo.AddDependencyForApplication(appName, dependency);
 
@@ -35,7 +35,7 @@ namespace NServiceDiscoveryAPI.Controllers
         {
             string tenantId = this.GetTenantIdFromRouteData();
 
-            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
+            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
 
             var res = repo.AddDependenciesForApplication(appName, dependencies);
 
@@ -55,7 +55,7 @@ namespace NServiceDiscoveryAPI.Controllers
         [Route("/dependencies/apps/{appName}/{dependency}")]
         public ActionResult<string> DeleteApplicationKeyValue([FromRoute] string appName, [FromRoute] string dependency)
         {
-            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData());
+            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
 
             var res = repo.DeleteDependencyForApplication(appName, dependency);
 
