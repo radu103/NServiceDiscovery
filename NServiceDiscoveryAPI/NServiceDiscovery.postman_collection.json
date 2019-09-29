@@ -12,7 +12,7 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer public2",
+						"value": "Bearer public-dev",
 						"type": "text"
 					}
 				],
@@ -35,13 +35,7 @@
 			"name": "GetStatus",
 			"request": {
 				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"type": "text",
-						"value": "Bearer public2"
-					}
-				],
+				"header": [],
 				"url": {
 					"raw": "http://localhost:8771/status",
 					"protocol": "http",
@@ -60,13 +54,7 @@
 			"name": "GetInfo",
 			"request": {
 				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"type": "text",
-						"value": "Bearer public2"
-					}
-				],
+				"header": [],
 				"url": {
 					"raw": "http://localhost:8771/info",
 					"protocol": "http",
@@ -85,13 +73,7 @@
 			"name": "GetHealth",
 			"request": {
 				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"type": "text",
-						"value": "Bearer public2"
-					}
-				],
+				"header": [],
 				"url": {
 					"raw": "http://localhost:8771/health",
 					"protocol": "http",
@@ -110,13 +92,7 @@
 			"name": "GetPeers",
 			"request": {
 				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"type": "text",
-						"value": "Bearer public2"
-					}
-				],
+				"header": [],
 				"url": {
 					"raw": "http://localhost:8771/peers",
 					"protocol": "http",
@@ -135,13 +111,7 @@
 			"name": "GetDataCenters",
 			"request": {
 				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"type": "text",
-						"value": "Bearer public2"
-					}
-				],
+				"header": [],
 				"url": {
 					"raw": "http://localhost:8771/eureka/datacenters",
 					"protocol": "http",
@@ -161,13 +131,7 @@
 			"name": "GetCountries",
 			"request": {
 				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"type": "text",
-						"value": "Bearer public2"
-					}
-				],
+				"header": [],
 				"url": {
 					"raw": "http://localhost:8771/eureka/countries",
 					"protocol": "http",
@@ -191,7 +155,7 @@
 					{
 						"key": "Authorization",
 						"type": "text",
-						"value": "Bearer public2"
+						"value": "Bearer public-dev"
 					}
 				],
 				"url": {
@@ -219,7 +183,7 @@
 					{
 						"key": "Authorization",
 						"type": "text",
-						"value": "Bearer public2"
+						"value": "Bearer public-dev"
 					}
 				],
 				"url": {
@@ -246,7 +210,7 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer public2",
+						"value": "Bearer public-dev",
 						"type": "text"
 					}
 				],
@@ -274,7 +238,7 @@
 					{
 						"key": "Authorization",
 						"type": "text",
-						"value": "Bearer public2"
+						"value": "Bearer public-dev"
 					}
 				],
 				"url": {
@@ -306,7 +270,7 @@
 					},
 					{
 						"key": "Authorization",
-						"value": "Bearer public2",
+						"value": "Bearer public-dev",
 						"type": "text"
 					}
 				],
@@ -336,6 +300,49 @@
 			"response": []
 		},
 		{
+			"name": "Delete Instance App_1_1",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer public-dev"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"instance\": {\r\n        \"hostName\": \"APPHOST11\",\r\n        \"app\": \"APPID_1\",\r\n        \"vipAddress\": \"APPHOST11\",\r\n        \"secureVipAddress\": \"APPHOST11\",\r\n        \"ipAddr\": \"10.0.0.10\",\r\n        \"status\": \"STARTING\",\r\n        \"port\": {\"$\": \"8080\", \"@enabled\": \"true\"},\r\n        \"securePort\": {\"$\": \"8443\", \"@enabled\": \"true\"},\r\n        \"healthCheckUrl\": \"http://APPHOST11:8080/healthcheck\",\r\n        \"statusPageUrl\": \"http://APPHOST11:8080/status\",\r\n        \"homePageUrl\": \"http://APPHOST11:8080\",\r\n        \"dataCenterInfo\": {\r\n            \"@class\": \"com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo\", \r\n            \"name\": \"MyOwn\"\r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8771/eureka/apps/APPID_1/APPHOST11",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8771",
+					"path": [
+						"eureka",
+						"apps",
+						"APPID_1",
+						"APPHOST11"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "RegisterApp_1_2",
 			"request": {
 				"method": "POST",
@@ -349,12 +356,17 @@
 					{
 						"key": "Authorization",
 						"type": "text",
-						"value": "Bearer public2"
+						"value": "Bearer public-dev"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"instance\": {\r\n        \"hostName\": \"APPHOST12\",\r\n        \"app\": \"APPID_1\",\r\n        \"vipAddress\": \"APPHOST12\",\r\n        \"secureVipAddress\": \"APPHOST12\",\r\n        \"ipAddr\": \"10.0.0.10\",\r\n        \"status\": \"STARTING\",\r\n        \"port\": {\"$\": \"8080\", \"@enabled\": \"true\"},\r\n        \"securePort\": {\"$\": \"8443\", \"@enabled\": \"true\"},\r\n        \"healthCheckUrl\": \"http://APPHOST12:8080/healthcheck\",\r\n        \"statusPageUrl\": \"http://APPHOST12:8080/status\",\r\n        \"homePageUrl\": \"http://APPHOST12:8080\",\r\n        \"dataCenterInfo\": {\r\n            \"@class\": \"com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo\", \r\n            \"name\": \"MyOwn\"\r\n        }\r\n    }\r\n}"
+					"raw": "{\r\n    \"instance\": {\r\n        \"hostName\": \"APPHOST12\",\r\n        \"app\": \"APPID_1\",\r\n        \"vipAddress\": \"APPHOST12\",\r\n        \"secureVipAddress\": \"APPHOST12\",\r\n        \"ipAddr\": \"10.0.0.10\",\r\n        \"status\": \"STARTING\",\r\n        \"port\": {\"$\": \"8080\", \"@enabled\": \"true\"},\r\n        \"securePort\": {\"$\": \"8443\", \"@enabled\": \"true\"},\r\n        \"healthCheckUrl\": \"http://APPHOST12:8080/healthcheck\",\r\n        \"statusPageUrl\": \"http://APPHOST12:8080/status\",\r\n        \"homePageUrl\": \"http://APPHOST12:8080\",\r\n        \"dataCenterInfo\": {\r\n            \"@class\": \"com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo\", \r\n            \"name\": \"MyOwn\"\r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
 				"url": {
 					"raw": "http://localhost:8771/eureka/apps/APPID_1",
@@ -386,12 +398,17 @@
 					{
 						"key": "Authorization",
 						"type": "text",
-						"value": "Bearer public2"
+						"value": "Bearer public-dev"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"instance\": {\n        \"instanceId\": \"DESKTOP-636NFB7:test-api-1:54880\",\n        \"app\": \"TEST-API-1\",\n        \"appGroupName\": null,\n        \"ipAddr\": \"192.168.56.1\",\n        \"sid\": \"na\",\n        \"port\": {\n            \"@enabled\": true,\n            \"$\": 54880\n        },\n        \"securePort\": {\n            \"@enabled\": false,\n            \"$\": 443\n        },\n        \"homePageUrl\": \"http://DESKTOP-636NFB7:54880/\",\n        \"statusPageUrl\": \"http://DESKTOP-636NFB7:54880/info\",\n        \"healthCheckUrl\": \"http://DESKTOP-636NFB7:54880/health\",\n        \"secureHealthCheckUrl\": null,\n        \"vipAddress\": \"test-api-1\",\n        \"secureVipAddress\": \"test-api-1\",\n        \"countryId\": 1,\n        \"dataCenterInfo\": {\n            \"@class\": \"com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo\",\n            \"name\": \"MyOwn\"\n        },\n        \"hostName\": \"DESKTOP-636NFB7\",\n        \"status\": \"UP\",\n        \"overriddenstatus\": \"UNKNOWN\",\n        \"leaseInfo\": {\n            \"renewalIntervalInSecs\": 30,\n            \"durationInSecs\": 90,\n            \"registrationTimestamp\": 0,\n            \"lastRenewalTimestamp\": 0,\n            \"renewalTimestamp\": 0,\n            \"evictionTimestamp\": 0,\n            \"serviceUpTimestamp\": 0\n        },\n        \"isCoordinatingDiscoveryServer\": false,\n        \"metadata\": {\n            \"@class\": \"java.util.Collections$EmptyMap\"\n        },\n        \"lastUpdatedTimestamp\": 1568745978501,\n        \"lastDirtyTimestamp\": 1568745978501,\n        \"actionType\": \"ADDED\"\n    }\n}"
+					"raw": "{\n    \"instance\": {\n        \"instanceId\": \"DESKTOP-636NFB7:test-api-1:54880\",\n        \"app\": \"TEST-API-1\",\n        \"appGroupName\": null,\n        \"ipAddr\": \"192.168.56.1\",\n        \"sid\": \"na\",\n        \"port\": {\n            \"@enabled\": true,\n            \"$\": 54880\n        },\n        \"securePort\": {\n            \"@enabled\": false,\n            \"$\": 443\n        },\n        \"homePageUrl\": \"http://DESKTOP-636NFB7:54880/\",\n        \"statusPageUrl\": \"http://DESKTOP-636NFB7:54880/info\",\n        \"healthCheckUrl\": \"http://DESKTOP-636NFB7:54880/health\",\n        \"secureHealthCheckUrl\": null,\n        \"vipAddress\": \"test-api-1\",\n        \"secureVipAddress\": \"test-api-1\",\n        \"countryId\": 1,\n        \"dataCenterInfo\": {\n            \"@class\": \"com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo\",\n            \"name\": \"MyOwn\"\n        },\n        \"hostName\": \"DESKTOP-636NFB7\",\n        \"status\": \"UP\",\n        \"overriddenstatus\": \"UNKNOWN\",\n        \"leaseInfo\": {\n            \"renewalIntervalInSecs\": 30,\n            \"durationInSecs\": 90,\n            \"registrationTimestamp\": 0,\n            \"lastRenewalTimestamp\": 0,\n            \"renewalTimestamp\": 0,\n            \"evictionTimestamp\": 0,\n            \"serviceUpTimestamp\": 0\n        },\n        \"isCoordinatingDiscoveryServer\": false,\n        \"metadata\": {\n            \"@class\": \"java.util.Collections$EmptyMap\"\n        },\n        \"lastUpdatedTimestamp\": 1568745978501,\n        \"lastDirtyTimestamp\": 1568745978501,\n        \"actionType\": \"ADDED\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
 				"url": {
 					"raw": "http://localhost:8771/eureka/apps/TEST-API-1",
@@ -416,7 +433,7 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer public2",
+						"value": "Bearer public-dev",
 						"type": "text"
 					}
 				],
@@ -452,7 +469,7 @@
 					{
 						"key": "Authorization",
 						"type": "text",
-						"value": "Bearer public2"
+						"value": "Bearer public-dev"
 					}
 				],
 				"url": {
@@ -482,7 +499,13 @@
 			"name": "GetKeyFromStore",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer public-dev",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "http://localhost:8771/configuration/store/testkey",
 					"protocol": "http",
@@ -503,7 +526,13 @@
 			"name": "GetKeyFromStoreForApp",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer public-dev",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "http://localhost:8771/configuration/store/apps/testApp/testkey",
 					"protocol": "http",
@@ -526,7 +555,13 @@
 			"name": "GetAllKeysFromStore",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer public-dev",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "http://localhost:8771/configuration/store",
 					"protocol": "http",
@@ -549,7 +584,7 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer public2",
+						"value": "Bearer public-dev",
 						"type": "text"
 					}
 				],
@@ -574,7 +609,13 @@
 			"name": "DeleteKeyFromStore",
 			"request": {
 				"method": "DELETE",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer public-dev",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "http://localhost:8771/configuration/store/testkey",
 					"protocol": "http",
@@ -595,7 +636,13 @@
 			"name": "DeleteKeyFromStoreForApp",
 			"request": {
 				"method": "DELETE",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer public-dev",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "http://localhost:8771/configuration/store/apps/testApp/testkey",
 					"protocol": "http",
@@ -618,7 +665,13 @@
 			"name": "AddKeyToStore",
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer public-dev",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "http://localhost:8771/configuration/store/testkey/testvalue",
 					"protocol": "http",
@@ -643,7 +696,7 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer public2",
+						"value": "Bearer public-dev",
 						"type": "text"
 					}
 				],
@@ -661,6 +714,13 @@
 						"APPID_1",
 						"testkey",
 						"testvalue"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
 					]
 				}
 			},
@@ -670,7 +730,13 @@
 			"name": "UpdateKeyInStore",
 			"request": {
 				"method": "PUT",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer public-dev",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "http://localhost:8771/configuration/store/testkey/testvalue",
 					"protocol": "http",
@@ -695,7 +761,7 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer public2",
+						"value": "Bearer public-dev",
 						"type": "text"
 					}
 				],
@@ -727,6 +793,11 @@
 						"key": "Content-Type",
 						"value": "application/json",
 						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer public-dev",
+						"type": "text"
 					}
 				],
 				"body": {
@@ -756,7 +827,7 @@
 					{
 						"key": "Authorization",
 						"type": "text",
-						"value": "Bearer public2"
+						"value": "Bearer public-dev"
 					},
 					{
 						"key": "Content-Type",
@@ -767,7 +838,12 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "[\n    {\n        \"key\": \"confkey1\",\n        \"value\": \"value1\"\n    },\n    {\n        \"key\": \"confkey2\",\n        \"value\": \"value2\"\n    },\n    {\n        \"key\": \"confkey3\",\n        \"value\": \"value3\"\n    }    \n]\n"
+					"raw": "[\n    {\n        \"key\": \"confkey1\",\n        \"value\": \"value1\"\n    },\n    {\n        \"key\": \"confkey2\",\n        \"value\": \"value2\"\n    },\n    {\n        \"key\": \"confkey3\",\n        \"value\": \"value3\"\n    }    \n]\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
 				"url": {
 					"raw": "http://localhost:8771/configuration/store/apps/APPID_1",
@@ -794,7 +870,7 @@
 					{
 						"key": "Authorization",
 						"type": "text",
-						"value": "Bearer public2"
+						"value": "Bearer public-dev"
 					},
 					{
 						"key": "Content-Type",
@@ -805,7 +881,12 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "[\n\t'APPID_2',\n\t'APPID_3'\n]"
+					"raw": "[\n\t'APPID_2',\n\t'APPID_3'\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
 				"url": {
 					"raw": "http://localhost:8771/dependencies/apps/APPID_1",
@@ -823,5 +904,6 @@
 			},
 			"response": []
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }
