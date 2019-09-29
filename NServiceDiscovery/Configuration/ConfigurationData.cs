@@ -30,5 +30,6 @@ namespace NServiceDiscovery
         public string MQTTUsername { get; set; }
         public string MQTTPassword { get; set; }
         public int MQTTReconnectSeconds { get; set; }
+        public string MQTTTopicTemplate { get; set; }
     }
 }

@@ -36,7 +36,8 @@ namespace NServiceDiscovery
                 MQTTPort = DefaultConfigurationData.DefaultMQTTPort,
                 MQTTUsername = DefaultConfigurationData.DefaultMQTTUsername,
                 MQTTPassword = DefaultConfigurationData.DefaultMQTTPassword,
-                MQTTReconnectSeconds = DefaultConfigurationData.DefaultMQTTReconnectSeconds
+                MQTTReconnectSeconds = DefaultConfigurationData.DefaultMQTTReconnectSeconds,
+                MQTTTopicTemplate = DefaultConfigurationData.DefaultMQTTTopicTemplate
             };
 
             if (cfApp != null)

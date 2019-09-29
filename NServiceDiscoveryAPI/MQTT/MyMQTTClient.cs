@@ -1,4 +1,5 @@
 ﻿using MQTTnet.Client;
+using MQTTnet.Protocol;
 
 namespace NServiceDiscoveryAPI.MQTT
 {
@@ -13,5 +14,7 @@ namespace NServiceDiscoveryAPI.MQTT
         public string mqttClientId { get; set; }
 
         public IMqttClient mqttClient { get; set; }
+
+        public static MqttQualityOfServiceLevel MQTTQualityOfService = MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce;
     }
 }

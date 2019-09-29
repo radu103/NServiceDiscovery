@@ -39,7 +39,7 @@ namespace NServiceDiscoveryAPI.Services
             // single tenant case, only 1 MQTT client needed
             for(var t = 0; t < Program.Tenants.Count; t++)
             {
-                var mqttTopic = DefaultConfigurationData.DefaultMQTTTopicTemplate.Replace("{TenantId}", Program.Tenants[t].TenantId).Replace("{TenantType}", Program.Tenants[t].TenantType);
+                var mqttTopic = Program.InstanceConfig.MQTTTopicTemplate.Replace("{TenantId}", Program.Tenants[t].TenantId).Replace("{TenantType}", Program.Tenants[t].TenantType);
                 var mqttClient = _factory.CreateMqttClient();
 
                 var mqttClientID = Program.InstanceConfig.ServerInstanceID + ":" + Program.Tenants[t].TenantId + ":" + Program.Tenants[t].TenantType;
@@ -121,6 +121,21 @@ namespace NServiceDiscoveryAPI.Services
 
             // brodcast my peer info
             BroadcastMyPeerInfo("INSTANCE_CONNECTED");
+
+            // send topic queue messages (topic is specific to tenantId and mqttClient already
+            if(MQTTSendQueue.MessagesToSend.Count > 0)
+            {
+                lock (MQTTSendQueue.MessagesToSend)
+                {
+                    var qMessages = MQTTSendQueue.MessagesToSend.FindAll(qm => qm.Topic.CompareTo(topic) == 0).ToList();
+
+                    foreach (var qMessage in MQTTSendQueue.MessagesToSend)
+                    {
+                        mqttClient.PublishAsync(topic, qMessage.QueuedMessage, qMessage.QoS);
+                        MQTTSendQueue.MessagesToSend.Remove(qMessage);
+                    }
+                }
+            }
         }
 
         private async void UseApplicationMessageReceivedHandler(MqttApplicationMessageReceivedEventArgs message)
@@ -153,24 +168,24 @@ namespace NServiceDiscoveryAPI.Services
                 // process peer message : ADD_INSTANCE or UPDATE_INSTANCE
                 if (mqttMessage.ToInstancesIds.IndexOf(Program.InstanceConfig.ServerInstanceID) >= 0 && (mqttMessage.Type.CompareTo("ADD_INSTANCE") == 0 || mqttMessage.Type.CompareTo("UPDATE_INSTANCE") == 0) && mqttMessage.FromInstanceId.CompareTo(Program.InstanceConfig.ServerInstanceID) != 0)
                 {
-                    ProcessInstanceAdded(mqttMessage);
+                    ProcessInstanceAdded(mqttMessage, message.ApplicationMessage.Topic);
                 }
 
                 if (mqttMessage.ToInstancesIds.IndexOf(Program.InstanceConfig.ServerInstanceID) >= 0 && (mqttMessage.Type.CompareTo("UPDATE_INSTANCE") == 0 || mqttMessage.Type.CompareTo("UPDATE_INSTANCE") == 0) && mqttMessage.FromInstanceId.CompareTo(Program.InstanceConfig.ServerInstanceID) != 0)
                 {
-                    ProcessInstanceUpdated(mqttMessage);
+                    ProcessInstanceUpdated(mqttMessage, message.ApplicationMessage.Topic);
                 }
 
                 // process peer message : CHANGE_INSTANCE_STATUS
                 if (mqttMessage.ToInstancesIds.IndexOf(Program.InstanceConfig.ServerInstanceID) >= 0 && mqttMessage.Type.CompareTo("CHANGE_INSTANCE_STATUS") == 0 && mqttMessage.FromInstanceId.CompareTo(Program.InstanceConfig.ServerInstanceID) != 0)
                 {
-                    ProcessInstanceChangeStatus(mqttMessage);
+                    ProcessInstanceChangeStatus(mqttMessage, message.ApplicationMessage.Topic);
                 }
 
                 // process peer message : DELETE_INSTANCE
                 if (mqttMessage.ToInstancesIds.IndexOf(Program.InstanceConfig.ServerInstanceID) >= 0 && mqttMessage.Type.CompareTo("DELETE_INSTANCE") == 0 && mqttMessage.FromInstanceId.CompareTo(Program.InstanceConfig.ServerInstanceID) != 0)
                 {
-                    ProcessInstanceDelete(mqttMessage);
+                    ProcessInstanceDelete(mqttMessage, message.ApplicationMessage.Topic);
                 }
 
                 // TO DO : other peer to peer messages
@@ -179,6 +194,13 @@ namespace NServiceDiscoveryAPI.Services
             Console.WriteLine("MQTT CLIENT - MQTT MESSAGE RECEIVED");
             Console.WriteLine(jsonStr);
             Console.WriteLine(string.Empty);
+        }
+
+        private static string GetTenantFromTopicName(string topic)
+        {
+            var aux = Program.InstanceConfig.MQTTTopicTemplate.Split(new char[] { '-' });
+            var tenantIdType = topic.Replace(aux[0] + "-", string.Empty);
+            return tenantIdType;
         }
 
         private void OnBroadcastTimedEvent(Object source, ElapsedEventArgs e)
@@ -242,6 +264,8 @@ namespace NServiceDiscoveryAPI.Services
             }
         }
 
+        /*  SEND OR QUEUE MESSAGES  */
+
         public void SendMQTTMessageToAll(string tenantId, MQTTMessage message)
         {
             Task task = Task.Factory.StartNew(async () => {
@@ -250,10 +274,20 @@ namespace NServiceDiscoveryAPI.Services
 
                 var myMqttClient = _mqttClients.SingleOrDefault(c => (c.TenantId + "-" + c.TenantType).CompareTo(tenantId) == 0);
 
+                string jsonMessage = JsonConvert.SerializeObject(message);
+
                 if (myMqttClient != null && myMqttClient.mqttClient.IsConnected)
                 {
-                    string jsonMessage = JsonConvert.SerializeObject(message);
-                    res = await myMqttClient.mqttClient.PublishAsync(myMqttClient.mqttTopic, jsonMessage, MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce);
+                    res = await myMqttClient.mqttClient.PublishAsync(myMqttClient.mqttTopic, jsonMessage, MyMQTTClient.MQTTQualityOfService);
+                }
+                else
+                {
+                    MQTTSendQueue.MessagesToSend.Add(new MQTTQueueMessage()
+                    {
+                        Topic = myMqttClient.mqttTopic,
+                        QueuedMessage = jsonMessage,
+                        QoS = MyMQTTClient.MQTTQualityOfService
+                    });
                 }
 
                 return res;
@@ -268,14 +302,23 @@ namespace NServiceDiscoveryAPI.Services
 
                 var myMqttClient = _mqttClients.SingleOrDefault(c => (c.TenantId + "-" + c.TenantType).CompareTo(tenantId) == 0);
 
+                message.ToInstancesIds = new List<string>();
+                message.ToInstancesIds.Add(toInstanceId);
+
+                string jsonMessage = JsonConvert.SerializeObject(message);
+
                 if (myMqttClient != null && myMqttClient.mqttClient.IsConnected)
                 {
-                    message.ToInstancesIds = new List<string>();
-                    message.ToInstancesIds.Add(toInstanceId);
-
-                    string jsonMessage = JsonConvert.SerializeObject(message);
-
-                    res = await myMqttClient.mqttClient.PublishAsync(myMqttClient.mqttTopic, jsonMessage, MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce);
+                    res = await myMqttClient.mqttClient.PublishAsync(myMqttClient.mqttTopic, jsonMessage, MyMQTTClient.MQTTQualityOfService);
+                }
+                else
+                {
+                    MQTTSendQueue.MessagesToSend.Add(new MQTTQueueMessage()
+                    {
+                        Topic = myMqttClient.mqttTopic,
+                        QueuedMessage = jsonMessage,
+                        QoS = MyMQTTClient.MQTTQualityOfService
+                    });
                 }
 
                 return res;
@@ -290,13 +333,22 @@ namespace NServiceDiscoveryAPI.Services
 
                 var myMqttClient = _mqttClients.SingleOrDefault(c => (c.TenantId + "-" + c.TenantType).CompareTo(tenantId) == 0);
 
+                message.ToInstancesIds = toInstanceIds;
+
+                string jsonMessage = JsonConvert.SerializeObject(message);
+
                 if (myMqttClient != null && myMqttClient.mqttClient.IsConnected)
                 {
-                    message.ToInstancesIds = toInstanceIds;
-
-                    string jsonMessage = JsonConvert.SerializeObject(message);
-
-                    res = await myMqttClient.mqttClient.PublishAsync(myMqttClient.mqttTopic, jsonMessage, MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce);
+                    res = await myMqttClient.mqttClient.PublishAsync(myMqttClient.mqttTopic, jsonMessage, MyMQTTClient.MQTTQualityOfService);
+                }
+                else
+                {
+                    MQTTSendQueue.MessagesToSend.Add(new MQTTQueueMessage()
+                    {
+                        Topic = myMqttClient.mqttTopic,
+                        QueuedMessage = jsonMessage,
+                        QoS = MyMQTTClient.MQTTQualityOfService
+                    });
                 }
 
                 return res;
@@ -385,11 +437,12 @@ namespace NServiceDiscoveryAPI.Services
             }
         }
 
-        private void ProcessInstanceAdded(MQTTMessage mqttMessage)
+        private void ProcessInstanceAdded(MQTTMessage mqttMessage, string topic)
         {
             var receivedMessage = mqttMessage.Message.ToString().Replace("'", "\"");
 
             var instance = JsonConvert.DeserializeObject<Instance>(receivedMessage);
+            instance.TenantId = MQTTService.GetTenantFromTopicName(topic);
 
             if (instance != null && mqttMessage.FromInstanceId.CompareTo(Program.InstanceConfig.ServerInstanceID) != 0)
             {
@@ -398,12 +451,13 @@ namespace NServiceDiscoveryAPI.Services
             }
         }
 
-        private void ProcessInstanceUpdated(MQTTMessage mqttMessage)
+        private void ProcessInstanceUpdated(MQTTMessage mqttMessage, string topic)
         {
             var receivedMessage = mqttMessage.Message.ToString().Replace("'", "\"");
 
             var instance = JsonConvert.DeserializeObject<Instance>(receivedMessage);
-
+            instance.TenantId = MQTTService.GetTenantFromTopicName(topic);
+            
             if (instance != null && mqttMessage.FromInstanceId.CompareTo(Program.InstanceConfig.ServerInstanceID) != 0)
             {
                 var memoryRepo = new MemoryServicesRepository(instance.TenantId);
@@ -411,7 +465,7 @@ namespace NServiceDiscoveryAPI.Services
             }
         }
 
-        private void ProcessInstanceChangeStatus(MQTTMessage mqttMessage)
+        private void ProcessInstanceChangeStatus(MQTTMessage mqttMessage, string topic)
         {
             var receivedMessage = mqttMessage.Message.ToString().Replace("'", "\"");
 
@@ -424,7 +478,7 @@ namespace NServiceDiscoveryAPI.Services
             }
         }
 
-        private void ProcessInstanceDelete(MQTTMessage mqttMessage)
+        private void ProcessInstanceDelete(MQTTMessage mqttMessage, string topic)
         {
             var receivedMessage = mqttMessage.Message.ToString().Replace("'", "\"");
 
