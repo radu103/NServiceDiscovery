@@ -187,9 +187,11 @@ namespace NServiceDiscovery.Repository
                     }
                 }
 
-                IncreaseVersion();
-
-                return app.Instances[idx];
+                if (idx >= 0)
+                {
+                    IncreaseVersion();
+                    return app.Instances[idx];
+                }
             }
 
             return null;
