@@ -16,16 +16,20 @@ namespace NServiceDiscoveryAPI.Controllers
     {
         [HttpGet]
         [Route("/eureka/apps")]        
-        public ActionResult<ServicesRuntime> GetAllApps()
+        public ActionResult<ServicesRuntime> GetAllApps([FromServices] IMemoryDiscoveryClientRepository clientRepo)
         {
+            clientRepo.Add(new DiscoveryClient(Request.HttpContext.Connection.RemoteIpAddress.ToString()));
+
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
             return repo.GetAll();
         }
 
         [HttpGet]
         [Route("/eureka/apps/delta")]
-        public ActionResult<ServicesRuntime> GetAllAppsDelta()
+        public ActionResult<ServicesRuntime> GetAllAppsDelta([FromServices] IMemoryDiscoveryClientRepository clientRepo)
         {
+            clientRepo.Add(new DiscoveryClient(Request.HttpContext.Connection.RemoteIpAddress.ToString()));
+
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
             return repo.GetAll();
         }
@@ -33,8 +37,10 @@ namespace NServiceDiscoveryAPI.Controllers
 
         [HttpGet]
         [Route("/eureka/apps/{appName}")]
-        public ActionResult<Application> GetApp([FromRoute] string appName)
+        public ActionResult<Application> GetApp([FromRoute] string appName, [FromServices] IMemoryDiscoveryClientRepository clientRepo)
         {
+            clientRepo.Add(new DiscoveryClient(Request.HttpContext.Connection.RemoteIpAddress.ToString()));
+
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
             return repo.GetByAppName(appName);
         }
@@ -157,8 +163,10 @@ namespace NServiceDiscoveryAPI.Controllers
 
         [HttpGet]
         [Route("/eureka/vips/{vipAddress}")]
-        public ActionResult<List<Instance>> GetInstancesForVipAddress([FromRoute] string vipAddress)
+        public ActionResult<List<Instance>> GetInstancesForVipAddress([FromRoute] string vipAddress, [FromServices] IMemoryDiscoveryClientRepository clientRepo)
         {
+            clientRepo.Add(new DiscoveryClient(Request.HttpContext.Connection.RemoteIpAddress.ToString()));
+
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
 
             List<Instance> list = repo.GetInstancesForVipAddress(vipAddress);
@@ -177,8 +185,10 @@ namespace NServiceDiscoveryAPI.Controllers
 
         [HttpGet]
         [Route("/eureka/svips/{svipAddress}")]
-        public ActionResult<List<Instance>> GetInstancesForSVipAddress([FromRoute] string svipAddress)
+        public ActionResult<List<Instance>> GetInstancesForSVipAddress([FromRoute] string svipAddress, [FromServices] IMemoryDiscoveryClientRepository clientRepo)
         {
+            clientRepo.Add(new DiscoveryClient(Request.HttpContext.Connection.RemoteIpAddress.ToString()));
+
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
 
             List<Instance> list = repo.GetInstancesForSVipAddress(svipAddress);
@@ -197,8 +207,10 @@ namespace NServiceDiscoveryAPI.Controllers
 
         [HttpGet]
         [Route("/eureka/datacenters")]
-        public ActionResult<List<string>> GetDataCenters()
+        public ActionResult<List<string>> GetDataCenters([FromServices] IMemoryDiscoveryClientRepository clientRepo)
         {
+            clientRepo.Add(new DiscoveryClient(Request.HttpContext.Connection.RemoteIpAddress.ToString()));
+
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
 
             List<string> list = repo.GetDataCenters();
@@ -208,8 +220,10 @@ namespace NServiceDiscoveryAPI.Controllers
 
         [HttpGet]
         [Route("/eureka/countries")]
-        public ActionResult<List<int>> GeCountries()
+        public ActionResult<List<int>> GeCountries([FromServices] IMemoryDiscoveryClientRepository clientRepo)
         {
+            clientRepo.Add(new DiscoveryClient(Request.HttpContext.Connection.RemoteIpAddress.ToString()));
+
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
 
             List<int> list = repo.GetCountries();

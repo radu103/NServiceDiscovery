@@ -16,6 +16,12 @@ namespace NServiceDiscovery.Common.ServiceBase
         [JsonProperty("totalClientCount")]
         public int TotalClientCount { get; set; } = 0;
 
+        [JsonProperty("DiscoveryActiveClientCount")]
+        public int DiscoveryActiveClientCount { get; set; } = 0;
+
+        [JsonProperty("configurationActiveClientCount")]
+        public int ConfigurationActiveClientCount { get; set; } = 0;
+
         [JsonProperty("tenantCount")]
         public int TenantCount { get; set; } = 0;
 

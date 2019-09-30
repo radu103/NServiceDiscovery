@@ -10,5 +10,11 @@ namespace NServiceDiscovery.Entity
 
         [JsonProperty("lastUpdateTimestamp")]
         public DateTime LastUpdateTimestamp { get; set; } = DateTime.UtcNow;
+
+        public DiscoveryClient(string hostname)
+        {
+            ClientHostname = hostname;
+            LastUpdateTimestamp = DateTime.UtcNow;
+        }
     }
 }
