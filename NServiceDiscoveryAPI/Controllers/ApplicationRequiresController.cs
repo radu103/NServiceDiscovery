@@ -53,13 +53,33 @@ namespace NServiceDiscoveryAPI.Controllers
 
         [HttpDelete]
         [Route("/dependencies/apps/{appName}/{dependency}")]
-        public ActionResult<string> DeleteApplicationKeyValue([FromRoute] string appName, [FromRoute] string dependency)
+        public ActionResult<string> DeleteApplicationDependency([FromRoute] string appName, [FromRoute] string dependency)
         {
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
 
             var res = repo.DeleteDependencyForApplication(appName, dependency);
 
             if (res)
+            {
+                this.HttpContext.Response.StatusCode = 200;
+            }
+            else
+            {
+                this.HttpContext.Response.StatusCode = 404;
+            }
+
+            return string.Empty;
+        }
+
+        [HttpDelete]
+        [Route("/dependencies/apps/{appName}")]
+        public ActionResult<string> DeleteApplicationDependencies([FromRoute] string appName, [FromRoute] List<string> dependencies)
+        {
+            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
+
+            var res = repo.DeleteDependenciesForApplication(appName, dependencies);
+
+            if (res > 0)
             {
                 this.HttpContext.Response.StatusCode = 200;
             }

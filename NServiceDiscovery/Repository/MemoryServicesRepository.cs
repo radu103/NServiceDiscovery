@@ -434,5 +434,18 @@ namespace NServiceDiscovery.Repository
 
             return false;
         }
+
+        public int DeleteDependenciesForApplication(string appName, List<string> dependencies)
+        {
+            var app = ServicesRuntime.AllApplications.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
+
+            if (app != null)
+            {
+                var removed = app.Dependencies.RemoveAll(r => dependencies.IndexOf(r) >= 0);
+                return removed;
+            }
+
+            return 0;
+        }
     }
 }

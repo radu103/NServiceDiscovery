@@ -23,6 +23,7 @@
     * [TO DO] Sync of app dependencies & app configurations using mqtt messages
     * [TO DO] Sync of general configuration using mqtt messages
 * [TO DO] Auto select persistency type on Cloud Foundry vased on VCAP_SERVICES binded to app
+* [TO DO] Auto select persistency type based on CF environment variables
 * [TO DO] Persistence save & load with SAP HANA / Mongo / Redis
 
 ## Not in scope yet
@@ -340,6 +341,36 @@ Topic template name : `NServiceDiscovery-{tenantId}-{landscape}`
         "appName" : "string", 
         "tenantId" : "string", 
         "instanceId" : "string"
+    }
+}
+```
+
+### ADD_APP_DEPENDENCIES = published when app dependencies are deleted
+
+```json
+{
+    "from_instance_id" : "id1",
+    "to_instance_ids" : ["id2"],
+    "type" : "DELETE_APP_DEPENDENCIES",
+    "message" : {
+        "appName" : "string", 
+        "tenantId" : "string", 
+        "addedDependencies" : ["string"]
+    }
+}
+```
+
+### DELETE_APP_DEPENDENCIES = published when app dependencies are deleted
+
+```json
+{
+    "from_instance_id" : "id1",
+    "to_instance_ids" : ["id2"],
+    "type" : "DELETE_APP_DEPENDENCIES",
+    "message" : {
+        "appName" : "string", 
+        "tenantId" : "string", 
+        "deletedDependencies" : ["string"]
     }
 }
 ```
