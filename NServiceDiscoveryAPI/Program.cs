@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using NServiceDiscovery;
-using NServiceDiscovery.CloudFoundry;
+using NServiceDiscovery.Common.CloudFoundry;
 using NServiceDiscovery.Entity;
 using NServiceDiscovery.Repository;
 using NServiceDiscovery.Util;

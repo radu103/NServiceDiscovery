@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using NServiceDiscovery.CloudFoundry;
+using NServiceDiscovery.Common.CloudFoundry;
 using System;
 
 namespace NServiceDiscovery.Util

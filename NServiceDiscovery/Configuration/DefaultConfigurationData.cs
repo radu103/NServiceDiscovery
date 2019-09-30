@@ -8,6 +8,9 @@ namespace NServiceDiscovery.Configuration
         public static string DefaultTenantType = "dev";
         public static string DefaultTenantToken = "real_token_to_be_checked";
 
+        // client active interval validity
+        public static int DefaultClientDeactivateInSecs = 60;
+
         // peer validity
         public static int DefaultEvictionTimerIntervalInSecs = 1;
         public static int DefaultPeerEvictionInSecs = 400;

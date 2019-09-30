@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NServiceDiscovery.Common.ServiceBase;
 using NServiceDiscovery.Entity;
 using NServiceDiscovery.RuntimeInMemory;
-using NServiceDiscovery.ServiceBase;
 using NServiceDiscoveryAPI.Services;
 using System.Collections.Generic;
 
@@ -10,8 +10,6 @@ namespace NServiceDiscoveryAPI.Controllers
     [ApiController]
     public class ServiceBaseController : ControllerBase
     {
-        private ServiceHealth _health = new ServiceHealth();
-
         [HttpGet]
         [Route("/favicon.ico")]
         public ActionResult<string> GetFavIcon()
@@ -28,9 +26,10 @@ namespace NServiceDiscoveryAPI.Controllers
 
         [HttpGet]
         [Route("/health")]
-        public ActionResult<ServiceHealth> GetHealth()
+        public ActionResult<ServiceHealth> GetHealth([FromServices] IInstanceHealthService instanceHealthService)
         {
-            return _health;
+            instanceHealthService.GetHealth();
+            return instanceHealthService.GetHealth();
         }
 
         [HttpGet]

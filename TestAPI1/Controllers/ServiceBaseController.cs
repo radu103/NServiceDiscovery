@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using NServiceDiscovery.ServiceBase;
+using NServiceDiscovery.Common.ServiceBase;
 
 namespace TestAPI1.Controllers
 {

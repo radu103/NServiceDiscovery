@@ -42,10 +42,12 @@ namespace NServiceDiscoveryAPI
 
             services.AddSingleton<IMQTTService, MQTTService>();
             services.AddSingleton<IPublishChangesService, PublishChangesService>();
-            services.AddSingleton<IInstanceStatusService, InstanceStatusService>();
             services.AddSingleton<IEvictionService, EvictionService>();
             services.AddSingleton<IMemoryDiscoveryPeerRepository, MemoryDiscoveryPeerRepository>();
             services.AddSingleton<IPersistencyService, PersistencyService>();
+
+            services.AddSingleton<IInstanceStatusService, InstanceStatusService>();
+            services.AddSingleton<IInstanceHealthService, InstanceHealthService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

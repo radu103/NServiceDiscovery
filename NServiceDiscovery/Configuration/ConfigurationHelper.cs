@@ -1,4 +1,4 @@
-﻿using NServiceDiscovery.CloudFoundry;
+﻿using NServiceDiscovery.Common.CloudFoundry;
 using NServiceDiscovery.Configuration;
 using System;
 
@@ -12,6 +12,8 @@ namespace NServiceDiscovery
             var conf = new ConfigurationData(){
 
                 ServerInstanceID = Guid.NewGuid().ToString(),
+
+                ClientDeactivateInSecs = DefaultConfigurationData.DefaultClientDeactivateInSecs,
 
                 EvictionTimerIntervalInSecs = DefaultConfigurationData.DefaultEvictionTimerIntervalInSecs,
                 PeerEvictionInSecs = DefaultConfigurationData.DefaultPeerEvictionInSecs,

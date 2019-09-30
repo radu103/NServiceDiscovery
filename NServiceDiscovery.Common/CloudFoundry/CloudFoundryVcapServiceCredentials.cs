@@ -1,9 +1,6 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace NServiceDiscovery.CloudFoundry
+namespace NServiceDiscovery.Common.CloudFoundry
 {
     public class CloudFoundryVcapServiceCredentials
     {

@@ -6,6 +6,8 @@ namespace NServiceDiscovery
         public string ServerInstanceID { get; set; }
         public string Urls { get; set; }
 
+        public int ClientDeactivateInSecs { get; set; }
+
         public int EvictionTimerIntervalInSecs { get; set; }
         public int PeerEvictionInSecs { get; set; }
         public int PeerMinHeartbeatInSecs { get; set; }

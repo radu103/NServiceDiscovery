@@ -233,6 +233,28 @@ Topic template name : `NServiceDiscovery-{tenantId}-{landscape}`
 }
 ```
 
+### CLIENT_APPLICATIONS_GET = to be published by all instances when a client gets application(s) or delta info
+
+```json
+{
+    "from_instance_id" : "id1",
+    "to_instance_id" : "ALL",
+    "type" : "CLIENT_APPLICATIONS_GET",
+    "message" : "CLIENT_HOSTNAME"
+}
+```
+
+### CLIENT_GENERAL_CONFIGURATION_GET = to be published by all instances when a client gets general configuration
+
+```json
+{
+    "from_instance_id" : "id1",
+    "to_instance_id" : "ALL",
+    "type" : "CLIENT_GENERAL_CONFIGURATION_GET",
+    "message" : "CLIENT_HOSTNAME"
+}
+```
+
 ### PERSISTENCY_SYNC_APPS = to be published by one instance at constant interval. Value of interval with be randomized between 5 and 10 minutes on instance startup
 
 ```json
