@@ -285,12 +285,15 @@ namespace NServiceDiscoveryAPI.Services
                 }
                 else
                 {
-                    MQTTSendQueue.MessagesToSend.Add(new MQTTQueueMessage()
+                    if (MQTTSendQueue.CheckIfMQTTIsConfigured())
                     {
-                        Topic = myMqttClient.mqttTopic,
-                        QueuedMessage = jsonMessage,
-                        QoS = MyMQTTClient.MQTTQualityOfService
-                    });
+                        MQTTSendQueue.MessagesToSend.Add(new MQTTQueueMessage()
+                        {
+                            Topic = myMqttClient.mqttTopic,
+                            QueuedMessage = jsonMessage,
+                            QoS = MyMQTTClient.MQTTQualityOfService
+                        });
+                    }
                 }
 
                 return res;
@@ -316,12 +319,15 @@ namespace NServiceDiscoveryAPI.Services
                 }
                 else
                 {
-                    MQTTSendQueue.MessagesToSend.Add(new MQTTQueueMessage()
+                    if (MQTTSendQueue.CheckIfMQTTIsConfigured())
                     {
-                        Topic = myMqttClient.mqttTopic,
-                        QueuedMessage = jsonMessage,
-                        QoS = MyMQTTClient.MQTTQualityOfService
-                    });
+                        MQTTSendQueue.MessagesToSend.Add(new MQTTQueueMessage()
+                        {
+                            Topic = myMqttClient.mqttTopic,
+                            QueuedMessage = jsonMessage,
+                            QoS = MyMQTTClient.MQTTQualityOfService
+                        });
+                    }
                 }
 
                 return res;
@@ -346,12 +352,15 @@ namespace NServiceDiscoveryAPI.Services
                 }
                 else
                 {
-                    MQTTSendQueue.MessagesToSend.Add(new MQTTQueueMessage()
+                    if (MQTTSendQueue.CheckIfMQTTIsConfigured())
                     {
-                        Topic = myMqttClient.mqttTopic,
-                        QueuedMessage = jsonMessage,
-                        QoS = MyMQTTClient.MQTTQualityOfService
-                    });
+                        MQTTSendQueue.MessagesToSend.Add(new MQTTQueueMessage()
+                        {
+                            Topic = myMqttClient.mqttTopic,
+                            QueuedMessage = jsonMessage,
+                            QoS = MyMQTTClient.MQTTQualityOfService
+                        });
+                    }
                 }
 
                 return res;
