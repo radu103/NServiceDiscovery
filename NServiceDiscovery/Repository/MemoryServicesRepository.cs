@@ -156,71 +156,6 @@ namespace NServiceDiscovery.Repository
             return app;
         }
 
-        public Instance ChangeStatus(string appName, string instanceId, string status, long lastDirtyTimestamp)
-        {
-            var app = ServicesRuntime.AllApplications.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
-
-            var idx = -1;
-
-            if (app != null)
-            {
-                for (var i = 0; i < app.Instances.Count; i++)
-                {
-                    if (app.Instances[i].TenantId.CompareTo(repoTenantId) == 0 && app.Instances[i].InstanceId.CompareTo(instanceId) == 0)
-                    {
-                        idx = i;
-
-                        app.Instances[i].ActionType = "MODIFIED";
-                        app.Instances[i].Status = status;
-
-                        app.Instances[i].LastDirtyTimestamp = lastDirtyTimestamp;
-                        app.Instances[i].LastUpdatedTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
-
-                        app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
-
-                        if (status.CompareTo("UP") == 0)
-                        {
-                            app.Instances[i].LeaseInfo.ServiceUpTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
-                        }
-
-                        break;
-                    }
-                }
-
-                if (idx >= 0)
-                {
-                    IncreaseVersion();
-                    return app.Instances[idx];
-                }
-            }
-
-            return null;
-        }
-
-        public Instance Delete(string appName, string instanceId)
-        {
-            Instance instance = null;
-
-            var app = ServicesRuntime.AllApplications.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
-
-            if (app != null)
-            {
-                instance = app.Instances.SingleOrDefault(i => i.TenantId.CompareTo(repoTenantId) == 0 && i.InstanceId.CompareTo(instanceId) == 0);
-
-                if (instance != null)
-                {
-
-                    app.Instances.Remove(instance);
-
-                    IncreaseVersion();
-
-                    return instance;
-                }
-            }
-
-            return null;
-        }
-
         public Instance Add(Instance instance)
         {
             var appId = instance.AppName;
@@ -270,6 +205,71 @@ namespace NServiceDiscovery.Repository
             return instance;
         }
 
+        public Instance Delete(string appName, string instanceId)
+        {
+            Instance instance = null;
+
+            var app = ServicesRuntime.AllApplications.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
+
+            if (app != null)
+            {
+                instance = app.Instances.SingleOrDefault(i => i.TenantId.CompareTo(repoTenantId) == 0 && i.InstanceId.CompareTo(instanceId) == 0);
+
+                if (instance != null)
+                {
+
+                    app.Instances.Remove(instance);
+
+                    IncreaseVersion();
+
+                    return instance;
+                }
+            }
+
+            return null;
+        }
+
+        public Instance ChangeStatus(string appName, string instanceId, string status, long lastDirtyTimestamp)
+        {
+            var app = ServicesRuntime.AllApplications.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
+
+            var idx = -1;
+
+            if (app != null)
+            {
+                for (var i = 0; i < app.Instances.Count; i++)
+                {
+                    if (app.Instances[i].TenantId.CompareTo(repoTenantId) == 0 && app.Instances[i].InstanceId.CompareTo(instanceId) == 0)
+                    {
+                        idx = i;
+
+                        app.Instances[i].ActionType = "MODIFIED";
+                        app.Instances[i].Status = status;
+
+                        app.Instances[i].LastDirtyTimestamp = lastDirtyTimestamp;
+                        app.Instances[i].LastUpdatedTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
+
+                        app.Instances[i].LeaseInfo.LastRenewalTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
+
+                        if (status.CompareTo("UP") == 0)
+                        {
+                            app.Instances[i].LeaseInfo.ServiceUpTimestamp = DateTimeConversions.ToJavaMillis(DateTime.UtcNow);
+                        }
+
+                        break;
+                    }
+                }
+
+                if (idx >= 0)
+                {
+                    IncreaseVersion();
+                    return app.Instances[idx];
+                }
+            }
+
+            return null;
+        }
+
         public Instance SaveInstanceHearbeat(string appName, string instanceId, string status, long lastDirtyTimestamp)
         {
             var app = ServicesRuntime.AllApplications.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
@@ -309,21 +309,6 @@ namespace NServiceDiscovery.Repository
             }
 
             return null;
-        }
-
-        public List<Instance> GetInstancesForVipAddress(string vipAddress)
-        {
-            var list = new List<Instance>();
-
-            var apps = ServicesRuntime.AllApplications.Applications.FindAll(a => a.TenantId.CompareTo(repoTenantId) == 0).ToList();
-
-            foreach (var app in apps)
-            {
-                var instances = app.Instances.FindAll(i => i.TenantId.CompareTo(repoTenantId) == 0 && i.VipAddress.CompareTo(vipAddress) == 0).ToList();
-                list.AddRange(instances);
-            }
-
-            return list;
         }
 
         public List<string> GetDataCenters()
@@ -368,6 +353,21 @@ namespace NServiceDiscovery.Repository
             return distinctCountries;
         }
 
+        public List<Instance> GetInstancesForVipAddress(string vipAddress)
+        {
+            var list = new List<Instance>();
+
+            var apps = ServicesRuntime.AllApplications.Applications.FindAll(a => a.TenantId.CompareTo(repoTenantId) == 0).ToList();
+
+            foreach (var app in apps)
+            {
+                var instances = app.Instances.FindAll(i => i.TenantId.CompareTo(repoTenantId) == 0 && i.VipAddress.CompareTo(vipAddress) == 0).ToList();
+                list.AddRange(instances);
+            }
+
+            return list;
+        }
+
         public List<Instance> GetInstancesForSVipAddress(string svipAddress)
         {
             var list = new List<Instance>();
@@ -394,6 +394,7 @@ namespace NServiceDiscovery.Repository
                 if (dep == null)
                 {
                     app.Dependencies.Add(dependency);
+                    IncreaseVersion();
                     return true;
                 }
             }
@@ -415,6 +416,8 @@ namespace NServiceDiscovery.Repository
                 }
             }
 
+            IncreaseVersion();
+
             return ok;
         }
 
@@ -428,6 +431,7 @@ namespace NServiceDiscovery.Repository
                 if (dep != null)
                 {
                     app.Dependencies.Remove(dep);
+                    IncreaseVersion();
                     return true;
                 }
             }
@@ -442,6 +446,7 @@ namespace NServiceDiscovery.Repository
             if (app != null)
             {
                 var removed = app.Dependencies.RemoveAll(r => dependencies.IndexOf(r) >= 0);
+                IncreaseVersion();
                 return removed;
             }
 

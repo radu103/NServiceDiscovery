@@ -88,6 +88,26 @@ namespace NServiceDiscoveryAPI.Controllers
             return string.Empty;
         }
 
+        [HttpDelete]
+        [Route("/configuration/store/apps/{appName}")]
+        public ActionResult<string> DeleteApplicationKeyValue([FromRoute] string appName, [FromRoute] List<string> keys)
+        {
+            MemoryConfigurationStoreRepository repo = new MemoryConfigurationStoreRepository(this.GetTenantIdFromRouteData());
+
+            var res = repo.DeleteKeysForApplication(appName, keys);
+
+            if (res > 0)
+            {
+                this.HttpContext.Response.StatusCode = 200;
+            }
+            else
+            {
+                this.HttpContext.Response.StatusCode = 404;
+            }
+
+            return string.Empty;
+        }
+
         [HttpGet]
         [Route("/configuration/store/apps/{appName}/{key}")]
         public ActionResult<StoreKeyValue> GetApplicationKeyValue([FromRoute] string appName, [FromRoute] string key)

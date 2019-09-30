@@ -140,6 +140,8 @@ namespace NServiceDiscovery.Repository
                 Memory.ConfigurationStore.AllKeyValues[idx].Value = keyValue.Value;
             }
 
+            IncreaseVersionForGeneralStore();
+
             return true;
         }
 
@@ -176,12 +178,13 @@ namespace NServiceDiscovery.Repository
             if (existingKey != null)
             {
                 var idx = Memory.ConfigurationStore.AllKeyValues.Remove(existingKey);
-                IncreaseVersionForGeneralStore();
             }
             else
             {
                 return false;
             }
+
+            IncreaseVersionForGeneralStore();
 
             return true;
         }
@@ -220,6 +223,25 @@ namespace NServiceDiscovery.Repository
             IncreaseVersionForServicesRuntime();
 
             return true;
+        }
+
+        public int DeleteKeysForApplication(string appName, List<string> keys)
+        {
+            var existingApp = ServicesRuntime.AllApplications.Applications.SingleOrDefault(a => a.TenantId.CompareTo(repoTenantId) == 0 && a.Name.CompareTo(appName) == 0);
+
+            if (existingApp == null)
+            {
+                return 0;
+            }
+
+            var removed = Memory.ConfigurationStore.AllKeyValues.RemoveAll(g => g.TenantId.CompareTo(repoTenantId) == 0 && g.AppName.CompareTo(appName) == 0 && keys.IndexOf(g.Key) >= 0);
+            
+            if(removed > 0)
+            {
+                IncreaseVersionForServicesRuntime();
+            }
+
+            return removed;
         }
 
         public StoreKeyValue Get(string key)
