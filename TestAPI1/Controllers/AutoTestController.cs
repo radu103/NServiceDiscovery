@@ -14,5 +14,13 @@ namespace TestAPI1.Controllers
             var result = await autoTestService.ServiceCallAsync();
             return result;
         }
+
+        [HttpGet]
+        [Route("/test/load/balancer")]
+        public async Task<ActionResult<string>> AutoTestWithLoadBalancerViaHttp([FromServices] IAutoTestWithLoadBalanceService autoTestLoadBalancedService)
+        {
+            var result = await autoTestLoadBalancedService.ServiceCallAsync();
+            return result;
+        }
     }
 }

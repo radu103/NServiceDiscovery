@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\NServiceDiscovery.Common\NServiceDiscovery.Common.csproj" />
     <ProjectReference Include="..\NServiceDiscovery\NServiceDiscovery.csproj" />
   </ItemGroup>
 

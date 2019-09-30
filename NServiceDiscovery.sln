@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test_json_messages", "test_
 		test_json_messages\update_instance.json = test_json_messages\update_instance.json
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceDiscovery.Common", "NServiceDiscovery.Common\NServiceDiscovery.Common.csproj", "{53683509-4A53-441C-8A83-6F7B7FD7F2E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{AC7C1454-037B-4785-9802-EB9729F8FA5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC7C1454-037B-4785-9802-EB9729F8FA5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC7C1454-037B-4785-9802-EB9729F8FA5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53683509-4A53-441C-8A83-6F7B7FD7F2E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53683509-4A53-441C-8A83-6F7B7FD7F2E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53683509-4A53-441C-8A83-6F7B7FD7F2E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53683509-4A53-441C-8A83-6F7B7FD7F2E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

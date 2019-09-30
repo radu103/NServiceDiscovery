@@ -6,3 +6,5 @@ NServiceDiscoveryAPI/obj/
 TestAPI1/bin/
 TestAPI1/obj/
 docker/
+/NServiceDiscovery.Common/bin/Debug/netstandard2.0
+/NServiceDiscovery.Common/obj

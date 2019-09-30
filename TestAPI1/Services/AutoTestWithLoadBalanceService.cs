@@ -7,28 +7,31 @@ using System.Threading.Tasks;
 
 namespace TestAPI1.Services
 {
-    public class AutoTestService : IAutoTestService
+    public class AutoTestWithLoadBalanceService : IAutoTestService, IAutoTestWithLoadBalanceService
     {
         private const string APP_NAME = "test-api-1";
         private const string APP_NAME_URL = "http://" + APP_NAME + "/info";
 
         private IDiscoveryClient _discoveryClient = null;
+        private ILoadBalancer _loadBalancer = null;
 
-        private DiscoveryHttpClientHandler _handler = null;
+        private LoadBalancerHttpClientHandler _handler = null;
         private HttpClient _httpClient = null;
 
         private Random _random = new Random();
 
-        public AutoTestService(IDiscoveryClient discoveryClient)
+        public AutoTestWithLoadBalanceService(IDiscoveryClient discoveryClient)
         {
             _discoveryClient = discoveryClient;
 
-            _handler = new DiscoveryHttpClientHandler(_discoveryClient);
+            _loadBalancer = new RandomLoadBalancer(_discoveryClient);
+
+            _handler = new LoadBalancerHttpClientHandler(_loadBalancer);
         }
 
         private HttpClient GetHttpClient()
         {
-            if(_httpClient == null)
+            if (_httpClient == null)
             {
                 _httpClient = new HttpClient(_handler, false);
             }

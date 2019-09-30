@@ -25,8 +25,8 @@ namespace TestAPI1
             services.AddDiscoveryClient(Configuration);
 
             // add services here
-            // services.AddScoped<IAutoTestService, AutoTestService>();
             services.AddSingleton<IAutoTestService, AutoTestService>();
+            services.AddSingleton<IAutoTestWithLoadBalanceService, AutoTestWithLoadBalanceService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

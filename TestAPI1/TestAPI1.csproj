@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NServiceDiscovery\NServiceDiscovery.csproj" />
+    <ProjectReference Include="..\NServiceDiscovery.Common\NServiceDiscovery.Common.csproj" />
   </ItemGroup>
 
 </Project>
