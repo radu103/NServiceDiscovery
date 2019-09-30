@@ -5,6 +5,8 @@ namespace TestAPI1.Controllers
     [ApiController]
     public class ServiceBaseController : ControllerBase
     {
+        private ServiceHealth _health = new ServiceHealth();
+
         [HttpGet]
         [Route("/favicon.ico")]
         public ActionResult<string> GetFavIcon()
@@ -14,9 +16,9 @@ namespace TestAPI1.Controllers
 
         [HttpGet]
         [Route("/health")]
-        public ActionResult<string> GetHealth()
+        public ActionResult<ServiceHealth> GetHealth()
         {
-            return "OK";
+            return _health;
         }
 
         [HttpGet]
