@@ -8,3 +8,4 @@ TestAPI1/obj/
 docker/
 /NServiceDiscovery.Common/bin/Debug/netstandard2.0
 /NServiceDiscovery.Common/obj
+/NServiceDiscovery.Common/bin/Release/netstandard2.0

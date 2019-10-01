@@ -47,6 +47,20 @@ namespace NServiceDiscoveryAPI.Controllers
         }
 
         [HttpGet]
+        [Route("/clients/discovery")]
+        public ActionResult<List<DiscoveryClient>> GetDiscoveryClients()
+        {
+            return Memory.DiscoveryClients;
+        }
+
+        [HttpGet]
+        [Route("/clients/configuration")]
+        public ActionResult<List<DiscoveryClient>> GetConfigurationClients()
+        {
+            return Memory.ConfigurationClients;
+        }
+
+        [HttpGet]
         [Route("/status")]
         public ActionResult<InstanceStatus> GetStatus([FromServices] IInstanceStatusService statusService)
         {
