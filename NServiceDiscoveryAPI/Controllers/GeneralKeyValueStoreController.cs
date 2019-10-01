@@ -17,7 +17,7 @@ namespace NServiceDiscoveryAPI.Controllers
             var clientHostname = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
             clientRepo.Add(new DiscoveryClient(clientHostname));
-            clientPublishService.PublishClientDiscoveryActivity(tenantId, clientHostname);
+            clientPublishService.PublishClientConfigurationActivity(tenantId, clientHostname);
 
             MemoryConfigurationStoreRepository repo = new MemoryConfigurationStoreRepository(tenantId);
 
@@ -50,7 +50,7 @@ namespace NServiceDiscoveryAPI.Controllers
             var clientHostname = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
             clientRepo.Add(new DiscoveryClient(clientHostname));
-            clientPublishService.PublishClientDiscoveryActivity(tenantId, clientHostname);
+            clientPublishService.PublishClientConfigurationActivity(tenantId, clientHostname);
 
             MemoryConfigurationStoreRepository repo = new MemoryConfigurationStoreRepository(tenantId);
 
@@ -83,7 +83,7 @@ namespace NServiceDiscoveryAPI.Controllers
             var clientHostname = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
             clientRepo.Add(new DiscoveryClient(clientHostname));
-            clientPublishService.PublishClientDiscoveryActivity(tenantId, clientHostname);
+            clientPublishService.PublishClientConfigurationActivity(tenantId, clientHostname);
 
             MemoryConfigurationStoreRepository repo = new MemoryConfigurationStoreRepository(tenantId);
             var res = repo.Delete(key);
@@ -108,7 +108,7 @@ namespace NServiceDiscoveryAPI.Controllers
             var clientHostname = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
             clientRepo.Add(new DiscoveryClient(clientHostname));
-            clientPublishService.PublishClientDiscoveryActivity(tenantId, clientHostname);
+            clientPublishService.PublishClientConfigurationActivity(tenantId, clientHostname);
 
             MemoryConfigurationStoreRepository repo = new MemoryConfigurationStoreRepository(tenantId);
             var res = repo.Get(key);
@@ -129,7 +129,7 @@ namespace NServiceDiscoveryAPI.Controllers
             var clientHostname = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
             clientRepo.Add(new DiscoveryClient(clientHostname));
-            clientPublishService.PublishClientDiscoveryActivity(tenantId, clientHostname);
+            clientPublishService.PublishClientConfigurationActivity(tenantId, clientHostname);
 
             MemoryConfigurationStoreRepository repo = new MemoryConfigurationStoreRepository(tenantId);
 
@@ -155,7 +155,7 @@ namespace NServiceDiscoveryAPI.Controllers
             var clientHostname = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
             clientRepo.Add(new DiscoveryClient(clientHostname));
-            clientPublishService.PublishClientDiscoveryActivity(tenantId, clientHostname);
+            clientPublishService.PublishClientConfigurationActivity(tenantId, clientHostname);
 
             MemoryConfigurationStoreRepository repo = new MemoryConfigurationStoreRepository(tenantId);
             return repo.GetAll();
