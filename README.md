@@ -233,25 +233,33 @@ Topic template name : `NServiceDiscovery-{tenantId}-{landscape}`
 }
 ```
 
-### CLIENT_APPLICATIONS_GET = to be published by all instances when a client gets application(s) or delta info
+### CLIENT_DISCOVERY_ACTIVITY = to be published by all instances when a client gets application(s) or delta info
 
 ```json
 {
     "from_instance_id" : "id1",
     "to_instance_id" : "ALL",
-    "type" : "CLIENT_APPLICATIONS_GET",
-    "message" : "CLIENT_HOSTNAME"
+    "type" : "CLIENT_DISCOVERY_ACTIVITY",
+    "message" : {
+        "tenantId" : "string",
+        "clientHostname" : "hostname",
+        "lastUpdateTimestamp" : "utc datetime"
+    }
 }
 ```
 
-### CLIENT_GENERAL_CONFIGURATION_GET = to be published by all instances when a client gets general configuration
+### CLIENT_CONFIGURATION_ACTIVITY = to be published by all instances when a client gets general configuration
 
 ```json
 {
     "from_instance_id" : "id1",
     "to_instance_id" : "ALL",
-    "type" : "CLIENT_GENERAL_CONFIGURATION_GET",
-    "message" : "CLIENT_HOSTNAME"
+    "type" : "CLIENT_GENERAL_CONFIGURATION_ACTIVITY",
+    "message" : {
+        "tenantId" : "string",
+        "clientHostname" : "hostname",
+        "lastUpdateTimestamp" : "utc datetime"
+    }
 }
 ```
 

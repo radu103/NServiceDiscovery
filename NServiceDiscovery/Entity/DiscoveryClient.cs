@@ -16,5 +16,11 @@ namespace NServiceDiscovery.Entity
             ClientHostname = hostname;
             LastUpdateTimestamp = DateTime.UtcNow;
         }
+
+        public DiscoveryClient(string hostname, DateTime utcTimestamp)
+        {
+            ClientHostname = hostname;
+            LastUpdateTimestamp = utcTimestamp;
+        }
     }
 }

@@ -16,42 +16,60 @@ namespace NServiceDiscoveryAPI.Controllers
     {
         [HttpGet]
         [Route("/eureka/apps")]        
-        public ActionResult<ServicesRuntime> GetAllApps([FromServices] IMemoryDiscoveryClientRepository clientRepo)
+        public ActionResult<ServicesRuntime> GetAllApps([FromServices] IMemoryDiscoveryClientRepository clientRepo, [FromServices] IPublishClientsService clientPublishService)
         {
-            clientRepo.Add(new DiscoveryClient(Request.HttpContext.Connection.RemoteIpAddress.ToString()));
+            var tenantId = this.GetTenantIdFromRouteData();
+            var clientHostname = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
-            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
+            clientRepo.Add(new DiscoveryClient(clientHostname));
+            clientPublishService.PublishClientDiscoveryActivity(tenantId, clientHostname);
+
+            MemoryServicesRepository repo = new MemoryServicesRepository(tenantId, Program.InstanceConfig.EvictionInSecs);
             return repo.GetAll();
         }
 
         [HttpGet]
         [Route("/eureka/apps/delta")]
-        public ActionResult<ServicesRuntime> GetAllAppsDelta([FromServices] IMemoryDiscoveryClientRepository clientRepo)
+        public ActionResult<ServicesRuntime> GetAllAppsDelta([FromServices] IMemoryDiscoveryClientRepository clientRepo, [FromServices] IPublishClientsService clientPublishService)
         {
-            clientRepo.Add(new DiscoveryClient(Request.HttpContext.Connection.RemoteIpAddress.ToString()));
+            var tenantId = this.GetTenantIdFromRouteData();
+            var clientHostname = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
-            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
+            clientRepo.Add(new DiscoveryClient(tenantId));
+            clientPublishService.PublishClientDiscoveryActivity(tenantId, clientHostname);
+
+            MemoryServicesRepository repo = new MemoryServicesRepository(tenantId, Program.InstanceConfig.EvictionInSecs);
             return repo.GetAll();
         }
 
 
         [HttpGet]
         [Route("/eureka/apps/{appName}")]
-        public ActionResult<Application> GetApp([FromRoute] string appName, [FromServices] IMemoryDiscoveryClientRepository clientRepo)
+        public ActionResult<Application> GetApp([FromRoute] string appName, [FromServices] IMemoryDiscoveryClientRepository clientRepo, [FromServices] IPublishClientsService clientPublishService)
         {
-            clientRepo.Add(new DiscoveryClient(Request.HttpContext.Connection.RemoteIpAddress.ToString()));
+            var tenantId = this.GetTenantIdFromRouteData();
+            var clientHostname = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
-            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
+            clientRepo.Add(new DiscoveryClient(clientHostname));
+            clientPublishService.PublishClientDiscoveryActivity(tenantId, clientHostname);
+
+            MemoryServicesRepository repo = new MemoryServicesRepository(tenantId, Program.InstanceConfig.EvictionInSecs);
             return repo.GetByAppName(appName);
         }
 
         [HttpPost]
         [Route("/eureka/apps/{appName}")]
-        public ActionResult<string> AddAppInstance([FromRoute] string appName, [FromBody] ServiceInstaceRegisterRequest request, [FromServices] IPublishChangesService publishService)
+        public ActionResult<string> AddAppInstance([FromRoute] string appName, [FromBody] ServiceInstaceRegisterRequest request, [FromServices] IPublishChangesService publishService, [FromServices] IMemoryDiscoveryClientRepository clientRepo, [FromServices] IPublishClientsService clientPublishService)
         {
+            var tenantId = this.GetTenantIdFromRouteData();
+            var clientHostname = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+
+            clientRepo.Add(new DiscoveryClient(clientHostname));
+            clientPublishService.PublishClientDiscoveryActivity(tenantId, clientHostname);
+
             request.instance.AppName = appName;
 
-            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
+            MemoryServicesRepository repo = new MemoryServicesRepository(tenantId, Program.InstanceConfig.EvictionInSecs);
 
             Instance instance = repo.Add(request.instance);
 
@@ -64,9 +82,15 @@ namespace NServiceDiscoveryAPI.Controllers
 
         [HttpDelete]
         [Route("/eureka/apps/{appName}/{instanceID}")]
-        public ActionResult<string> DeleteInstance([FromRoute] string appName, [FromRoute] string instanceID, [FromServices] IPublishChangesService publishService)
+        public ActionResult<string> DeleteInstance([FromRoute] string appName, [FromRoute] string instanceID, [FromServices] IPublishChangesService publishService, [FromServices] IMemoryDiscoveryClientRepository clientRepo, [FromServices] IPublishClientsService clientPublishService)
         {
-            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
+            var tenantId = this.GetTenantIdFromRouteData();
+            var clientHostname = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+
+            clientRepo.Add(new DiscoveryClient(clientHostname));
+            clientPublishService.PublishClientDiscoveryActivity(tenantId, clientHostname);
+
+            MemoryServicesRepository repo = new MemoryServicesRepository(tenantId, Program.InstanceConfig.EvictionInSecs);
 
             var instance = repo.Delete(appName, instanceID);
 
@@ -87,9 +111,15 @@ namespace NServiceDiscoveryAPI.Controllers
         [HttpPut]
         [Route("/eureka/apps/{appName}/{instanceID}/status")]
         // "/eureka/apps/{appName}/{instanceID}/status?value={status}&lastDirtyTimestamp=1568746948343"
-        public ActionResult<string> ChangeInstanceStatus([FromRoute] string appName, [FromRoute] string instanceID, [FromQuery] string value, [FromQuery] long lastDirtyTimestamp, [FromServices] IPublishChangesService publishService)
+        public ActionResult<string> ChangeInstanceStatus([FromRoute] string appName, [FromRoute] string instanceID, [FromQuery] string value, [FromQuery] long lastDirtyTimestamp, [FromServices] IPublishChangesService publishService, [FromServices] IMemoryDiscoveryClientRepository clientRepo, [FromServices] IPublishClientsService clientPublishService)
         {
-            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
+            var tenantId = this.GetTenantIdFromRouteData();
+            var clientHostname = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+
+            clientRepo.Add(new DiscoveryClient(clientHostname));
+            clientPublishService.PublishClientDiscoveryActivity(tenantId, clientHostname);
+
+            MemoryServicesRepository repo = new MemoryServicesRepository(tenantId, Program.InstanceConfig.EvictionInSecs);
 
             if(lastDirtyTimestamp == 0)
             {
@@ -115,8 +145,14 @@ namespace NServiceDiscoveryAPI.Controllers
         [HttpPut]
         [Route("/eureka/apps/{appName}/{instanceID}")]
         // "/eureka/apps/{appName}/{instanceID}?status=UP&lastDirtyTimestamp=1568804226113"
-        public ActionResult<string> ReceiveInstanceHeartbeat([FromRoute] string appName, [FromRoute] string instanceID, [FromQuery] long lastDirtyTimestamp, [FromServices] IPublishChangesService publishService)
+        public ActionResult<string> ReceiveInstanceHeartbeat([FromRoute] string appName, [FromRoute] string instanceID, [FromQuery] long lastDirtyTimestamp, [FromServices] IPublishChangesService publishService, [FromServices] IMemoryDiscoveryClientRepository clientRepo, [FromServices] IPublishClientsService clientPublishService)
         {
+            var tenantId = this.GetTenantIdFromRouteData();
+            var clientHostname = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+
+            clientRepo.Add(new DiscoveryClient(clientHostname));
+            clientPublishService.PublishClientDiscoveryActivity(tenantId, clientHostname);
+
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
 
             var status = string.Empty;
@@ -163,11 +199,15 @@ namespace NServiceDiscoveryAPI.Controllers
 
         [HttpGet]
         [Route("/eureka/vips/{vipAddress}")]
-        public ActionResult<List<Instance>> GetInstancesForVipAddress([FromRoute] string vipAddress, [FromServices] IMemoryDiscoveryClientRepository clientRepo)
+        public ActionResult<List<Instance>> GetInstancesForVipAddress([FromRoute] string vipAddress, [FromServices] IMemoryDiscoveryClientRepository clientRepo, [FromServices] IPublishClientsService clientPublishService)
         {
-            clientRepo.Add(new DiscoveryClient(Request.HttpContext.Connection.RemoteIpAddress.ToString()));
+            var tenantId = this.GetTenantIdFromRouteData();
+            var clientHostname = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
-            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
+            clientRepo.Add(new DiscoveryClient(clientHostname));
+            clientPublishService.PublishClientDiscoveryActivity(tenantId, clientHostname);
+
+            MemoryServicesRepository repo = new MemoryServicesRepository(tenantId, Program.InstanceConfig.EvictionInSecs);
 
             List<Instance> list = repo.GetInstancesForVipAddress(vipAddress);
 
@@ -185,11 +225,15 @@ namespace NServiceDiscoveryAPI.Controllers
 
         [HttpGet]
         [Route("/eureka/svips/{svipAddress}")]
-        public ActionResult<List<Instance>> GetInstancesForSVipAddress([FromRoute] string svipAddress, [FromServices] IMemoryDiscoveryClientRepository clientRepo)
+        public ActionResult<List<Instance>> GetInstancesForSVipAddress([FromRoute] string svipAddress, [FromServices] IMemoryDiscoveryClientRepository clientRepo, [FromServices] IPublishClientsService clientPublishService)
         {
-            clientRepo.Add(new DiscoveryClient(Request.HttpContext.Connection.RemoteIpAddress.ToString()));
+            var tenantId = this.GetTenantIdFromRouteData();
+            var clientHostname = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
-            MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
+            clientRepo.Add(new DiscoveryClient(clientHostname));
+            clientPublishService.PublishClientDiscoveryActivity(tenantId, clientHostname);
+
+            MemoryServicesRepository repo = new MemoryServicesRepository(tenantId, Program.InstanceConfig.EvictionInSecs);
 
             List<Instance> list = repo.GetInstancesForSVipAddress(svipAddress);
 
@@ -207,9 +251,13 @@ namespace NServiceDiscoveryAPI.Controllers
 
         [HttpGet]
         [Route("/eureka/datacenters")]
-        public ActionResult<List<string>> GetDataCenters([FromServices] IMemoryDiscoveryClientRepository clientRepo)
+        public ActionResult<List<string>> GetDataCenters([FromServices] IMemoryDiscoveryClientRepository clientRepo, [FromServices] IPublishClientsService clientPublishService)
         {
-            clientRepo.Add(new DiscoveryClient(Request.HttpContext.Connection.RemoteIpAddress.ToString()));
+            var tenantId = this.GetTenantIdFromRouteData();
+            var clientHostname = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+
+            clientRepo.Add(new DiscoveryClient(clientHostname));
+            clientPublishService.PublishClientDiscoveryActivity(tenantId, clientHostname);
 
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
 
@@ -220,9 +268,13 @@ namespace NServiceDiscoveryAPI.Controllers
 
         [HttpGet]
         [Route("/eureka/countries")]
-        public ActionResult<List<int>> GeCountries([FromServices] IMemoryDiscoveryClientRepository clientRepo)
+        public ActionResult<List<int>> GeCountries([FromServices] IMemoryDiscoveryClientRepository clientRepo, [FromServices] IPublishClientsService clientPublishService)
         {
-            clientRepo.Add(new DiscoveryClient(Request.HttpContext.Connection.RemoteIpAddress.ToString()));
+            var tenantId = this.GetTenantIdFromRouteData();
+            var clientHostname = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+
+            clientRepo.Add(new DiscoveryClient(clientHostname));
+            clientPublishService.PublishClientDiscoveryActivity(tenantId, clientHostname);
 
             MemoryServicesRepository repo = new MemoryServicesRepository(this.GetTenantIdFromRouteData(), Program.InstanceConfig.EvictionInSecs);
 

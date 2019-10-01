@@ -22,6 +22,8 @@ namespace NServiceDiscoveryAPI.Services
     public class MQTTService : IMQTTService
     {
         private IMemoryDiscoveryPeerRepository _memoryDiscoveryPeerRepository;
+        private IMemoryDiscoveryClientRepository _clientDiscoveryRepo;
+        private IMemoryGeneralConfigurationClientRepository _clientConfigurationRepo;
 
         private MqttFactory _factory = new MqttFactory();
         private List<MyMQTTClient> _mqttClients = new List<MyMQTTClient>();
@@ -29,9 +31,11 @@ namespace NServiceDiscoveryAPI.Services
 
         private System.Timers.Timer _broadcastPeerTimer;
 
-        public MQTTService(IMemoryDiscoveryPeerRepository memoryDiscoveryPeerRepository)
+        public MQTTService(IMemoryDiscoveryPeerRepository memoryDiscoveryPeerRepository, IMemoryDiscoveryClientRepository clientDiscoveryRepo, IMemoryGeneralConfigurationClientRepository clientConfigurationRepo)
         {
             _memoryDiscoveryPeerRepository = memoryDiscoveryPeerRepository;
+            _clientDiscoveryRepo = clientDiscoveryRepo;
+            _clientConfigurationRepo = clientConfigurationRepo;
 
             // no mqtt messaging if no MQTT broker
             if (string.IsNullOrEmpty(Program.InstanceConfig.MQTTHost))
@@ -193,6 +197,18 @@ namespace NServiceDiscoveryAPI.Services
                 if (mqttMessage.ToInstancesIds.IndexOf(Program.InstanceConfig.ServerInstanceID) >= 0 && mqttMessage.Type.CompareTo("DELETE_INSTANCE") == 0 && mqttMessage.FromInstanceId.CompareTo(Program.InstanceConfig.ServerInstanceID) != 0)
                 {
                     ProcessInstanceDelete(mqttMessage, message.ApplicationMessage.Topic);
+                }
+
+                // process peer message : CLIENT_DISCOVERY_ACTIVITY
+                if (mqttMessage.ToInstancesIds.IndexOf(Program.InstanceConfig.ServerInstanceID) >= 0 && mqttMessage.Type.CompareTo("CLIENT_DISCOVERY_ACTIVITY") == 0 && mqttMessage.FromInstanceId.CompareTo(Program.InstanceConfig.ServerInstanceID) != 0)
+                {
+                    ProcessClientDiscoveryActivity(mqttMessage, message.ApplicationMessage.Topic);
+                }
+
+                // process peer message : CLIENT_CONFIGURATION_ACTIVITY
+                if (mqttMessage.ToInstancesIds.IndexOf(Program.InstanceConfig.ServerInstanceID) >= 0 && mqttMessage.Type.CompareTo("CLIENT_CONFIGURATION_ACTIVITY") == 0 && mqttMessage.FromInstanceId.CompareTo(Program.InstanceConfig.ServerInstanceID) != 0)
+                {
+                    ProcessClientConfigurationActivity(mqttMessage, message.ApplicationMessage.Topic);
                 }
 
                 // TO DO : other peer to peer messages
@@ -528,6 +544,34 @@ namespace NServiceDiscoveryAPI.Services
             {
                 var memoryRepo = new MemoryServicesRepository(messageContent.TenantId, Program.InstanceConfig.EvictionInSecs);
                 memoryRepo.Delete(messageContent.AppName, messageContent.InstanceId);
+            }
+        }
+
+        private void ProcessClientDiscoveryActivity(MQTTMessage mqttMessage, string topic)
+        {
+            InstanceHealthService.Health.MQTTMessagesReceived += 1;
+
+            var receivedMessage = mqttMessage.Message.ToString().Replace("'", "\"");
+
+            var messageContent = JsonConvert.DeserializeObject<MQTTDiscoveryClientActivityMessageContent>(receivedMessage);
+
+            if (messageContent != null && mqttMessage.FromInstanceId.CompareTo(Program.InstanceConfig.ServerInstanceID) != 0)
+            {
+                this._clientDiscoveryRepo.Add(new DiscoveryClient(messageContent.ClientHostname, messageContent.LastUpdateTimestamp));
+            }
+        }
+
+        private void ProcessClientConfigurationActivity(MQTTMessage mqttMessage, string topic)
+        {
+            InstanceHealthService.Health.MQTTMessagesReceived += 1;
+
+            var receivedMessage = mqttMessage.Message.ToString().Replace("'", "\"");
+
+            var messageContent = JsonConvert.DeserializeObject<MQTTConfigurationClientActivityMessageContent>(receivedMessage);
+
+            if (messageContent != null && mqttMessage.FromInstanceId.CompareTo(Program.InstanceConfig.ServerInstanceID) != 0)
+            {
+                this._clientConfigurationRepo.Add(new DiscoveryClient(messageContent.ClientHostname, messageContent.LastUpdateTimestamp));
             }
         }
     }
