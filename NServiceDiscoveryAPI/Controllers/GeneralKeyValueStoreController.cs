@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NServiceDiscovery.Entity;
 using NServiceDiscovery.Repository;
+using NServiceDiscoveryAPI.Services;
 using System.Collections.Generic;
 
 namespace NServiceDiscoveryAPI.Controllers
@@ -10,11 +11,14 @@ namespace NServiceDiscoveryAPI.Controllers
     {
         [HttpPost]
         [Route("/configuration/store/{key}/{value}")]
-        public ActionResult<string> AddGeneralKeyValue([FromRoute] string key, [FromRoute] string value, [FromServices] IMemoryGeneralConfigurationClientRepository clientRepo)
+        public ActionResult<string> AddGeneralKeyValue([FromRoute] string key, [FromRoute] string value, [FromServices] IMemoryGeneralConfigurationClientRepository clientRepo, [FromServices] IPublishClientsService clientPublishService)
         {
-            clientRepo.Add(new DiscoveryClient(Request.HttpContext.Connection.RemoteIpAddress.ToString()));
+            var tenantId = this.GetTenantIdFromRouteData();
+            var clientHostname = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
-            string tenantId = this.GetTenantIdFromRouteData();
+            clientRepo.Add(new DiscoveryClient(clientHostname));
+            clientPublishService.PublishClientDiscoveryActivity(tenantId, clientHostname);
+
             MemoryConfigurationStoreRepository repo = new MemoryConfigurationStoreRepository(tenantId);
 
             var keyValue = new StoreKeyValue()
@@ -40,11 +44,14 @@ namespace NServiceDiscoveryAPI.Controllers
 
         [HttpPut]
         [Route("/configuration/store/{key}/{value}")]
-        public ActionResult<string> UpdateGeneralKeyValue([FromRoute] string key, [FromRoute] string value, [FromServices] IMemoryGeneralConfigurationClientRepository clientRepo)
+        public ActionResult<string> UpdateGeneralKeyValue([FromRoute] string key, [FromRoute] string value, [FromServices] IMemoryGeneralConfigurationClientRepository clientRepo, [FromServices] IPublishClientsService clientPublishService)
         {
-            clientRepo.Add(new DiscoveryClient(Request.HttpContext.Connection.RemoteIpAddress.ToString()));
+            var tenantId = this.GetTenantIdFromRouteData();
+            var clientHostname = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
-            string tenantId = this.GetTenantIdFromRouteData();
+            clientRepo.Add(new DiscoveryClient(clientHostname));
+            clientPublishService.PublishClientDiscoveryActivity(tenantId, clientHostname);
+
             MemoryConfigurationStoreRepository repo = new MemoryConfigurationStoreRepository(tenantId);
 
             var keyValue = new StoreKeyValue()
@@ -70,11 +77,15 @@ namespace NServiceDiscoveryAPI.Controllers
 
         [HttpDelete]
         [Route("/configuration/store/{key}")]
-        public ActionResult<string> DeleteGeneralKeyValue([FromRoute] string key, [FromServices] IMemoryGeneralConfigurationClientRepository clientRepo)
+        public ActionResult<string> DeleteGeneralKeyValue([FromRoute] string key, [FromServices] IMemoryGeneralConfigurationClientRepository clientRepo, [FromServices] IPublishClientsService clientPublishService)
         {
-            clientRepo.Add(new DiscoveryClient(Request.HttpContext.Connection.RemoteIpAddress.ToString()));
+            var tenantId = this.GetTenantIdFromRouteData();
+            var clientHostname = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
-            MemoryConfigurationStoreRepository repo = new MemoryConfigurationStoreRepository(this.GetTenantIdFromRouteData());
+            clientRepo.Add(new DiscoveryClient(clientHostname));
+            clientPublishService.PublishClientDiscoveryActivity(tenantId, clientHostname);
+
+            MemoryConfigurationStoreRepository repo = new MemoryConfigurationStoreRepository(tenantId);
             var res = repo.Delete(key);
 
             if (res)
@@ -91,11 +102,15 @@ namespace NServiceDiscoveryAPI.Controllers
 
         [HttpGet]
         [Route("/configuration/store/{key}")]
-        public ActionResult<StoreKeyValue> GetGeneralKeyValue([FromRoute] string key, [FromServices] IMemoryGeneralConfigurationClientRepository clientRepo)
+        public ActionResult<StoreKeyValue> GetGeneralKeyValue([FromRoute] string key, [FromServices] IMemoryGeneralConfigurationClientRepository clientRepo, [FromServices] IPublishClientsService clientPublishService)
         {
-            clientRepo.Add(new DiscoveryClient(Request.HttpContext.Connection.RemoteIpAddress.ToString()));
+            var tenantId = this.GetTenantIdFromRouteData();
+            var clientHostname = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
-            MemoryConfigurationStoreRepository repo = new MemoryConfigurationStoreRepository(this.GetTenantIdFromRouteData());
+            clientRepo.Add(new DiscoveryClient(clientHostname));
+            clientPublishService.PublishClientDiscoveryActivity(tenantId, clientHostname);
+
+            MemoryConfigurationStoreRepository repo = new MemoryConfigurationStoreRepository(tenantId);
             var res = repo.Get(key);
 
             if (res == null)
@@ -108,11 +123,14 @@ namespace NServiceDiscoveryAPI.Controllers
 
         [HttpPost]
         [Route("/configuration/store")]
-        public ActionResult<string> AddGeneralKeyValues([FromBody] List<StoreKeyValue> keyValues, [FromServices] IMemoryGeneralConfigurationClientRepository clientRepo)
+        public ActionResult<string> AddGeneralKeyValues([FromBody] List<StoreKeyValue> keyValues, [FromServices] IMemoryGeneralConfigurationClientRepository clientRepo, [FromServices] IPublishClientsService clientPublishService)
         {
-            clientRepo.Add(new DiscoveryClient(Request.HttpContext.Connection.RemoteIpAddress.ToString()));
+            var tenantId = this.GetTenantIdFromRouteData();
+            var clientHostname = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
-            string tenantId = this.GetTenantIdFromRouteData();
+            clientRepo.Add(new DiscoveryClient(clientHostname));
+            clientPublishService.PublishClientDiscoveryActivity(tenantId, clientHostname);
+
             MemoryConfigurationStoreRepository repo = new MemoryConfigurationStoreRepository(tenantId);
 
             var res = repo.AddKeys(keyValues);
@@ -131,10 +149,15 @@ namespace NServiceDiscoveryAPI.Controllers
 
         [HttpGet]
         [Route("/configuration/store")]
-        public ActionResult<List<StoreKeyValue>> GetGeneralKeys([FromServices] IMemoryGeneralConfigurationClientRepository clientRepo)
+        public ActionResult<List<StoreKeyValue>> GetGeneralKeys([FromServices] IMemoryGeneralConfigurationClientRepository clientRepo, [FromServices] IPublishClientsService clientPublishService)
         {
-            clientRepo.Add(new DiscoveryClient(Request.HttpContext.Connection.RemoteIpAddress.ToString()));
-            MemoryConfigurationStoreRepository repo = new MemoryConfigurationStoreRepository(this.GetTenantIdFromRouteData());
+            var tenantId = this.GetTenantIdFromRouteData();
+            var clientHostname = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+
+            clientRepo.Add(new DiscoveryClient(clientHostname));
+            clientPublishService.PublishClientDiscoveryActivity(tenantId, clientHostname);
+
+            MemoryConfigurationStoreRepository repo = new MemoryConfigurationStoreRepository(tenantId);
             return repo.GetAll();
         }
     }

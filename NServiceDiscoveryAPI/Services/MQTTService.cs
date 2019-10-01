@@ -134,17 +134,22 @@ namespace NServiceDiscoveryAPI.Services
             {
                 lock (MQTTSendQueue.MessagesToSend)
                 {
-                    var qMessages = MQTTSendQueue.MessagesToSend.FindAll(qm => qm.Topic.CompareTo(topic) == 0).ToList();
-
-                    foreach (var qMessage in MQTTSendQueue.MessagesToSend)
+                    // ignore if it changes
+                    try
                     {
-                        if (mqttClient.IsConnected)
+                        var qMessages = MQTTSendQueue.MessagesToSend.FindAll(qm => qm.Topic.CompareTo(topic) == 0).ToList();
+
+                        foreach (var qMessage in MQTTSendQueue.MessagesToSend)
                         {
-                            mqttClient.PublishAsync(topic, qMessage.QueuedMessage, qMessage.QoS);
-                            MQTTSendQueue.MessagesToSend.Remove(qMessage);
-                            InstanceHealthService.Health.MQTTMessagesSent += 1;
+                            if (mqttClient.IsConnected)
+                            {
+                                mqttClient.PublishAsync(topic, qMessage.QueuedMessage, qMessage.QoS);
+                                MQTTSendQueue.MessagesToSend.Remove(qMessage);
+                                InstanceHealthService.Health.MQTTMessagesSent += 1;
+                            }
                         }
                     }
+                    catch { }
                 }
             }
         }
