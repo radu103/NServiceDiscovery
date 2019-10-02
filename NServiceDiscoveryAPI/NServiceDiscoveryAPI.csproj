@@ -16,6 +16,13 @@
 
   <ItemGroup>
     <None Include="NServiceDiscovery.postman_collection.json" />
+    <None Include="wwwroot\Component.js" />
+    <None Include="wwwroot\controller\Main.controller.js" />
+    <None Include="wwwroot\css\style.css" />
+    <None Include="wwwroot\i18n\i18n.properties" />
+    <None Include="wwwroot\index.html" />
+    <None Include="wwwroot\model\models.js" />
+    <None Include="wwwroot\view\Main.view.xml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,6 +48,10 @@
     <None Update="manifest.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>

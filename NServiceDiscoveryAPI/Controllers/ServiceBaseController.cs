@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NServiceDiscovery.Common.ServiceBase;
 using NServiceDiscovery.Entity;
+using NServiceDiscovery.Repository;
 using NServiceDiscovery.RuntimeInMemory;
 using NServiceDiscoveryAPI.Services;
 using System.Collections.Generic;
@@ -21,15 +22,23 @@ namespace NServiceDiscoveryAPI.Controllers
         [Route("/")]
         public ActionResult<string> GetIndex()
         {
-            return LocalRedirectPermanent("/eureka/apps");
+            return LocalRedirectPermanent("/index.html");
         }
 
         [HttpGet]
         [Route("/health")]
         public ActionResult<ServiceHealth> GetHealth([FromServices] IInstanceHealthService instanceHealthService)
         {
-            instanceHealthService.GetHealth();
-            return instanceHealthService.GetHealth();
+            var health = instanceHealthService.GetHealth();
+            return health;
+        }
+
+        [HttpGet]
+        [Route("/tenants")]
+        public ActionResult<List<Tenant>> GetTenants([FromServices] IMemoryTenantsRepository tenantsRepository)
+        {
+            var tenants = tenantsRepository.GetAll();
+            return tenants;
         }
 
         [HttpGet]

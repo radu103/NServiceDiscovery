@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using NServiceDiscovery.Repository;
 using NServiceDiscoveryAPI.GlobalFilters;
 using NServiceDiscoveryAPI.Services;
 using System;
+using System.IO;
 using System.IO.Compression;
 
 namespace NServiceDiscoveryAPI
@@ -47,7 +49,7 @@ namespace NServiceDiscoveryAPI
             services.AddSingleton<IPublishClientsService, PublishClientsService>();
 
             services.AddSingleton<IEvictionService, EvictionService>();
-
+            services.AddSingleton<IMemoryTenantsRepository, MemoryTenantsRepository>();
             services.AddSingleton<IPersistencyService, PersistencyService>();
 
             services.AddSingleton<IMemoryDiscoveryPeerRepository, MemoryDiscoveryPeerRepository>(); 
@@ -74,6 +76,12 @@ namespace NServiceDiscoveryAPI
             app.UseResponseCompression();
             app.UseHttpsRedirection();
             app.UseMvc();
+            
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                ServeUnknownFileTypes = true,
+                DefaultContentType = "text/plain"
+            });
 
             StartupOps(app);
         }

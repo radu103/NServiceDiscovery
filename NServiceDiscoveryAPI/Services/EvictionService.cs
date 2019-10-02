@@ -26,11 +26,11 @@ namespace NServiceDiscoveryAPI.Services
 
         private static void OnTimedEvent(Object source, ElapsedEventArgs e)
         {
-            Console.WriteLine("Eviction Service cleans at {0:HH:mm:ss.fff}", e.SignalTime);
+            //Console.WriteLine("Eviction Service cleans at {0:HH:mm:ss.fff}", e.SignalTime);
 
             // evict outdated peers
             var peersEvicted = _memoryDiscoveryPeerRepository.EvictPeers(Program.InstanceConfig.PeerEvictionInSecs);
-            Console.WriteLine("Peers evicted {0}", peersEvicted);
+            //Console.WriteLine("Peers evicted {0}", peersEvicted);
 
             // evict outdated instances for all tenants
             lock(ServicesRuntime.AllApplications.Applications)
@@ -67,7 +67,7 @@ namespace NServiceDiscoveryAPI.Services
                         ServicesRuntime.AllApplications.VersionsDelta += 1;
                     }
 
-                    Console.WriteLine("For app '{0}' instances evicted {1}", app.Name, instancesToRemove.Count);
+                    //Console.WriteLine("For app '{0}' instances evicted {1}", app.Name, instancesToRemove.Count);
                 }
             }
         }
