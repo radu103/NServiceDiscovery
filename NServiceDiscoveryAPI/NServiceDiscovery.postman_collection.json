@@ -32,6 +32,25 @@
 			"response": []
 		},
 		{
+			"name": "GetTenants",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8771/tenants",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8771",
+					"path": [
+						"tenants"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "GetStatus",
 			"request": {
 				"method": "GET",
