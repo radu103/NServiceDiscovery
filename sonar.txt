@@ -1,0 +1,9 @@
+dotnet tool install --global dotnet-sonarscanner --version 4.3.1
+
+cd C:\Work\NServiceDiscovery
+
+dotnet sonarscanner begin /k:"nservicediscovery" /d:sonar.host.url="http://192.168.100.18" /d:sonar.login="b00bc4f804a15213ad905b340dd655e85ce4955a"
+
+dotnet build
+
+dotnet sonarscanner end /d:sonar.login="b00bc4f804a15213ad905b340dd655e85ce4955a"

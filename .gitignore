@@ -11,3 +11,4 @@ docker/
 /NServiceDiscovery.Common/bin/Release/netstandard2.0
 /NServiceDiscoveryAPI.Tests/bin/Debug/netcoreapp3.0
 /NServiceDiscoveryAPI.Tests/obj
+/.sonarqube

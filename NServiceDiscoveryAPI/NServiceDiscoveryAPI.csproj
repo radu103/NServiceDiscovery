@@ -8,6 +8,7 @@
     <OutputType>Exe</OutputType>
     <StartupObject>NServiceDiscoveryAPI.Program</StartupObject>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <ProjectGuid>{375D7C44-E69D-4989-AA81-1696C09FA346}</ProjectGuid>
   </PropertyGroup>
 
   <ItemGroup>

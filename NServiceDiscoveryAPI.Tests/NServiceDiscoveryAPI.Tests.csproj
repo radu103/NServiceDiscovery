@@ -1,9 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-
     <IsPackable>false</IsPackable>
+    <!-- Mark the project as being a test project -->
+    <SonarQubeTestProject>true</SonarQubeTestProject>
+    <ProjectGuid>{F0E03043-8F8C-404F-A07A-0822FE417A6C}</ProjectGuid>
   </PropertyGroup>
 
   <ItemGroup>
