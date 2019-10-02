@@ -1,11 +1,13 @@
 sap.ui.define([
-	"sap/ui/core/mvc/Controller"
-], function (Controller) {
+    "nservicediscovery/ui/NServiceDiscoveryUI/controller/BaseController"
+], function (BaseController) {
 	"use strict";
 
-	return Controller.extend("nservicediscovery.ui.NServiceDiscoveryUI.controller.Main", {
-		onInit: function () {
+        return BaseController.extend("nservicediscovery.ui.NServiceDiscoveryUI.controller.Main", {
 
-		}
+            onInit: function () {
+
+            }
+
 	});
 });
