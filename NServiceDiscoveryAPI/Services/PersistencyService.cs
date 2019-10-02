@@ -28,12 +28,12 @@ namespace NServiceDiscoveryAPI.Services
 
             foreach (var tenant in Program.Tenants)
             {
-                var memoryRepo = new MemoryServicesRepository(tenant.TenantId + "-" + tenant.TenantType, Program.InstanceConfig.EvictionInSecs);
+                var memoryRepo = new MemoryServicesRepository(tenant.TenantId, Program.InstanceConfig.EvictionInSecs);
                 var tenantSynchInfo = memoryRepo.GetTenantSyncInfo();
 
                 if(tenantSynchInfo != null)
                 {
-                    var keyValueRepo = new MemoryConfigurationStoreRepository(tenant.TenantId + "-" + tenant.TenantType);
+                    var keyValueRepo = new MemoryConfigurationStoreRepository(tenant.TenantId);
                     var keysSyncInfo = keyValueRepo.GetAllKeysSyncInfo();
 
                     if(keysSyncInfo != null)
@@ -70,7 +70,7 @@ namespace NServiceDiscoveryAPI.Services
 
             lock(SyncInfos){
 
-                synchInfo = SyncInfos.SingleOrDefault(s => s.SynchTenant.TenantId.CompareTo(tenant.TenantId) == 0 && s.SynchTenant.TenantType.CompareTo(tenant.TenantType) == 0);
+                synchInfo = SyncInfos.SingleOrDefault(s => s.SynchTenant.TenantId.CompareTo(tenant.TenantId) == 0);
 
                 if (synchInfo == null)
                 {
@@ -96,7 +96,7 @@ namespace NServiceDiscoveryAPI.Services
             {
                 var syncMessage = new MQTTPersistencySyncAppsMessageContent()
                 {
-                    TenantId = tenant.TenantId + "-" + tenant.TenantType,
+                    TenantId = tenant.TenantId,
                     PeerId = Program.InstanceConfig.ServerInstanceID,
                     AppsMd5Hash = synchInfo.AppsMD5
                 };
@@ -115,14 +115,14 @@ namespace NServiceDiscoveryAPI.Services
                     Message = jsonMessage
                 };
 
-                Program.mqttService.SendMQTTMessageToAll(synchInfo.SynchTenant.TenantId + "-" + synchInfo.SynchTenant.TenantType, mqttMessage);
+                Program.mqttService.SendMQTTMessageToAll(synchInfo.SynchTenant.TenantId, mqttMessage);
             }
 
             if (!string.IsNullOrEmpty(synchInfo.KeysMD5))
             {
                 var syncMessage = new MQTTPersistencySyncKeysMessageContent()
                 {
-                    TenantId = tenant.TenantId + "-" + tenant.TenantType,
+                    TenantId = tenant.TenantId,
                     PeerId = Program.InstanceConfig.ServerInstanceID,
                     KeysMd5Hash = synchInfo.KeysMD5
                 };
@@ -141,7 +141,7 @@ namespace NServiceDiscoveryAPI.Services
                     Message = jsonMessage
                 };
 
-                Program.mqttService.SendMQTTMessageToAll(synchInfo.SynchTenant.TenantId + "-" + synchInfo.SynchTenant.TenantType, mqttMessage);
+                Program.mqttService.SendMQTTMessageToAll(synchInfo.SynchTenant.TenantId, mqttMessage);
             }
 
             return true;
@@ -153,7 +153,7 @@ namespace NServiceDiscoveryAPI.Services
 
             lock (SyncInfos)
             {
-                synchInfo = SyncInfos.SingleOrDefault(s => s.SynchTenant.TenantId.CompareTo(tenant.TenantId) == 0 && s.SynchTenant.TenantType.CompareTo(tenant.TenantType) == 0);
+                synchInfo = SyncInfos.SingleOrDefault(s => s.SynchTenant.TenantId.CompareTo(tenant.TenantId) == 0);
             }
         
             if(synchInfo != null)

@@ -4,8 +4,7 @@ namespace NServiceDiscovery.Configuration
     public static class DefaultConfigurationData
     {
         // default runtime constants
-        public static string DefaultTenantID = "public";
-        public static string DefaultTenantType = "dev";
+        public static string DefaultTenantID = "public-dev";
         public static string DefaultTenantToken = "real_token_to_be_checked";
 
         // client active interval validity
@@ -42,7 +41,7 @@ namespace NServiceDiscovery.Configuration
         public static int DefaultMQTTPort = 1883;
         public static string DefaultMQTTUsername = string.Empty;
         public static string DefaultMQTTPassword = string.Empty;
-        public static string DefaultMQTTTopicTemplate = "NServiceDiscovery-{TenantId}-{TenantType}";
+        public static string DefaultMQTTTopicTemplate = "NServiceDiscovery-{TenantId}";
         public static int DefaultMQTTReconnectSeconds = 1;
     }
 }

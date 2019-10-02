@@ -72,8 +72,7 @@ namespace NServiceDiscoveryAPI
             {
                 Tenant singleTenant = new Tenant()
                 {
-                    TenantId = SINGLE_TENANT_ID,
-                    TenantType = SINGLE_TENANT_TYPE
+                    TenantId = SINGLE_TENANT_ID
                 };
 
                 Tenants.Add(singleTenant);

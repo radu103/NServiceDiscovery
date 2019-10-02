@@ -6,7 +6,7 @@ namespace NServiceDiscovery.Entity
     public class StoreKeyValue
     {
         [JsonIgnore]
-        public string TenantId { get; set; } = DefaultConfigurationData.DefaultTenantID + "-" + DefaultConfigurationData.DefaultTenantType;
+        public string TenantId { get; set; } = DefaultConfigurationData.DefaultTenantID;
 
         [JsonIgnore]
         public string AppName { get; set; } = string.Empty;

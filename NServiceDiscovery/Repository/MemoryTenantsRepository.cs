@@ -11,20 +11,17 @@ namespace NServiceDiscovery.Repository
 
             list.Add(new Tenant()
             {
-                TenantId = "public",
-                TenantType = "dev"
+                TenantId = "public"
             });
 
             list.Add(new Tenant()
             {
-                TenantId = "public",
-                TenantType = "qa"
+                TenantId = "public"
             });
 
             list.Add(new Tenant()
             {
-                TenantId = "public",
-                TenantType = "production"
+                TenantId = "public"
             });
 
             return list;

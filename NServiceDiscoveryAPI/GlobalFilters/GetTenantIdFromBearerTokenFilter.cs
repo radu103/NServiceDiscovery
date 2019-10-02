@@ -20,7 +20,7 @@ namespace NServiceDiscoveryAPI.GlobalFilters
             }
             else
             {
-                fullTenantId = Program.Tenants[0].TenantId + "-" + Program.Tenants[0].TenantType;
+                fullTenantId = Program.Tenants[0].TenantId;
             }
 
             context.RouteData.Values.Add("TenantId", fullTenantId);

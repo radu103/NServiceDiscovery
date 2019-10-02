@@ -17,7 +17,7 @@ namespace NServiceDiscovery.Repository
 
         public MemoryServicesRepository()
         {
-            repoTenantId = DefaultConfigurationData.DefaultTenantID + "-" + DefaultConfigurationData.DefaultTenantType;
+            repoTenantId = DefaultConfigurationData.DefaultTenantID;
         }
 
         public MemoryServicesRepository(string tenantId, int evictionInSeconds)
@@ -32,12 +32,10 @@ namespace NServiceDiscovery.Repository
 
         private Tenant GetTenant()
         {
-            var tenant = new Tenant();
-
-            var aux = repoTenantId.Split(new char[] { '-' });
-
-            tenant.TenantId = aux[0];
-            tenant.TenantType = aux[1];
+            var tenant = new Tenant()
+            {
+                TenantId = repoTenantId
+            };
 
             return tenant;
         }
@@ -49,7 +47,6 @@ namespace NServiceDiscovery.Repository
             Tenant tenant = GetTenant();
 
             info.TenantId = tenant.TenantId;
-            info.TenantType = tenant.TenantType;
 
             try
             {

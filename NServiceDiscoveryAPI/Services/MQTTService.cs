@@ -42,15 +42,14 @@ namespace NServiceDiscoveryAPI.Services
             // when single tenant case, only 1 MQTT client needed
             for (var t = 0; t < Program.Tenants.Count; t++)
             {
-                var mqttTopic = Program.InstanceConfig.MQTTTopicTemplate.Replace("{TenantId}", Program.Tenants[t].TenantId).Replace("{TenantType}", Program.Tenants[t].TenantType);
+                var mqttTopic = Program.InstanceConfig.MQTTTopicTemplate.Replace("{TenantId}", Program.Tenants[t].TenantId);
                 var mqttClient = _factory.CreateMqttClient();
 
-                var mqttClientID = Program.InstanceConfig.ServerInstanceID + ":" + Program.Tenants[t].TenantId + ":" + Program.Tenants[t].TenantType;
+                var mqttClientID = Program.InstanceConfig.ServerInstanceID + ":" + Program.Tenants[t].TenantId;
 
                 var myMqttClient = new MyMQTTClient()
                 {
                     TenantId = Program.Tenants[t].TenantId,
-                    TenantType = Program.Tenants[t].TenantType,
                     mqttTopic = mqttTopic,
                     mqttClient = mqttClient,
                     mqttClientId = mqttClientID
