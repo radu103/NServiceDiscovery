@@ -8,7 +8,8 @@
     * empty NServiceDiscovery instance size = 28 MB in Cloud Foundry, around 100 MB in IIS Express on Debug mode (more than 100% less memory consumed)
     * empty Eureka Server instance size     = 66 MB
 * [READY] Compatible with Eureka Clients (v1 message format) : Java Spring & .NET NuGets : Steeltoe, Pivotal
-* [READY] Multitenant capable (tenant send as header `Authorization :  Bearer {tenantId}-{landscape}`. By default tenant name and type used is : `public-dev` when Authorization header is missing
+* [READY] Multitenant capable (tenant send as header `Authorization :  Bearer {tenantId}-{landscape}`. 
+          By default tenant name and type used is : `public-dev` when Authorization header is missing
 * [READY] Each instance in-memory store for 
 	* apps
 	* instances
@@ -20,8 +21,10 @@
     * [READY] Automatic peer removal task if no heartbeat mqtt message received
 * [WORK IN PROGRESS] Sync metadata in memory for multiple instances via MQTT broadcast messages for known peers with QoS 1 (at least once)
     * [READY] Sync of instances (add, update & delete) using mqtt messages
+    * [READY] Sync of discovery & configuration clients hostnames that have activity
     * [TO DO] Sync of app dependencies & app configurations using mqtt messages
     * [TO DO] Sync of general configuration using mqtt messages
+* [WORK IN PROGRESS] UI5 Overview Cockpit web user interface
 * [TO DO] Auto select persistency type on Cloud Foundry vased on VCAP_SERVICES binded to app
 * [TO DO] Auto select persistency type based on CF environment variables
 * [TO DO] Persistence save & load with SAP HANA / Mongo / Redis
