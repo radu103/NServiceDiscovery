@@ -20,12 +20,12 @@
                   <OverflowToolbarLayoutData priority="NeverOverflow" />
                 </layoutData>
               </Button>
-              <Button 
-                   id="menuButton2"
-                   icon="sap-icon://arobase"
-                   text="Home"
-                   press="menuButton2Press">
-              </Button>
+              <ToolbarSpacer/>
+              <Button
+                 id="refreshButton"
+                 icon="sap-icon://refresh"
+                 text="Refresh"
+                 press="onRefreshButtonPress"/>
             </tnt:ToolHeader>
           </tnt:header>
           <tnt:sideContent>
@@ -37,8 +37,23 @@
               <tnt:NavigationList>
                 <tnt:items>
                   <tnt:NavigationListItem
-                      text="Menu 1"
-                      icon="sap-icon://settings"
+                      text="Services &amp; Instances"
+                      icon="sap-icon://overview-chart"
+                      enabled="true"
+                      expanded="false"/>
+                  <tnt:NavigationListItem
+                      text="Service Configuration Keys"
+                      icon="sap-icon://dimension"
+                      enabled="true"
+                      expanded="false"/>
+                  <tnt:NavigationListItem
+                      text="Services Dependencies"
+                      icon="sap-icon://share-2"
+                      enabled="true"
+                      expanded="false"/>
+                  <tnt:NavigationListItem
+                      text="General Configuration Keys"
+                      icon="sap-icon://database"
                       enabled="true"
                       expanded="false"/>
                 </tnt:items>
@@ -46,7 +61,9 @@
               <tnt:fixedItem>
                 <tnt:NavigationList>
                   <tnt:items>
-                    <tnt:NavigationListItem text="Fixed text" icon="sap-icon://hint"/>
+                    <tnt:NavigationListItem text="Peers" icon="sap-icon://checklist"/>
+                    <tnt:NavigationListItem text="Discovery Clients" icon="sap-icon://radar-chart"/>
+                    <tnt:NavigationListItem text="Configuration Clients" icon="sap-icon://tree"/>
                   </tnt:items>
                 </tnt:NavigationList>
               </tnt:fixedItem>
