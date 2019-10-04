@@ -17,6 +17,10 @@
       "peersModelDs": {
         "uri": "/peers",
         "type": "JSON"
+      },
+      "tenantsModelDs": {
+        "uri": "/tenants",
+        "type": "JSON"
       }
     }
 	},
@@ -73,6 +77,10 @@
       "peersModel": {
         "type": "sap.ui.model.json.JSONModel",
         "dataSource": "peersModelDs"
+      },
+      "tenantsModel": {
+        "type": "sap.ui.model.json.JSONModel",
+        "dataSource": "tenantsModelDs"
       }
     },
 		"resources": {
@@ -94,16 +102,25 @@
           "name": "peers",
           "pattern": "peers",
           "target": "peersTarget"
+        },
+        {
+          "name": "tenants",
+          "pattern": "tenants",
+          "target": "tenantsTarget"
         }
       ],
-			"targets": {
+      "targets": {
         "peersTarget": {
-          "transition": "slide",
           "clearAggregation": true,
           "viewName": "Peers",
           "viewType": "XML"
+        },
+        "tenantsTarget": {
+          "clearAggregation": true,
+          "viewName": "Tenants",
+          "viewType": "XML"
         }
-			}
+      }
 		}
 	}
 }

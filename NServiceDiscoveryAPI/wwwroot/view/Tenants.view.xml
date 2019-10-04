@@ -1,0 +1,14 @@
+<core:View
+  controllerName="nservicediscovery.ui.NServiceDiscoveryUI.controller.Tenants" 
+  height="100%"
+  xmlns="sap.m"
+  xmlns:core="sap.ui.core"
+  displayBlock="true">
+  <ScrollContainer
+      id="tenantsContentContainer"
+      horizontal="false"
+      vertical="true"
+      height="100%">
+    <core:Fragment fragmentName="nservicediscovery.ui.NServiceDiscoveryUI.fragment.TenantsTable" type="XML"/>
+  </ScrollContainer>
+</core:View>

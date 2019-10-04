@@ -1,0 +1,20 @@
+﻿<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+      <Table id="tenantsTable"
+	      inset="false"
+	      items="{tenantsModel>/}">
+	      <columns>
+		      <Column hAlign="Center">
+			      <Text text="Tenant : Id - Landscape" />
+		      </Column>
+	      </columns>
+	      <items>
+		      <ColumnListItem>
+			      <cells>
+				      <Text text="{tenantsModel>tenantId}" />
+			      </cells>
+		      </ColumnListItem>
+	      </items>
+      </Table>
+</core:FragmentDefinition>

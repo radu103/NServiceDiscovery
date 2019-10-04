@@ -58,6 +58,11 @@
               <tnt:fixedItem>
                 <tnt:NavigationList>
                   <tnt:items>
+                    <tnt:NavigationListItem
+                        text="Tenants"
+                        icon="sap-icon://tag"
+                        expanded="false"
+                        select="onTenantsItemSelected"/>
                     <tnt:NavigationListItem 
                         text="Peers" 
                         icon="sap-icon://checklist"
