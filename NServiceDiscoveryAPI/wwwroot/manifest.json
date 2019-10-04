@@ -9,10 +9,16 @@
 		},
 		"title": "{{appTitle}}",
 		"description": "{{appDescription}}",
-		"sourceTemplate": {
-			"id": "hanatemplates.basicSAPUI5ApplicationProject",
-			"version": "0.0.0"
-		}
+    "sourceTemplate": {
+      "id": "hanatemplates.basicSAPUI5ApplicationProject",
+      "version": "0.0.0"
+    },
+    "dataSources": {
+      "peersModelDs": {
+        "uri": "/peers",
+        "type": "JSON"
+      }
+    }
 	},
 
 	"sap.ui": {
@@ -57,40 +63,46 @@
 			"compact": true,
 			"cozy": true
 		},
-		"models": {
-			"i18n": {
-				"type": "sap.ui.model.resource.ResourceModel",
-				"settings": {
-					"bundleName": "nservicediscovery.ui.NServiceDiscoveryUI.i18n.i18n"
-				}
-			}
-		},
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "nservicediscovery.ui.NServiceDiscoveryUI.i18n.i18n"
+        }
+      },
+      "peersModel": {
+        "type": "sap.ui.model.json.JSONModel",
+        "dataSource": "peersModelDs"
+      }
+    },
 		"resources": {
 			"css": [{
 				"uri": "css/style.css"
 			}]
 		},
 		"routing": {
-			"config": {
-				"routerClass": "sap.m.routing.Router",
-				"viewType": "XML",
-				"async": true,
-				"viewPath": "nservicediscovery.ui.NServiceDiscoveryUI.view",
-				"controlAggregation": "pages",
-				"controlId": "idAppControl"
-			},
-			"routes": [{
-				"name": "RouteView1",
-				"pattern": "RouteView1",
-				"target": ["TargetView1"]
-			}],
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "async": true,
+        "viewPath": "nservicediscovery.ui.NServiceDiscoveryUI.view",
+        "controlId": "pageContainer",
+        "controlAggregation": "pages"
+      },
+      "routes": [
+        {
+          "name": "peers",
+          "pattern": "peers",
+          "target": "peersTarget"
+        }
+      ],
 			"targets": {
-				"TargetView1": {
-					"viewType": "XML",
-					"transition": "slide",
-					"clearAggregation": true,
-					"viewName": "View1"
-				}
+        "peersTarget": {
+          "transition": "slide",
+          "clearAggregation": true,
+          "viewName": "Peers",
+          "viewType": "XML"
+        }
 			}
 		}
 	}

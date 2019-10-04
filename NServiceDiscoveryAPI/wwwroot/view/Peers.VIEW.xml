@@ -1,0 +1,14 @@
+<core:View
+  controllerName="nservicediscovery.ui.NServiceDiscoveryUI.controller.Peers" 
+  height="100%"
+  xmlns="sap.m"
+  xmlns:core="sap.ui.core"
+  displayBlock="true">
+  <ScrollContainer
+      id="peersContentContainer"
+      horizontal="false"
+      vertical="true"
+      height="100%">
+    <core:Fragment fragmentName="nservicediscovery.ui.NServiceDiscoveryUI.fragment.PeersTable" type="XML"/>
+  </ScrollContainer>
+</core:View>

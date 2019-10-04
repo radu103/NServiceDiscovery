@@ -1,0 +1,36 @@
+﻿<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+      <Table id="peersTable"
+	      inset="false"
+	      items="{peersModel>/}">
+	      <columns>
+		      <Column hAlign="Center">
+			      <Text text="Server Instance Id" />
+		      </Column>
+          <Column hAlign="Center">
+            <Text text="Discovery Urls" />
+          </Column>
+          <Column width="100px" hAlign="Center">
+            <Text text="Instance IP" />
+          </Column>
+          <Column width="100px" hAlign="Center">
+            <Text text="Instance Port" />
+          </Column>
+          <Column hAlign="Center">
+            <Text text="Last Update" />
+          </Column>
+	      </columns>
+	      <items>
+		      <ColumnListItem>
+			      <cells>
+				      <Text text="{peersModel>serverInstanceId}" />
+              <Link text="{peersModel>discoveryUrls}" target="_blank" href="{peersModel>discoveryUrls}"/>
+              <Text text="{peersModel>instanceIP}" />
+              <Text text="{peersModel>instancePort}" />
+              <Text text="{peersModel>lastUpdateTimestamp}" />
+			      </cells>
+		      </ColumnListItem>
+	      </items>
+      </Table>
+</core:FragmentDefinition>

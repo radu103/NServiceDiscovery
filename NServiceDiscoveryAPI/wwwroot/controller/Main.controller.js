@@ -7,6 +7,19 @@ sap.ui.define([
 
             onInit: function () {
 
+            },
+
+            onPeersItemSelected: function() {
+
+                var oRouter = this.getRouter();
+                oRouter.navTo("peers");
+            },
+
+            onRefreshButtonPress: function() {
+
+                var oPeersModel = this.getModel("peersModel");
+                oPeersModel.loadData("/peers");
+
             }
 
 	});

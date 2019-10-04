@@ -4,6 +4,7 @@
   xmlns="sap.m"
   xmlns:mvc="sap.ui.core.mvc"
   xmlns:tnt="sap.tnt"
+  xmlns:core="sap.ui.core"
 	xmlns:html="http://www.w3.org/1999/xhtml"
   xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
   displayBlock="true">
@@ -39,31 +40,37 @@
                   <tnt:NavigationListItem
                       text="Services &amp; Instances"
                       icon="sap-icon://overview-chart"
-                      enabled="true"
                       expanded="false"/>
                   <tnt:NavigationListItem
                       text="Service Configuration Keys"
                       icon="sap-icon://dimension"
-                      enabled="true"
                       expanded="false"/>
                   <tnt:NavigationListItem
                       text="Services Dependencies"
                       icon="sap-icon://share-2"
-                      enabled="true"
                       expanded="false"/>
                   <tnt:NavigationListItem
                       text="General Configuration Keys"
                       icon="sap-icon://database"
-                      enabled="true"
                       expanded="false"/>
                 </tnt:items>
               </tnt:NavigationList>
               <tnt:fixedItem>
                 <tnt:NavigationList>
                   <tnt:items>
-                    <tnt:NavigationListItem text="Peers" icon="sap-icon://checklist"/>
-                    <tnt:NavigationListItem text="Discovery Clients" icon="sap-icon://radar-chart"/>
-                    <tnt:NavigationListItem text="Configuration Clients" icon="sap-icon://tree"/>
+                    <tnt:NavigationListItem 
+                        text="Peers" 
+                        icon="sap-icon://checklist"
+                        expanded="false"
+                        select="onPeersItemSelected"/>
+                    <tnt:NavigationListItem 
+                        text="Discovery Clients" 
+                        icon="sap-icon://radar-chart"
+                        expanded="false"/>
+                    <tnt:NavigationListItem 
+                        text="Configuration Clients" 
+                        icon="sap-icon://tree"
+                        expanded="false"/>
                   </tnt:items>
                 </tnt:NavigationList>
               </tnt:fixedItem>
@@ -72,13 +79,15 @@
           <tnt:mainContents>
             <NavContainer id="pageContainer" initialPage="mainContentContainer">
               <pages>
+                
                 <ScrollContainer 
                         id="mainContentContainer"
                         horizontal="false"
                         vertical="true"
                         height="100%">
-                  <Text text="This is the root page"/>
+                    <Text text="This is the root page"/>
                 </ScrollContainer>
+                
               </pages>
             </NavContainer>
           </tnt:mainContents>
