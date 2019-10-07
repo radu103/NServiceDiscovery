@@ -4,13 +4,13 @@ using System.Collections.Generic;
 
 namespace NServiceDiscovery.Persistency
 {
-    public class PersistencyKeyValuePairs
+    public class PersistencyAppConfigurations : MongoRepository.Entity
     {
         public string ID { get; set; }
 
         public string TenantId { get; set; }
 
-        public string TenantType { get; set; }
+        public string AppName { get; set; }
 
         public string InstanceId { get; set; }
 

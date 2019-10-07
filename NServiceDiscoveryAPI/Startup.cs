@@ -58,6 +58,14 @@ namespace NServiceDiscoveryAPI
 
             services.AddSingleton<IInstanceStatusService, InstanceStatusService>();
             services.AddSingleton<IInstanceHealthService, InstanceHealthService>();
+
+            // persistency repositories
+            services.AddSingleton<IPersistencyDefaultApplicationsRepository, PersistencyDefaultApplicationsRepository>();
+            services.AddSingleton<IPersistencyTenantRepository, PersistencyTenantRepository>();
+
+            services.AddSingleton<IPersistencyAppConfigurationsRepository, PersistencyAppConfigurationsRepository>();
+            services.AddSingleton<IPersistencyGeneralConfigurationsRepository, PersistencyGeneralConfigurationsRepository>();
+            services.AddSingleton<IPersistencyApplicationsRepository, PersistencyApplicationsRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
