@@ -4,12 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
+using NServiceDiscovery.Persistency;
 using NServiceDiscovery.Repository;
 using NServiceDiscoveryAPI.GlobalFilters;
 using NServiceDiscoveryAPI.Services;
 using System;
-using System.IO;
 using System.IO.Compression;
 
 namespace NServiceDiscoveryAPI
@@ -60,6 +59,8 @@ namespace NServiceDiscoveryAPI
             services.AddSingleton<IInstanceHealthService, InstanceHealthService>();
 
             // persistency repositories
+            services.AddSingleton<IMongoDBSettings, MongoDBSettings>();
+
             services.AddSingleton<IPersistencyDefaultApplicationsRepository, PersistencyDefaultApplicationsRepository>();
             services.AddSingleton<IPersistencyTenantRepository, PersistencyTenantRepository>();
 
@@ -102,6 +103,19 @@ namespace NServiceDiscoveryAPI
             Program.mqttService = Program.serviceProvider.GetService<IMQTTService>();
             Program.evictionService = Program.serviceProvider.GetService<IEvictionService>();
             Program.persistencyService = Program.serviceProvider.GetService<IPersistencyService>();
+
+            Program.mqttService = Program.serviceProvider.GetService<IMQTTService>();
+
+            // get mongo db configuration
+            Program.mongoDbSettings = Program.serviceProvider.GetService<IMongoDBSettings>();
+            Program.mongoDbSettings.MongoDbUrl = "mongodb://admin:admin@ds235711.mlab.com:35711/nservicediscovery";
+            Program.mongoDbSettings.User = "admin";
+            Program.mongoDbSettings.Password = "admin";
+            Program.mongoDbSettings.HostName = "ds235711.mlab.com";
+            Program.mongoDbSettings.Port = 35711;
+            Program.mongoDbSettings.DbName = "nservicediscovery";
+
+            // TO DO : get mongo db configuration from CF environment vars
 
             // start persistency sync timer with random interval
             var random = new Random();

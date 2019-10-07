@@ -8,9 +8,9 @@ namespace NServiceDiscovery.Repository
     {
         private MongoRepository<PersistencyTenant> _repo;
 
-        public PersistencyTenantRepository()
+        public PersistencyTenantRepository(IMongoDBSettings settings)
         {
-            _repo = new MongoRepository<PersistencyTenant>();
+            _repo = new MongoRepository<PersistencyTenant>(settings.MongoDbUrl);
         }
 
         public PersistencyTenantRepository(MongoRepository<PersistencyTenant> repo)

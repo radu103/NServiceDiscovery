@@ -8,9 +8,9 @@ namespace NServiceDiscovery.Repository
     {
         private MongoRepository<PersistencyDefaultApp> _repo;
 
-        public PersistencyDefaultApplicationsRepository()
+        public PersistencyDefaultApplicationsRepository(IMongoDBSettings settings)
         {
-            _repo = new MongoRepository<PersistencyDefaultApp>();
+            _repo = new MongoRepository<PersistencyDefaultApp>(settings.MongoDbUrl);
         }
 
         public PersistencyDefaultApplicationsRepository(MongoRepository<PersistencyDefaultApp> repo)

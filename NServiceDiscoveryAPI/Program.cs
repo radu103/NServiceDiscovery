@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using NServiceDiscovery;
 using NServiceDiscovery.Common.CloudFoundry;
 using NServiceDiscovery.Entity;
+using NServiceDiscovery.Persistency;
 using NServiceDiscovery.Repository;
 using NServiceDiscovery.Util;
 using NServiceDiscoveryAPI.Services;
@@ -21,6 +22,8 @@ namespace NServiceDiscoveryAPI
         public static string INSTANCE_GUID = string.Empty;
         public static string INSTANCE_IP = string.Empty;
         public static int INSTANCE_PORT = 0;
+
+        public static IMongoDBSettings mongoDbSettings;
 
         public static CloudFoundryVcapApplication cloudFoundryVcapApplication;
         public static CloudFoundryVcapServices cloudFoundryVcapServices;
