@@ -10,6 +10,7 @@ using NServiceDiscoveryAPI.GlobalFilters;
 using NServiceDiscoveryAPI.Services;
 using System;
 using System.IO.Compression;
+using System.Linq;
 
 namespace NServiceDiscoveryAPI
 {
@@ -108,12 +109,29 @@ namespace NServiceDiscoveryAPI
 
             // get mongo db configuration
             Program.mongoDbSettings = Program.serviceProvider.GetService<IMongoDBSettings>();
-            Program.mongoDbSettings.MongoDbUrl = "mongodb://admin:admin@ds235711.mlab.com:35711/nservicediscovery";
-            Program.mongoDbSettings.User = "admin";
-            Program.mongoDbSettings.Password = "admin";
-            Program.mongoDbSettings.HostName = "ds235711.mlab.com";
-            Program.mongoDbSettings.Port = 35711;
-            Program.mongoDbSettings.DbName = "nservicediscovery";
+
+            if (Program.cloudFoundryVcapServices != null && Program.cloudFoundryVcapServices.MongoDBs.Count > 0)
+            {
+                // get mongo db configuration from CF environment VCAP_SERVICES
+                var mongoService = Program.cloudFoundryVcapServices.MongoDBs.FirstOrDefault();
+
+                Program.mongoDbSettings.MongoDbUrl = mongoService.Credentials.URI;
+                Program.mongoDbSettings.User = mongoService.Credentials.Username;
+                Program.mongoDbSettings.Password = mongoService.Credentials.Password;
+                Program.mongoDbSettings.HostName = mongoService.InstanceName;
+                Program.mongoDbSettings.Port = Convert.ToInt32(mongoService.Credentials.Port);
+                Program.mongoDbSettings.DbName = mongoService.Credentials.DbName;
+            }
+            else
+            {
+                // default devel mongo settings
+                Program.mongoDbSettings.MongoDbUrl = "mongodb://admin:admin@ds235711.mlab.com:35711/nservicediscovery";
+                Program.mongoDbSettings.User = "admin";
+                Program.mongoDbSettings.Password = "admin";
+                Program.mongoDbSettings.HostName = "ds235711.mlab.com";
+                Program.mongoDbSettings.Port = 35711;
+                Program.mongoDbSettings.DbName = "nservicediscovery";
+            }
 
             // TO DO : get mongo db configuration from CF environment vars
 
