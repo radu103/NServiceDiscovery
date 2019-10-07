@@ -29,12 +29,12 @@ namespace NServiceDiscoveryAPI.Services
 
         private System.Timers.Timer _broadcastPeerTimer;
 
-        public MQTTService(IMQTTProcessingService mqttProcessingService)
+        public MQTTService(IMQTTSettings mqttSettings, IMQTTProcessingService mqttProcessingService)
         {
             _mqttProcessingService = mqttProcessingService;
 
             // no mqtt messaging if no MQTT broker
-            if (string.IsNullOrEmpty(Program.InstanceConfig.MQTTHost))
+            if (string.IsNullOrEmpty(Program.mqttSettings.Host))
             {
                 return;
             }
@@ -42,7 +42,7 @@ namespace NServiceDiscoveryAPI.Services
             // when single tenant case, only 1 MQTT client needed
             for (var t = 0; t < Program.Tenants.Count; t++)
             {
-                var mqttTopic = Program.InstanceConfig.MQTTTopicTemplate.Replace("{TenantId}", Program.Tenants[t].TenantId);
+                var mqttTopic = Program.mqttSettings.TopicTemplate.Replace("{TenantId}", Program.Tenants[t].TenantId);
                 var mqttClient = _factory.CreateMqttClient();
 
                 var mqttClientID = Program.InstanceConfig.ServerInstanceID + ":" + Program.Tenants[t].TenantId;
@@ -55,18 +55,18 @@ namespace NServiceDiscoveryAPI.Services
                     mqttClientId = mqttClientID
                 };
 
-                if (string.IsNullOrEmpty(Program.InstanceConfig.MQTTUsername))
+                if (string.IsNullOrEmpty(Program.mqttSettings.User))
                 {
                     _mqttClientOptions = new MqttClientOptionsBuilder()
-                                    .WithTcpServer(Program.InstanceConfig.MQTTHost, Program.InstanceConfig.MQTTPort)
+                                    .WithTcpServer(Program.mqttSettings.Host, Program.mqttSettings.Port)
                                     .WithClientId(myMqttClient.mqttClientId)
                                     .Build();
                 }
                 else
                 {
                     _mqttClientOptions = new MqttClientOptionsBuilder()
-                        .WithTcpServer(Program.InstanceConfig.MQTTHost, Program.InstanceConfig.MQTTPort)
-                        .WithCredentials(Program.InstanceConfig.MQTTUsername, Program.InstanceConfig.MQTTPassword)
+                        .WithTcpServer(Program.mqttSettings.Host, Program.mqttSettings.Port)
+                        .WithCredentials(Program.mqttSettings.User, Program.mqttSettings.Password)
                         .WithClientId(myMqttClient.mqttClientId)
                         .Build();
                 }
@@ -101,7 +101,7 @@ namespace NServiceDiscoveryAPI.Services
         private async void UseDisconnectedHandler(IMqttClient mqttClient, MqttClientDisconnectedEventArgs disconnected)
         {
             Console.WriteLine("MQTT CLIENT - DISCONNECTED FROM MQTT BROKER");
-            await Task.Delay(TimeSpan.FromSeconds(Program.InstanceConfig.MQTTReconnectSeconds));
+            await Task.Delay(TimeSpan.FromSeconds(Program.mqttSettings.ReconnectSeconds));
 
             try
             {

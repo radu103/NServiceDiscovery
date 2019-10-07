@@ -4,8 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NServiceDiscovery.Configuration;
+using NServiceDiscovery.MQTT;
 using NServiceDiscovery.Persistency;
 using NServiceDiscovery.Repository;
+using NServiceDiscovery.Util;
 using NServiceDiscoveryAPI.GlobalFilters;
 using NServiceDiscoveryAPI.Services;
 using System;
@@ -42,6 +45,7 @@ namespace NServiceDiscoveryAPI
                 options.Level = CompressionLevel.Fastest;
             });
 
+            services.AddSingleton<IMQTTSettings, MQTTSettings>();
             services.AddSingleton<IMQTTService, MQTTService>();
             services.AddSingleton<IMQTTProcessingService, MQTTProcessingService>();
 
@@ -58,6 +62,9 @@ namespace NServiceDiscoveryAPI
 
             services.AddSingleton<IInstanceStatusService, InstanceStatusService>();
             services.AddSingleton<IInstanceHealthService, InstanceHealthService>();
+
+            // persistency sync service
+            services.AddSingleton<IPersistencyService, PersistencyService>();
 
             // persistency repositories
             services.AddSingleton<IMongoDBSettings, MongoDBSettings>();
@@ -93,51 +100,127 @@ namespace NServiceDiscoveryAPI
                 DefaultContentType = "text/plain"
             });
 
-            StartupOps(app);
+            StartupConfigurationLoadFromEnvironment(app);
         }
 
-        private void StartupOps(IApplicationBuilder app)
+        private void StartupConfigurationLoadFromEnvironment(IApplicationBuilder app)
         {
             // instantiate the MQTTService singleton instance
             Program.serviceProvider = app.ApplicationServices;
 
-            Program.mqttService = Program.serviceProvider.GetService<IMQTTService>();
-            Program.evictionService = Program.serviceProvider.GetService<IEvictionService>();
             Program.persistencyService = Program.serviceProvider.GetService<IPersistencyService>();
 
-            Program.mqttService = Program.serviceProvider.GetService<IMQTTService>();
+            // get mongo db configuration from VCAP_SERVICES
+            #region get_mongodb_configuration
 
-            // get mongo db configuration
-            Program.mongoDbSettings = Program.serviceProvider.GetService<IMongoDBSettings>();
+                Program.mongoDbSettings = Program.serviceProvider.GetService<IMongoDBSettings>();
 
-            if (Program.cloudFoundryVcapServices != null && Program.cloudFoundryVcapServices.MongoDBs.Count > 0)
-            {
-                // get mongo db configuration from CF environment VCAP_SERVICES
-                var mongoService = Program.cloudFoundryVcapServices.MongoDBs.FirstOrDefault();
+                if (Program.cloudFoundryVcapServices != null && Program.cloudFoundryVcapServices.MongoDBs.Count > 0)
+                {
+                    // get mongo db configuration from CF environment VCAP_SERVICES
+                    var mongoService = Program.cloudFoundryVcapServices.MongoDBs.FirstOrDefault();
 
-                Program.mongoDbSettings.MongoDbUrl = mongoService.Credentials.URI;
-                Program.mongoDbSettings.User = mongoService.Credentials.Username;
-                Program.mongoDbSettings.Password = mongoService.Credentials.Password;
-                Program.mongoDbSettings.HostName = mongoService.InstanceName;
-                Program.mongoDbSettings.Port = Convert.ToInt32(mongoService.Credentials.Port);
-                Program.mongoDbSettings.DbName = mongoService.Credentials.DbName;
-            }
-            else
-            {
-                // default devel mongo settings
-                Program.mongoDbSettings.MongoDbUrl = "mongodb://admin:admin@ds235711.mlab.com:35711/nservicediscovery";
-                Program.mongoDbSettings.User = "admin";
-                Program.mongoDbSettings.Password = "admin";
-                Program.mongoDbSettings.HostName = "ds235711.mlab.com";
-                Program.mongoDbSettings.Port = 35711;
-                Program.mongoDbSettings.DbName = "nservicediscovery";
-            }
+                    Program.mongoDbSettings.MongoDbUrl = mongoService.Credentials.URI;
+                    Program.mongoDbSettings.User = mongoService.Credentials.Username;
+                    Program.mongoDbSettings.Password = mongoService.Credentials.Password;
+                    Program.mongoDbSettings.HostName = mongoService.InstanceName;
+                    Program.mongoDbSettings.Port = Convert.ToInt32(mongoService.Credentials.Port);
+                    Program.mongoDbSettings.DbName = mongoService.Credentials.DbName;
+                }
+                else
+                {
+                    // default devel mongo settings
+                    Program.mongoDbSettings.MongoDbUrl = "mongodb://admin:admin2019@ds235711.mlab.com:35711/nservicediscovery";
+                    Program.mongoDbSettings.User = "admin";
+                    Program.mongoDbSettings.Password = "admin2019";
+                    Program.mongoDbSettings.HostName = "ds235711.mlab.com";
+                    Program.mongoDbSettings.Port = 35711;
+                    Program.mongoDbSettings.DbName = "nservicediscovery";
+                }
 
-            // TO DO : get mongo db configuration from CF environment vars
+            #endregion
+
+            // get mqtt configuration from VCAP_SERVICES
+            #region get_mqtt_configuration
+
+                Program.mqttSettings = Program.serviceProvider.GetService<IMQTTSettings>();
+
+                var topicTemplate = CloudFoundryEnvironmentUtil.GetMQTTTopicTemplateFromEnv();
+
+                if (!string.IsNullOrEmpty(topicTemplate))
+                {
+                    Program.mqttSettings.TopicTemplate = topicTemplate;
+                }
+                else
+                {
+                    Program.mqttSettings.TopicTemplate = DefaultConfigurationData.DefaultMQTTTopicTemplate;
+                }
+
+                var interval = CloudFoundryEnvironmentUtil.GetMQTTReconnectIntervalInSecondsFromEnv();
+
+                if (interval > 0)
+                {
+                    Program.mqttSettings.ReconnectSeconds = interval;
+                }
+                else
+                {
+                    Program.mqttSettings.ReconnectSeconds = DefaultConfigurationData.DefaultMQTTReconnectSeconds;
+                }
+
+                if (Program.cloudFoundryVcapServices != null && Program.cloudFoundryVcapServices.MQTTBrokers.Count > 0)
+                {
+                    var mqttService = Program.cloudFoundryVcapServices.MQTTBrokers.FirstOrDefault();
+
+                    Program.mqttSettings.Host = mqttService.Credentials.URI;
+                    Program.mqttSettings.User = mqttService.Credentials.Username;
+                    Program.mqttSettings.Password = mqttService.Credentials.Password;
+                    Program.mqttSettings.Port = Convert.ToInt32(mqttService.Credentials.Port);
+                }
+                else
+                {
+                    Program.mqttSettings.Host = DefaultConfigurationData.DefaultMQTTHost;
+                    Program.mqttSettings.User = DefaultConfigurationData.DefaultMQTTUsername;
+                    Program.mqttSettings.Password = DefaultConfigurationData.DefaultMQTTPassword;
+                    Program.mqttSettings.Port = DefaultConfigurationData.DefaultMQTTPort;
+                }
+
+            #endregion
+
+            // load tenants from persistency
+
+            #region single_tenant_or_not
+
+                var SINGLE_TENANT_ID = CloudFoundryEnvironmentUtil.GetTenantIdFromEnv();
+                var SINGLE_TENANT_TYPE = CloudFoundryEnvironmentUtil.GetTenantTypeFromEnv();
+
+                if (string.IsNullOrEmpty(SINGLE_TENANT_ID) && string.IsNullOrEmpty(SINGLE_TENANT_TYPE))
+                {
+                    var tenantsRepo = Program.serviceProvider.GetService<IMemoryTenantsRepository>();
+                    var persistencyTenantsRepo = Program.serviceProvider.GetService<IPersistencyTenantRepository>();
+                
+                    var persistencyTenants = persistencyTenantsRepo.LoadPersistedTenants();
+
+                    foreach(var t in persistencyTenants)
+                    {
+                        tenantsRepo.Add(new NServiceDiscovery.Entity.Tenant()
+                        {
+                            TenantId = t.TenantId,
+                            TenantToken = t.TenantToken
+                        });
+                    }
+
+                    Program.Tenants = tenantsRepo.GetAll();
+                }
+
+            #endregion
 
             // start persistency sync timer with random interval
             var random = new Random();
             Program.persistencyService.SetPersistencyTimerInterval(random.Next(Program.InstanceConfig.PersistencySyncMinRandomSeconds, Program.InstanceConfig.PersistencySyncMaxRandomSeconds));
+
+            Program.mqttService = Program.serviceProvider.GetService<IMQTTService>();
+
+            Program.evictionService = Program.serviceProvider.GetService<IEvictionService>();
         }
     }
 }

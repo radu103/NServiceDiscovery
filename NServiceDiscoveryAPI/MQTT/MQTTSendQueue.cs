@@ -10,7 +10,7 @@ namespace NServiceDiscoveryAPI.MQTT
         {
             var isConfigured = false;
 
-            isConfigured = !string.IsNullOrEmpty(Program.InstanceConfig.MQTTHost) && !string.IsNullOrEmpty(Program.InstanceConfig.MQTTTopicTemplate);
+            isConfigured = !string.IsNullOrEmpty(Program.mqttSettings.Host) && !string.IsNullOrEmpty(Program.mqttSettings.TopicTemplate);
 
             return isConfigured;
         }

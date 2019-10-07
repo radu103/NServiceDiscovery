@@ -32,14 +32,7 @@ namespace NServiceDiscovery
                 PersistencyDBName = DefaultConfigurationData.DefaultPersistencyDBName,
                 PersistencySyncWaitSeconds = DefaultConfigurationData.DefaultPersistencySyncWaitSeconds,
                 PersistencySyncMinRandomSeconds = DefaultConfigurationData.DefaultPersistencySyncMinRandomSeconds,
-                PersistencySyncMaxRandomSeconds = DefaultConfigurationData.DefaultPersistencySyncMaxRandomSeconds,
-
-                MQTTHost = DefaultConfigurationData.DefaultMQTTHost,
-                MQTTPort = DefaultConfigurationData.DefaultMQTTPort,
-                MQTTUsername = DefaultConfigurationData.DefaultMQTTUsername,
-                MQTTPassword = DefaultConfigurationData.DefaultMQTTPassword,
-                MQTTReconnectSeconds = DefaultConfigurationData.DefaultMQTTReconnectSeconds,
-                MQTTTopicTemplate = DefaultConfigurationData.DefaultMQTTTopicTemplate
+                PersistencySyncMaxRandomSeconds = DefaultConfigurationData.DefaultPersistencySyncMaxRandomSeconds
             };
 
             if (cfApp != null)

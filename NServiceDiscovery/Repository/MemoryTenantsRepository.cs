@@ -5,26 +5,16 @@ namespace NServiceDiscovery.Repository
 {
     public class MemoryTenantsRepository : IMemoryTenantsRepository
     {
+        private List<Tenant> Tenants = new List<Tenant>();
+
         public List<Tenant> GetAll()
         {
-            var list = new List<Tenant>();
+            return Tenants;
+        }
 
-            list.Add(new Tenant()
-            {
-                TenantId = "public-dev"
-            });
-
-            list.Add(new Tenant()
-            {
-                TenantId = "public-qa"
-            });
-
-            list.Add(new Tenant()
-            {
-                TenantId = "public-production"
-            });
-
-            return list;
+        public void Add(Tenant tenant)
+        {
+            Tenants.Add(tenant);
         }
     }
 }

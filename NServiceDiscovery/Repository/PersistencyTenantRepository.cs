@@ -1,6 +1,8 @@
 ﻿using MongoRepository;
 using NServiceDiscovery.Persistency;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NServiceDiscovery.Repository
 {
@@ -20,9 +22,35 @@ namespace NServiceDiscovery.Repository
 
         public List<PersistencyTenant> LoadPersistedTenants()
         {
-            var persistedTenants = new List<PersistencyTenant>();
+            var repoTenants = _repo.Where(t => t.ExpireDate >= DateTime.UtcNow).ToList();
+            
+            if(repoTenants.Count == 0)
+            {
+                _repo.Add(new PersistencyTenant
+                {
+                    TenantId = "public-dev",
+                    TenantToken = "",
+                    ExpireDate = DateTime.UtcNow.AddYears(3)
+                });
 
-            return persistedTenants;
+                _repo.Add(new PersistencyTenant
+                {
+                    TenantId = "public-qa",
+                    TenantToken = "",
+                    ExpireDate = DateTime.UtcNow.AddYears(3)
+                });
+
+                _repo.Add(new PersistencyTenant
+                {
+                    TenantId = "public-production",
+                    TenantToken = "",
+                    ExpireDate = DateTime.UtcNow.AddYears(3)
+                });
+
+                repoTenants = _repo.Where(t => t.ExpireDate >= DateTime.UtcNow).ToList();
+            }
+
+           return repoTenants;
         }
     }
 }

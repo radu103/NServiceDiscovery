@@ -23,7 +23,7 @@ namespace NServiceDiscoveryAPI.Services
         
         public string GetTenantFromTopicName(string topic)
         {
-            var aux = Program.InstanceConfig.MQTTTopicTemplate.Split(new char[] { '-' });
+            var aux = Program.mqttSettings.TopicTemplate.Split(new char[] { '-' });
             var tenantIdType = topic.Replace(aux[0] + "-", string.Empty);
             return tenantIdType;
         }

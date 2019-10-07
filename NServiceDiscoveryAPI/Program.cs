@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using NServiceDiscovery;
 using NServiceDiscovery.Common.CloudFoundry;
 using NServiceDiscovery.Entity;
+using NServiceDiscovery.MQTT;
 using NServiceDiscovery.Persistency;
 using NServiceDiscovery.Repository;
 using NServiceDiscovery.Util;
@@ -24,6 +25,7 @@ namespace NServiceDiscoveryAPI
         public static int INSTANCE_PORT = 0;
 
         public static IMongoDBSettings mongoDbSettings;
+        public static IMQTTSettings mqttSettings;
 
         public static CloudFoundryVcapApplication cloudFoundryVcapApplication;
         public static CloudFoundryVcapServices cloudFoundryVcapServices;
@@ -79,11 +81,6 @@ namespace NServiceDiscoveryAPI
                 };
 
                 Tenants.Add(singleTenant);
-            }
-            else
-            {
-                var repoTenants = new MemoryTenantsRepository();
-                Tenants = repoTenants.GetAll();
             }
 
             CreateWebHostBuilder(args).Build().Run();

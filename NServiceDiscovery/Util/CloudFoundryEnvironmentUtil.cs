@@ -160,5 +160,47 @@ namespace NServiceDiscovery.Util
 
             return tenatType;
         }
+
+        public static string GetMQTTTopicTemplateFromEnv()
+        {
+            string template = string.Empty;
+
+            // get MQTT_TOPIC_TEMPLATE if available
+            try
+            {
+                var MQTT_TOPIC_TEMPLATE = Environment.GetEnvironmentVariable("MQTT_TOPIC_TEMPLATE");
+
+                Console.WriteLine("MQTT_TOPIC_TEMPLATE : " + MQTT_TOPIC_TEMPLATE);
+
+                template = MQTT_TOPIC_TEMPLATE;
+            }
+            catch (Exception err)
+            {
+                Console.WriteLine("MQTT_TOPIC_TEMPLATE ERROR : " + err.Message);
+            }
+
+            return template;
+        }
+
+        public static int GetMQTTReconnectIntervalInSecondsFromEnv()
+        {
+            int interval = 0;
+
+            // get MQTT_RECONNECT_SECONDS if available
+            try
+            {
+                var MQTT_RECONNECT_SECONDS = Environment.GetEnvironmentVariable("MQTT_RECONNECT_SECONDS");
+
+                Console.WriteLine("MQTT_RECONNECT_SECONDS : " + MQTT_RECONNECT_SECONDS);
+
+                interval = Convert.ToInt32(MQTT_RECONNECT_SECONDS);
+            }
+            catch (Exception err)
+            {
+                Console.WriteLine("MQTT_RECONNECT_SECONDS ERROR : " + err.Message);
+            }
+
+            return interval;
+        }
     }
 }

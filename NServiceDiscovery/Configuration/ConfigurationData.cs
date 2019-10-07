@@ -26,12 +26,5 @@ namespace NServiceDiscovery
         public int PersistencySyncWaitSeconds { get; set; }
         public int PersistencySyncMinRandomSeconds { get; set; }
         public int PersistencySyncMaxRandomSeconds { get; set; }
-
-        public string MQTTHost { get; set; }
-        public int MQTTPort { get; set; }
-        public string MQTTUsername { get; set; }
-        public string MQTTPassword { get; set; }
-        public int MQTTReconnectSeconds { get; set; }
-        public string MQTTTopicTemplate { get; set; }
     }
 }

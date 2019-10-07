@@ -10,5 +10,8 @@ namespace NServiceDiscovery.Common.CloudFoundry
 
         [JsonProperty("hana")]
         public List<CloudFoundryVcapService> HanaDBs { get; set; }
+
+        [JsonProperty("mqtt")]
+        public List<CloudFoundryVcapService> MQTTBrokers { get; set; }
     }
 }
