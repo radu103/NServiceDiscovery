@@ -1,17 +1,17 @@
-﻿using Newtonsoft.Json;
+﻿using MongoDB.Bson.Serialization.Attributes;
 using System;
 
 namespace NServiceDiscovery.Persistency
 {
     public class PersistencyTenant : MongoRepository.Entity
     {
-        [JsonProperty("tenantId")]
+        [BsonElement("tenantId")]
         public string TenantId { get; set; }
 
-        [JsonProperty("tenantToken")]
+        [BsonElement("tenantToken")]
         public string TenantToken { get; set; }
 
-        [JsonProperty("expireDate")]
+        [BsonElement("expireDate")]
         public DateTime ExpireDate { get; set; }
     }
 }

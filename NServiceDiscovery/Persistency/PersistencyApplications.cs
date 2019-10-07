@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using MongoDB.Bson.Serialization.Attributes;
 using NServiceDiscovery.Entity;
 using System;
 using System.Collections.Generic;
@@ -7,19 +7,19 @@ namespace NServiceDiscovery.Persistency
 {
     public class PersistencyApplications : MongoRepository.Entity
     {
-        [JsonProperty("tenantId")]
+        [BsonElement("tenantId")]
         public string TenantId { get; set; }
 
-        [JsonProperty("instanceId")]
+        [BsonElement("instanceId")]
         public string InstanceId { get; set; }
 
-        [JsonProperty("utcTimestamp")]
+        [BsonElement("utcTimestamp")]
         public DateTime UTCTimestamp { get; set; }
 
-        [JsonProperty("versionsDelta")]
+        [BsonElement("versionsDelta")]
         public long VersionsDelta { get; set; }
 
-        [JsonProperty("applications")]
+        [BsonElement("applications")]
         public List<Application> Applications { get; set; }
     }
 }

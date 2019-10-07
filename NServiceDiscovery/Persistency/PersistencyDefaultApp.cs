@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using MongoDB.Bson.Serialization.Attributes;
 using NServiceDiscovery.Entity;
 using System.Collections.Generic;
 
@@ -6,13 +6,13 @@ namespace NServiceDiscovery.Persistency
 {
     public class PersistencyDefaultApp : MongoRepository.Entity
     {
-        [JsonProperty("appName")]
+        [BsonElement("appName")]
         public string AppName { get; set; }
 
-        [JsonProperty("appDependencies")]
+        [BsonElement("appDependencies")]
         public List<string> AppDependencies { get; set; }
 
-        [JsonProperty("appConfiguration")]
+        [BsonElement("appConfiguration")]
         public List<StoreKeyValue> AppConfiguration { get; set; }
     }
 }
